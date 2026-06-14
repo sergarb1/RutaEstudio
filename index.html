@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grafo de Conocimiento — Plan de estudio personalizado</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://unpkg.com/vis-network@9.1.9/dist/vis-network.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+    #graph-container { width: 100%; height: 500px; border-radius: 1rem; background: #f8fafc; }
+    .heat-red { color: #ef4444; }
+    .heat-yellow { color: #eab308; }
+    .heat-green { color: #22c55e; }
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen" x-data="app()" x-cloak>
+  <div class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-black tracking-tight">
+          <span class="text-indigo-600">🧠</span> Grafo de Conocimiento
+        </h1>
+        <p class="text-sm text-slate-500">Define conceptos, evalúa dominio, genera tu plan de estudio</p>
+      </div>
+      <div class="flex gap-2">
+        <button @click="exportData()" class="text-xs bg-white border rounded-lg px-3 py-2 hover:bg-slate-50 font-medium">📤 Exportar</button>
+        <button @click="importData()" class="text-xs bg-white border rounded-lg px-3 py-2 hover:bg-slate-50 font-medium">📥 Importar</button>
+      </div>
+    </header>
+
+    <!-- Subjects list -->
+    <div x-show="view === 'subjects'">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold">Mis asignaturas</h2>
+        <button @click="addSubject()" class="bg-indigo-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-indigo-700">+ Nueva</button>
+      </div>
+      <template x-if="subjects.length === 0">
+        <div class="text-center py-16 text-slate-400">
+          <p class="text-5xl mb-4">📚</p>
+          <p class="text-lg font-medium">No tienes asignaturas todavía</p>
+          <p class="text-sm mt-1">Crea una para empezar a mapear conceptos</p>
+        </div>
+      </template>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <template x-for="s in subjects" :key="s.id">
+          <div @click="selectSubject(s)" class="bg-white rounded-2xl p-5 border border-slate-200 hover:border-indigo-300 hover:shadow-md cursor-pointer transition">
+            <h3 class="font-bold text-lg" x-text="s.name"></h3>
+            <p class="text-sm text-slate-500 mt-1" x-text="s.description || 'Sin descripción'"></p>
+            <div class="flex items-center gap-3 mt-3 text-xs text-slate-400">
+              <span x-text="s.concepts.length + ' conceptos'"></span>
+              <span x-text="s.relations.length + ' relaciones'"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Subject detail -->
+    <div x-show="view === 'subject'">
+      <button @click="view='subjects'; destroyGraph()" class="text-sm text-indigo-600 font-medium mb-4 flex items-center gap-1">← Volver</button>
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-bold" x-text="currentSubject.name"></h2>
+          <p class="text-sm text-slate-500" x-text="currentSubject.description"></p>
+        </div>
+        <div class="flex gap-2">
+          <button @click="editSubject()" class="text-xs bg-white border rounded-lg px-3 py-2 font-medium">✏️ Editar</button>
+          <button @click="deleteSubject()" class="text-xs bg-white border border-red-200 text-red-600 rounded-lg px-3 py-2 font-medium hover:bg-red-50">🗑️</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-1 mb-4 bg-white rounded-xl p-1 border border-slate-200 text-sm font-medium">
+        <button @click="tab='concepts'" :class="tab==='concepts'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📘 Conceptos</button>
+        <button @click="tab='graph'; setTimeout(()=>renderGraph(),100)" :class="tab==='graph'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">🔗 Grafo</button>
+        <button @click="tab='assess'; startAssessment()" :class="tab==='assess'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📝 Evaluar</button>
+        <button @click="tab='results'" :class="tab==='results'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📊 Resultados</button>
+        <button @click="tab='history'" :class="tab==='history'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📈 Historial</button>
+      </div>
+
+      <!-- Concepts tab -->
+      <div x-show="tab === 'concepts'" class="bg-white rounded-2xl p-5 border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold">Conceptos</h3>
+          <button @click="addConcept()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">+ Añadir</button>
+        </div>
+        <template x-if="currentSubject.concepts.length === 0">
+          <p class="text-sm text-slate-400 py-8 text-center">Aún no hay conceptos. ¡Añade el primero!</p>
+        </template>
+        <div class="space-y-2">
+          <template x-for="(c, i) in currentSubject.concepts" :key="c.id">
+            <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <span class="text-xs font-bold text-indigo-600 w-6" x-text="i+1"></span>
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm" x-text="c.name"></p>
+                <p class="text-xs text-slate-400 truncate" x-text="c.description || '—'"></p>
+              </div>
+              <span class="text-xs bg-slate-200 rounded px-2 py-0.5 font-medium" x-text="'Peso: '+c.weight"></span>
+              <button @click="editConcept(i)" class="text-xs text-indigo-600 font-medium">✏️</button>
+              <button @click="deleteConcept(i)" class="text-xs text-red-500 font-medium">✕</button>
+            </div>
+          </template>
+        </div>
+
+        <!-- Relations -->
+        <div x-show="currentSubject.concepts.length >= 2" class="mt-6 pt-4 border-t border-slate-200">
+          <h3 class="font-bold mb-3">Relaciones</h3>
+          <div class="space-y-2">
+            <template x-for="(r, i) in currentSubject.relations" :key="i">
+              <div class="flex items-center gap-2 text-sm bg-slate-50 rounded-lg p-2 border border-slate-100">
+                <span class="font-medium text-indigo-600" x-text="conceptName(r.from)"></span>
+                <span class="text-xs px-1.5 py-0.5 rounded font-medium"
+                  :class="{'bg-blue-100 text-blue-700': r.type==='prerrequisito', 'bg-green-100 text-green-700': r.type==='pertenece', 'bg-amber-100 text-amber-700': r.type==='relacionado', 'bg-purple-100 text-purple-700': r.type==='profundiza'}"
+                  x-text="r.type"></span>
+                <span class="font-medium text-indigo-600" x-text="conceptName(r.to)"></span>
+                <button @click="deleteRelation(i)" class="ml-auto text-xs text-red-500">✕</button>
+              </div>
+            </template>
+          </div>
+          <template x-if="currentSubject.relations.length === 0">
+            <p class="text-xs text-slate-400">Pasa a la pestaña Grafo para conectar conceptos visualmente</p>
+          </template>
+        </div>
+      </div>
+
+      <!-- Graph tab -->
+      <div x-show="tab === 'graph'" class="bg-white rounded-2xl p-5 border border-slate-200">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold">Grafo de conceptos</h3>
+          <div class="flex gap-2 text-xs">
+            <button @click="currentRelationType='prerrequisito'" :class="currentRelationType==='prerrequisito'?'bg-blue-600 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Prerrequisito</button>
+            <button @click="currentRelationType='pertenece'" :class="currentRelationType==='pertenece'?'bg-green-600 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Pertenece</button>
+            <button @click="currentRelationType='relacionado'" :class="currentRelationType==='relacionado'?'bg-amber-500 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Relacionado</button>
+            <button @click="currentRelationType='profundiza'" :class="currentRelationType==='profundiza'?'bg-purple-600 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Profundiza</button>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 mb-2">Haz clic en un concepto origen, luego en un concepto destino para crear una relación</p>
+        <div id="graph-container"></div>
+      </div>
+
+      <!-- Assessment tab -->
+      <div x-show="tab === 'assess'" class="bg-white rounded-2xl p-5 border border-slate-200">
+        <template x-if="currentSubject.concepts.length === 0">
+          <p class="text-sm text-slate-400 py-8 text-center">Añade conceptos primero para poder evaluarlos</p>
+        </template>
+        <template x-if="currentSubject.concepts.length > 0">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold">Autoevaluación</h3>
+              <span class="text-sm text-slate-500" x-text="(assessIndex+1)+' / '+currentSubject.concepts.length"></span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2 mb-4">
+              <div class="bg-indigo-600 h-2 rounded-full transition-all" :style="'width:'+((assessIndex+1)/currentSubject.concepts.length*100)+'%'"></div>
+            </div>
+            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+              <p class="text-xs text-slate-400 font-medium uppercase tracking-wide mb-1">Concepto <span x-text="assessIndex+1"></span></p>
+              <p class="text-xl font-bold mb-1" x-text="currentSubject.concepts[assessIndex].name"></p>
+              <p class="text-sm text-slate-500 mb-4" x-text="currentSubject.concepts[assessIndex].description || 'Sin descripción'"></p>
+              <p class="text-sm font-medium mb-2">¿Cómo valoras tu dominio?</p>
+              <div class="flex gap-2 mb-4">
+                <template x-for="n in 5" :key="n">
+                  <button @click="assessScores[currentSubject.concepts[assessIndex].id] = n*20"
+                    :class="assessScores[currentSubject.concepts[assessIndex].id] === n*20 ? 'bg-indigo-600 text-white ring-2 ring-indigo-300' : 'bg-white border border-slate-200 hover:border-indigo-300'"
+                    class="w-12 h-12 rounded-xl font-bold text-sm transition">
+                    <span x-text="n"></span>
+                  </button>
+                </template>
+              </div>
+              <div class="flex justify-between text-xs text-slate-400 px-1">
+                <span>Nada</span>
+                <span>Poco</span>
+                <span>Medio</span>
+                <span>Bastante</span>
+                <span>Total</span>
+              </div>
+              <div class="mt-4">
+                <p class="text-sm font-medium mb-1">Notas (opcional)</p>
+                <input type="text" x-model="assessNotes[currentSubject.concepts[assessIndex].id]" placeholder="¿Qué te cuesta? ¿Qué has entendido?" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" />
+              </div>
+            </div>
+            <div class="flex justify-between mt-4">
+              <button @click="prevConcept()" :disabled="assessIndex===0" :class="assessIndex===0?'opacity-30 cursor-not-allowed':''" class="text-sm font-medium text-indigo-600 px-4 py-2">← Anterior</button>
+              <template x-if="assessIndex < currentSubject.concepts.length - 1">
+                <button @click="nextConcept()" class="bg-indigo-600 text-white text-sm font-bold px-6 py-2 rounded-xl">Siguiente →</button>
+              </template>
+              <template x-if="assessIndex === currentSubject.concepts.length - 1">
+                <button @click="submitAssessment()" class="bg-green-600 text-white text-sm font-bold px-6 py-2 rounded-xl">📊 Ver resultados</button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Results tab -->
+      <div x-show="tab === 'results'" class="space-y-4">
+        <template x-if="!lastAssessment">
+          <div class="text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-200">
+            <p class="text-4xl mb-3">📊</p>
+            <p class="font-medium">Aún no hay evaluaciones</p>
+            <p class="text-sm mt-1">Haz una evaluación en la pestaña "Evaluar"</p>
+          </div>
+        </template>
+        <template x-if="lastAssessment">
+          <div>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 mb-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold">Resumen</h3>
+                <span class="text-xs text-slate-400" x-text="new Date(lastAssessment.date).toLocaleDateString()"></span>
+              </div>
+              <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-red-50 rounded-xl p-3">
+                  <p class="text-2xl font-black text-red-600" x-text="stats().red"></p>
+                  <p class="text-xs text-red-500">Repasar</p>
+                </div>
+                <div class="bg-amber-50 rounded-xl p-3">
+                  <p class="text-2xl font-black text-amber-600" x-text="stats().yellow"></p>
+                  <p class="text-xs text-amber-500">Reforzar</p>
+                </div>
+                <div class="bg-green-50 rounded-xl p-3">
+                  <p class="text-2xl font-black text-green-600" x-text="stats().green"></p>
+                  <p class="text-xs text-green-500">Dominado</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Study plan -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200">
+              <h3 class="font-bold mb-3">📋 Plan de estudio</h3>
+              <template x-if="studyPlan().repasar.length === 0 && studyPlan().reforzar.length === 0">
+                <p class="text-sm text-green-600 font-medium">¡Todo dominado! Sigue así 🎉</p>
+              </template>
+              <div x-show="studyPlan().repasar.length > 0" class="mb-4">
+                <p class="text-sm font-bold text-red-600 flex items-center gap-1 mb-2">🔴 Repasar (dominio &lt; 40%)</p>
+                <div class="space-y-2">
+                  <template x-for="item in studyPlan().repasar" :key="item.id">
+                    <div class="bg-red-50 border border-red-100 rounded-xl p-3">
+                      <p class="font-medium text-sm" x-text="item.name"></p>
+                      <p class="text-xs text-red-500 mt-0.5" x-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
+                      <p class="text-xs text-slate-500 mt-0.5" x-text="item.recommendation"></p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div x-show="studyPlan().reforzar.length > 0" class="mb-4">
+                <p class="text-sm font-bold text-amber-600 flex items-center gap-1 mb-2">🟡 Reforzar (dominio 40-70%)</p>
+                <div class="space-y-2">
+                  <template x-for="item in studyPlan().reforzar" :key="item.id">
+                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-3">
+                      <p class="font-medium text-sm" x-text="item.name"></p>
+                      <p class="text-xs text-amber-500 mt-0.5" x-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
+                      <p class="text-xs text-slate-500 mt-0.5" x-text="item.recommendation"></p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div x-show="studyPlan().avanzar.length > 0">
+                <p class="text-sm font-bold text-green-600 flex items-center gap-1 mb-2">🟢 Listo para avanzar (dominio &gt; 70%)</p>
+                <div class="space-y-2">
+                  <template x-for="item in studyPlan().avanzar" :key="item.id">
+                    <div class="bg-green-50 border border-green-100 rounded-xl p-3">
+                      <p class="font-medium text-sm" x-text="item.name"></p>
+                      <p class="text-xs text-green-500 mt-0.5" x-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
+                      <p class="text-xs text-slate-500 mt-0.5" x-text="item.recommendation"></p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <!-- Colored graph -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 mt-4">
+              <h3 class="font-bold mb-3">🎨 Mapa de calor</h3>
+              <div id="graph-heat-container" style="width:100%;height:400px;border-radius:1rem;background:#f8fafc;"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- History tab -->
+      <div x-show="tab === 'history'" class="bg-white rounded-2xl p-5 border border-slate-200">
+        <h3 class="font-bold mb-4">Historial de evaluaciones</h3>
+        <template x-if="subjectAssessments().length === 0">
+          <p class="text-sm text-slate-400 py-8 text-center">Aún no hay evaluaciones para esta asignatura</p>
+        </template>
+        <div class="space-y-3">
+          <template x-for="a in subjectAssessments()" :key="a.id">
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium" x-text="new Date(a.date).toLocaleDateString()"></span>
+                <span class="text-xs text-slate-400" x-text="Object.keys(a.results).length + ' conceptos'"></span>
+              </div>
+              <div class="flex gap-2">
+                <span class="text-xs px-2 py-0.5 rounded bg-red-100 text-red-600 font-medium" x-text="heatCount(a.results,'red')+' repasar'"></span>
+                <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-600 font-medium" x-text="heatCount(a.results,'yellow')+' reforzar'"></span>
+                <span class="text-xs px-2 py-0.5 rounded bg-green-100 text-green-600 font-medium" x-text="heatCount(a.results,'green')+' dominado'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-slate-400 text-xs mt-12 pt-6 border-t border-slate-200">
+      <p>Hecho con ❤️ por <a href="https://github.com/sergarb1" class="text-indigo-600">sergarb1</a> · Datos locales en tu navegador</p>
+    </footer>
+  </div>
+
+  <!-- Modals -->
+  <div x-show="modal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="modal=''">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+      <h3 class="font-bold text-lg mb-4" x-text="modalTitle"></h3>
+      <template x-if="modal === 'subject'">
+        <div class="space-y-3">
+          <div><label class="text-xs font-medium text-slate-500">Nombre</label><input x-model="editName" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" /></div>
+          <div><label class="text-xs font-medium text-slate-500">Descripción</label><textarea x-model="editDesc" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea></div>
+          <button @click="saveSubject()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm">Guardar</button>
+        </div>
+      </template>
+      <template x-if="modal === 'concept'">
+        <div class="space-y-3">
+          <div><label class="text-xs font-medium text-slate-500">Nombre del concepto</label><input x-model="editConceptName" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" /></div>
+          <div><label class="text-xs font-medium text-slate-500">Descripción</label><textarea x-model="editConceptDesc" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea></div>
+          <div><label class="text-xs font-medium text-slate-500">Peso/dificultad (1-10)</label><input type="number" min="1" max="10" x-model="editConceptWeight" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" /></div>
+          <button @click="saveConcept()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm">Guardar</button>
+        </div>
+      </template>
+      <button @click="modal=''" class="text-xs text-slate-400 mt-3 w-full text-center">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    function app() {
+      return {
+        subjects: [],
+        assessments: [],
+        view: 'subjects',
+        tab: 'concepts',
+        currentSubject: null,
+        modal: '',
+        modalTitle: '',
+        editName: '', editDesc: '',
+        editConceptName: '', editConceptDesc: '', editConceptWeight: 5, editConceptIdx: -1,
+        currentRelationType: 'prerrequisito',
+        network: null,
+        assessIndex: 0,
+        assessScores: {},
+        assessNotes: {},
+        lastAssessment: null,
+
+        init() {
+          const d = JSON.parse(localStorage.getItem('grafo-conocimiento') || 'null');
+          if (d) { this.subjects = d.subjects || []; this.assessments = d.assessments || []; }
+        },
+        save() {
+          localStorage.setItem('grafo-conocimiento', JSON.stringify({ subjects: this.subjects, assessments: this.assessments }));
+        },
+
+        // Subjects
+        addSubject() {
+          this.modal = 'subject'; this.modalTitle = 'Nueva asignatura';
+          this.editName = ''; this.editDesc = '';
+        },
+        editSubject() {
+          this.modal = 'subject'; this.modalTitle = 'Editar asignatura';
+          this.editName = this.currentSubject.name;
+          this.editDesc = this.currentSubject.description || '';
+        },
+        saveSubject() {
+          if (!this.editName.trim()) return;
+          if (this.currentSubject && this.modalTitle.includes('Editar')) {
+            this.currentSubject.name = this.editName.trim();
+            this.currentSubject.description = this.editDesc.trim();
+          } else {
+            this.subjects.push({ id: crypto.randomUUID(), name: this.editName.trim(), description: this.editDesc.trim(), concepts: [], relations: [] });
+          }
+          this.modal = ''; this.save();
+        },
+        selectSubject(s) {
+          this.currentSubject = s; this.view = 'subject'; this.tab = 'concepts';
+          this.lastAssessment = this.subjectAssessments()[0] || null;
+        },
+        deleteSubject() {
+          if (confirm('¿Borrar "' + this.currentSubject.name + '"?')) {
+            this.subjects = this.subjects.filter(s => s.id !== this.currentSubject.id);
+            this.view = 'subjects'; this.destroyGraph(); this.save();
+          }
+        },
+
+        // Concepts
+        addConcept() {
+          this.modal = 'concept'; this.modalTitle = 'Nuevo concepto';
+          this.editConceptName = ''; this.editConceptDesc = ''; this.editConceptWeight = 5; this.editConceptIdx = -1;
+        },
+        editConcept(i) {
+          const c = this.currentSubject.concepts[i];
+          this.modal = 'concept'; this.modalTitle = 'Editar concepto';
+          this.editConceptName = c.name; this.editConceptDesc = c.description || ''; this.editConceptWeight = c.weight;
+          this.editConceptIdx = i;
+        },
+        saveConcept() {
+          if (!this.editConceptName.trim()) return;
+          const data = { name: this.editConceptName.trim(), description: this.editConceptDesc.trim(), weight: Math.max(1, Math.min(10, parseInt(this.editConceptWeight) || 5)) };
+          if (this.editConceptIdx >= 0) {
+            Object.assign(this.currentSubject.concepts[this.editConceptIdx], data);
+          } else {
+            data.id = crypto.randomUUID();
+            this.currentSubject.concepts.push(data);
+          }
+          this.modal = ''; this.save();
+        },
+        deleteConcept(i) {
+          const c = this.currentSubject.concepts[i];
+          this.currentSubject.concepts.splice(i, 1);
+          this.currentSubject.relations = this.currentSubject.relations.filter(r => r.from !== c.id && r.to !== c.id);
+          this.save();
+        },
+        conceptName(id) {
+          const c = this.currentSubject.concepts.find(x => x.id === id);
+          return c ? c.name : '?';
+        },
+        addRelation(from, to) {
+          if (from === to) return;
+          if (this.currentSubject.relations.some(r => r.from === from && r.to === to)) return;
+          this.currentSubject.relations.push({ from, to, type: this.currentRelationType });
+          this.save();
+        },
+        deleteRelation(i) {
+          this.currentSubject.relations.splice(i, 1); this.save();
+          if (this.network) this.renderGraph();
+        },
+
+        // Graph (vis-network)
+        destroyGraph() { if (this.network) { this.network.destroy(); this.network = null; } },
+        renderGraph() {
+          this.destroyGraph();
+          const container = document.getElementById('graph-container');
+          if (!container || this.currentSubject.concepts.length === 0) return;
+          const nodes = this.currentSubject.concepts.map(c => ({
+            id: c.id, label: c.name + (c.weight ? '\n[peso: ' + c.weight + ']' : ''), shape: 'ellipse',
+            color: { background: '#e0e7ff', border: '#6366f1', highlight: { background: '#c7d2fe', border: '#4f46e5' } },
+            font: { family: 'Inter', size: 14 }
+          }));
+          const colors = { prerrequisito: '#3b82f6', pertenece: '#22c55e', relacionado: '#f59e0b', profundiza: '#a855f7' };
+          const dashes = { prerrequisito: false, pertenece: [10, 5], relacionado: [5, 5], profundiza: false };
+          const widths = { prerrequisito: 2, pertenece: 2, relacionado: 1, profundiza: 3 };
+          const edges = this.currentSubject.relations.map(r => ({
+            from: r.from, to: r.to, label: r.type,
+            color: { color: colors[r.type] || '#94a3b8', highlight: colors[r.type] || '#94a3b8' },
+            dashes: dashes[r.type] || false, width: widths[r.type] || 2,
+            arrows: r.type !== 'relacionado' ? 'to' : undefined,
+            font: { size: 10, color: '#64748b' }
+          }));
+          const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+          const options = {
+            layout: { hierarchical: { enabled: false, sortMethod: 'directed' } },
+            physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -40, centralGravity: 0.005, springLength: 150, springConstant: 0.02 } },
+            interaction: { hover: true, tooltipDelay: 200 },
+            edges: { smooth: true }
+          };
+          this.network = new vis.Network(container, data, options);
+          let clickCount = 0, clickFrom = null;
+          this.network.on('click', (params) => {
+            if (params.nodes.length > 0) {
+              const id = params.nodes[0];
+              if (clickFrom === null) { clickFrom = id; clickCount = 1; }
+              else if (clickFrom !== id) {
+                this.addRelation(clickFrom, id);
+                clickFrom = null; clickCount = 0;
+                this.renderGraph();
+              } else { clickFrom = null; clickCount = 0; }
+            }
+          });
+        },
+
+        // Assessment
+        startAssessment() {
+          this.assessIndex = 0; this.assessScores = {}; this.assessNotes = {};
+          this.tab = 'assess';
+        },
+        nextConcept() {
+          if (this.assessIndex < this.currentSubject.concepts.length - 1) this.assessIndex++;
+        },
+        prevConcept() {
+          if (this.assessIndex > 0) this.assessIndex--;
+        },
+        submitAssessment() {
+          const results = {};
+          this.currentSubject.concepts.forEach(c => {
+            results[c.id] = this.assessScores[c.id] || 0;
+          });
+          const a = { id: crypto.randomUUID(), subjectId: this.currentSubject.id, date: new Date().toISOString(), results, notes: { ...this.assessNotes } };
+          this.assessments.unshift(a);
+          this.lastAssessment = a;
+          this.save();
+          this.tab = 'results';
+          setTimeout(() => this.renderHeatGraph(), 200);
+        },
+        subjectAssessments() {
+          return this.assessments.filter(a => a.subjectId === this.currentSubject.id);
+        },
+
+        // Stats
+        stats() {
+          const r = this.lastAssessment;
+          if (!r) return { red: 0, yellow: 0, green: 0 };
+          let red = 0, yellow = 0, green = 0;
+          Object.values(r.results).forEach(v => {
+            if (v < 40) red++; else if (v < 70) yellow++; else green++;
+          });
+          return { red, yellow, green };
+        },
+        heatCount(results, type) {
+          let count = 0;
+          Object.values(results).forEach(v => {
+            if (type === 'red' && v < 40) count++;
+            else if (type === 'yellow' && v >= 40 && v < 70) count++;
+            else if (type === 'green' && v >= 70) count++;
+          });
+          return count;
+        },
+
+        // Study plan (BFS)
+        studyPlan() {
+          const r = this.lastAssessment;
+          if (!r || !this.currentSubject) return { repasar: [], reforzar: [], avanzar: [] };
+          const cat = { repasar: [], reforzar: [], avanzar: [] };
+          const getRec = (id, mastery) => {
+            const c = this.currentSubject.concepts.find(x => x.id === id);
+            if (!c) return '';
+            if (mastery < 40) {
+              const prereqs = this.currentSubject.relations.filter(x => x.to === id && x.type === 'prerrequisito');
+              if (prereqs.some(p => (r.results[p.from] || 0) < 40))
+                return '⚠️ Tiene prerrequisitos sin dominar. Repasa primero: ' + prereqs.filter(p => (r.results[p.from] || 0) < 40).map(p => this.conceptName(p.from)).join(', ');
+              return '📖 Repasa: ' + c.name + '. Practica con ejercicios básicos.';
+            }
+            if (mastery < 70) {
+              const next = this.currentSubject.relations.filter(x => x.from === id && x.type === 'prerrequisito');
+              if (next.length > 0)
+                return '📈 Sólido. Puedes avanzar a: ' + next.map(x => this.conceptName(x.to)).join(', ');
+              return '📈 Refuerza con ejercicios de nivel medio.';
+            }
+            const next = this.currentSubject.relations.filter(x => x.from === id && x.type === 'prerrequisito');
+            if (next.length > 0)
+              return '✅ Dominado. Siguiente: ' + next.map(x => this.conceptName(x.to) + ((r.results[x.to] || 0) < 70 ? ' (pendiente)' : '')).join(', ');
+            return '✅ Dominado. No hay más conceptos que dependan de este.';
+          };
+          // BFS: sort by prerequisite depth
+          const visited = new Set();
+          const queue = [];
+          const inDegree = {};
+          this.currentSubject.concepts.forEach(c => { inDegree[c.id] = 0; });
+          this.currentSubject.relations.filter(r2 => r2.type === 'prerrequisito').forEach(r2 => { inDegree[r2.to] = (inDegree[r2.to] || 0) + 1; });
+          const roots = this.currentSubject.concepts.filter(c => (inDegree[c.id] || 0) === 0);
+          roots.forEach(c => queue.push(c.id));
+          const sorted = [];
+          while (queue.length > 0) {
+            const id = queue.shift();
+            if (visited.has(id)) continue;
+            visited.add(id);
+            sorted.push(id);
+            this.currentSubject.relations.filter(r2 => r2.from === id && r2.type === 'prerrequisito').forEach(r2 => {
+              inDegree[r2.to] = (inDegree[r2.to] || 0) - 1;
+              if (inDegree[r2.to] === 0) queue.push(r2.to);
+            });
+          }
+          // Add orphaned nodes
+          this.currentSubject.concepts.forEach(c => { if (!visited.has(c.id)) sorted.push(c.id); });
+          sorted.forEach(id => {
+            const m = r.results[id] || 0;
+            const c = this.currentSubject.concepts.find(x => x.id === id);
+            if (!c) return;
+            const item = { id, name: c.name, mastery: m, recommendation: getRec(id, m) };
+            if (m < 40) cat.repasar.push(item);
+            else if (m < 70) cat.reforzar.push(item);
+            else cat.avanzar.push(item);
+          });
+          return cat;
+        },
+
+        // Heat graph
+        renderHeatGraph() {
+          const container = document.getElementById('graph-heat-container');
+          if (!container || !this.lastAssessment || this.currentSubject.concepts.length === 0) return;
+          const colors = this.currentSubject.concepts.map(c => {
+            const s = this.lastAssessment.results[c.id] || 0;
+            let bg, border;
+            if (s < 40) { bg = '#fecaca'; border = '#ef4444'; }
+            else if (s < 70) { bg = '#fef08a'; border = '#eab308'; }
+            else { bg = '#bbf7d0'; border = '#22c55e'; }
+            return { id: c.id, label: c.name + '\n' + s + '%', shape: 'ellipse', color: { background: bg, border, highlight: { background: bg, border } }, font: { size: 13, face: 'Inter' } };
+          });
+          const edges = this.currentSubject.relations.map(r => ({
+            from: r.from, to: r.to, label: r.type, color: { color: '#94a3b8' }, font: { size: 9 },
+            dashes: r.type === 'relacionado' || r.type === 'pertenece', arrows: r.type !== 'relacionado' ? 'to' : undefined
+          }));
+          const data = { nodes: new vis.DataSet(colors), edges: new vis.DataSet(edges) };
+          const options = { layout: { hierarchical: { enabled: false } }, physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 140 } }, interaction: { hover: true } };
+          new vis.Network(container, data, options);
+        },
+
+        // Persistence
+        exportData() {
+          const blob = new Blob([JSON.stringify({ subjects: this.subjects, assessments: this.assessments }, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'grafo-conocimiento.json'; a.click();
+        },
+        importData() {
+          const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
+          input.onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              try {
+                const d = JSON.parse(ev.target.result);
+                if (d.subjects) this.subjects = d.subjects;
+                if (d.assessments) this.assessments = d.assessments;
+                this.save();
+                alert('Datos importados correctamente');
+              } catch (err) { alert('Error al importar: ' + err.message); }
+            };
+            reader.readAsText(e.target.files[0]);
+          };
+          input.click();
+        }
+      };
+    }
+  </script>
+</body>
+</html>
