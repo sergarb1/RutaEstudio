@@ -63,7 +63,7 @@
               <p class="text-slate-600 dark:text-slate-300 mb-3">Puedes copiar tus datos a un asistente de IA para obtener ayuda personalizada. Exporta tus datos como JSON y copia el contenido.</p>
 
               <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 mb-3">
-                <p class="font-medium mb-2">Prompt recomendado:</p>
+                <p class="font-medium mb-2">Prompt para analizar tus datos:</p>
                 <pre class="text-xs bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto whitespace-pre-wrap">Tengo este grafo de conocimiento en formato JSON:
 [copia tu JSON exportado]
 
@@ -74,28 +74,89 @@ Bas\u00e1ndote en estos datos:
 4. \u00bfQu\u00e9 \u00e1reas de conocimiento tengo d\u00e9biles?</pre>
               </div>
 
-              <p class="text-slate-600 dark:text-slate-300">El asistente analizar\u00e1 tu grafo y te dar\u00e1 recomendaciones personalizadas basadas en tus evaluaciones reales.</p>
+              <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-4 mb-3 border border-indigo-200 dark:border-indigo-800/40">
+                <p class="font-medium mb-2 text-indigo-700 dark:text-indigo-300">\u26A1 Prompt para GENERAR una asignatura nueva con IA:</p>
+                <pre class="text-xs bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto whitespace-pre-wrap">Genera un archivo JSON para la app Ruta de Estudio con una asignatura sobre [tema].
+
+Formato exacto que debe seguir el JSON:
+
+{
+  "subjects": [{
+    "id": "ex-001",
+    "name": "Nombre de la asignatura",
+    "description": "Descripci\u00f3n general",
+    "concepts": [
+      {
+        "id": "c1",
+        "name": "Nombre del concepto",
+        "description": "Descripci\u00f3n con **bold**, *italic* o `c\u00f3digo` si procede",
+        "weight": 5,
+        "tags": ["etiqueta1", "etiqueta2"],
+        "resources": []
+      }
+    ],
+    "relations": [
+      { "from": "c1", "to": "c2", "type": "prerrequisito" }
+    ],
+    "nodePositions": {}
+  }],
+  "assessments": [],
+  "crossRelations": [],
+  "customRelationTypes": []
+}
+
+Reglas:
+- Usa id\u2019s cortos como "c1", "c2", "t1", "f1" (no UUIDs).
+- Los conceptos deben tener nombre \u00fanico dentro de la asignatura.
+- weight de 1 (b\u00e1sico) a 10 (muy avanzado).
+- Las relaciones v\u00e1lidas son: "prerrequisito", "pertenece", "relacionado", "profundiza".
+- Los tags son opcionales pero \u00fatiles para filtrar.
+- Si un concepto tiene recursos, usa: { "id": "r1", "type": "link", "title": "...", "url": "..." }
+- Crea al menos 10 conceptos y al menos 12 relaciones variadas.
+- La mayor\u00eda de relaciones deben ser "prerrequisito" para que el grafo tenga estructura de dependencias.
+- A\u00f1ade "relacionado" para conexiones d\u00e9biles, "pertenece" para subconceptos, "profundiza" para ampliaci\u00f3n.
+- assessments y crossRelations pueden ir vac\u00edos.
+
+Devuelve solo el JSON v\u00e1lido, sin explicaciones.</pre>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 mt-2">Despu\u00e9s, importa el JSON generado con el bot\u00f3n "Importar datos" en el men\u00fa de exportaci\u00f3n.</p>
+              </div>
             </section>
 
             <section class="pt-3 border-t border-slate-200 dark:border-slate-700">
-              <h3 class="font-bold text-base mb-2">\uD83D\uDCCB Formato de datos</h3>
-              <p class="text-slate-600 dark:text-slate-300 mb-2">El formato completo est\u00e1 documentado en <code>FORMAT.md</code>. Estructura resumida:</p>
+              <h3 class="font-bold text-base mb-2">\uD83D\uDCCB Esquema JSON completo</h3>
+              <p class="text-slate-600 dark:text-slate-300 mb-2">Documentaci\u00f3n completa en <code>FORMAT.md</code>. Resumen del formato:</p>
               <pre class="text-xs bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto whitespace-pre-wrap">{
   "subjects": [{
-    "id": "uuid",
-    "name": "Asignatura",
-    "description": "...",
-    "concepts": [{ "id": "uuid", "name": "...", "description": "...", "weight": 5 }],
-    "relations": [{ "from": "uuid", "to": "uuid", "type": "prerrequisito" }]
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "concepts": [{
+      "id": "string",
+      "name": "string",
+      "description": "string (markdown)",
+      "weight": 1-10,
+      "tags": ["string"],
+      "resources": [{ "id": "string", "type": "link|video|pdf", "title": "string", "url": "string" }]
+    }],
+    "relations": [{ "from": "id", "to": "id", "type": "prerrequisito|pertenece|relacionado|profundiza|custom_id" }],
+    "nodePositions": { "conceptId": { "x": number, "y": number } }
   }],
   "assessments": [{
-    "id": "uuid",
-    "subjectId": "uuid",
-    "date": "ISO date",
-    "results": { "conceptId": 75 },
-    "notes": { "conceptId": "nota opcional" }
+    "id": "string",
+    "subjectId": "string",
+    "date": "ISO 8601",
+    "results": { "conceptId": 0-100 },
+    "notes": { "conceptId": "string" }
   }],
-  "crossRelations": [{ "from": "uuid", "to": "uuid", "type": "relacionado" }]
+  "crossRelations": [{ "from": "id", "to": "id", "type": "string" }],
+  "customRelationTypes": [{
+    "id": "custom_timestamp",
+    "name": "string",
+    "color": "#hexcolor",
+    "dash": false,
+    "width": 2,
+    "arrow": "to|none|from|both"
+  }]
 }</pre>
             </section>
           </div>

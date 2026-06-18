@@ -1,7 +1,12 @@
 # Ruta de Estudio — AGENTS.md
 
 ## Project
-Interactive knowledge graph for any subject. Define concepts and their relationships, assess student mastery, get AI-powered study plans (BFS/DFS offline).
+Interactive knowledge graph for any subject. Define concepts and their relationships, assess student mastery, get AI-powered study plans (BFS/DFS offline). 100% gratis, RGPD, datos locales.
+
+## Language
+Multi-language: ES (default), EN, VA. Managed via `js/i18n.js` — use `GC.t('key')` in templates.
+
+## Data Model
 
 ## Stack
 - Vue 3 (CDN + local fallback)
@@ -16,7 +21,7 @@ Interactive knowledge graph for any subject. Define concepts and their relations
 subjects = [{
   id: string, name: string, description: string,
   concepts: [{ id, name, description, weight: 1-10, tags: string[], resources: [{ id, type, title, url }] }],
-  relations: [{ from: conceptId, to: conceptId, type: 'prerrequisito'|'pertenece'|'relacionado'|'profundiza' }],
+  relations: [{ from: conceptId, to: conceptId, type: string }],
   nodePositions: { conceptId: { x, y } }
 }]
 
@@ -26,7 +31,9 @@ assessments = [{
   notes: { conceptId: string }
 }]
 
-crossRelations = [{ from: conceptId, to: conceptId, type }]
+crossRelations = [{ from: conceptId, to: conceptId, type: string }]
+
+customRelationTypes = [{ id, name, color, dash, width, arrow }]
 ```
 
 ## Key Functions
@@ -39,6 +46,11 @@ crossRelations = [{ from: conceptId, to: conceptId, type }]
 - `GC.store.undo()` / `GC.store.redo()` → state history (50 snapshots)
 - `GC.store.exportConceptsCSV(subjectId)` / `importConceptsCSV(subjectId, csv)` → CSV I/O
 - `GC.store.allTags(subjectId)` → unique tags for subject
+- `GC.store.getRelationTypeInfo(typeId)` → `{ name, color, dash, width, arrow }` for any type
+- `GC.store.allRelationTypes()` → combined built-in + custom types
+- `GC.store.addCustomRelationType(name, color, dash, width, arrow)` → new type id
+- `GC.store.updateCustomRelationType(id, data)` → update fields
+- `GC.store.removeCustomRelationType(id)` → delete type
 - `GC.walkthrough(subject, conceptId, results)` → blockers, dependents, recommendation
 - `GC.roadmap(subject, results)` → { ahora, siguiente, pronto } groups
 - `GC.unlockScore(subject, conceptId, results)` → desbloqueador score
@@ -57,6 +69,7 @@ crossRelations = [{ from: conceptId, to: conceptId, type }]
 | pertenece | → dashed | A es subconcepto de B |
 | relacionado | — dotted | Bidireccional, débil |
 | profundiza | → bold | A profundiza B |
+| *custom* | configurable | Usuario crea tipos con color, dash, width, arrow propios |
 
 ## Pro Features
 - 🔍 **Global search**: Ctrl+K, busca por nombre/desc/tags en todas las asignaturas
@@ -78,6 +91,7 @@ crossRelations = [{ from: conceptId, to: conceptId, type }]
 - 🖱️ **Edición inline**: doble click en nombre/desc para editar sin modal
 - 📖 **Leyenda del grafo**: overlay con tipos de relación y colores
 - 🔎 **Filtros de grafo**: por tipo de relación y peso mínimo
+- 🎨 **Tipos de relación personalizados**: modal para crear tipos con color, dash, width, arrow propios; aparecen en selects, leyenda, badges y botones del grafo
 - 🖥️ **Modo foco**: Ctrl+F en el grafo → pantalla completa sin distracciones
 - ⌨️ **Cheat sheet**: tecla `?` muestra todos los atajos de teclado
 - 💾 **Auto-backup**: descarga automática cada 5 minutos
@@ -137,24 +151,22 @@ grafo-conocimiento/
 
 ---
 
-## Session Summary (17 Jun 2026)
+## Session Summary (18 Jun 2026)
 
 ### Goal
-Extend the app with teacher-friendly templates, student-friendly study tools, and fix the monolithic `app.js` syntax error.
+Implement custom relation types with full CRUD, JSON schema documentation for LLM generation, and update docs.
 
 ### Completed
-- **Pomodoro timer** in study tab: 15/25/45-min selector, start/pause/reset, progress bar, auto-pauses on tab switch
-- **Study session stats**: after finishing flashcards shows correct/wrong/total + accuracy %
-- **Global progress chart**: SVG line chart in Results tab (requires ≥2 assessments), trend indicator
-- **Export study plan as .txt**: button generates printable text with repasar/reforzar/avanzar + roadmap
-- **Bug fix — syntax error in app.js**: missing `},` to close `computed: {` block (line 255) caused `computed` to swallow `methods`, `watch`, `mounted`, `beforeUnmount`, and `_onKeydown`, leaving an extra unclosed brace → `SyntaxError: Unexpected token ')'` at line 1075
-- **Refactor app.js into modules**: split into `app.js` (core), `js/editor.js` (CRUD + import/export + templates), `js/study.js` (flashcards + pomodoro + plan) using `Object.assign` merge pattern; all modules commented in Spanish
-- **Bug fix — template semicolon in expression**: line 746 `(compareA = a; compareB = null)` → `(compareA = a, compareB = null)` — semicolon inside parentheses in ternary caused `SyntaxError: Unexpected token ';'`
-- **Bug fix — GC.md undefined in Vue templates**: added `GC() { return window.GC; }` computed property in `app.js:107` — Vue 3's compiled templates need `GC` exposed via component proxy
-- **Bug fix — Unicode escapes in HTML**: replaced all `\uXXXX` escape sequences in `index.html` with actual Unicode characters (acentos, eñes, emojis) — `\uXXXX` is JavaScript-only syntax, not rendered by HTML
-- **Debug file cleanup**: removed `js/app_check.js`, `js/app_inner.js`, `find_paren.js`, `find_error.js`, `check_syntax.js`, `count_braces.js`
-- **Expanded loadExample**: 5 subjects (Python, Matemáticas discretas, Desarrollo Web, Inglés B2, Historia España) with tags, resources, and 8 sample assessments with progress data
-- **Templates 32 → 40**: added Tecnología (ESO), Dibujo Técnico (Bach), IA y Ciberseguridad (FP), Educación Financiera y Primeros Auxilios (Transversales), Francés (Idiomas), Biología 2º Bach (Ciencias)
+- **Custom relation types**: new `customRelationTypes[]` in store with `add/update/remove/getRelationTypeInfo/allRelationTypes` methods; persisted in localStorage, undo/redo, JSON export/import
+- **Dynamic graph rendering**: all 3 graph renders (`render`, `renderHeat`, `renderGlobal`) use `GC.store.getRelationTypeInfo()` instead of hardcoded colors/dashes/arrows — custom types render automatically with their color, width, dash, and arrow direction
+- **Management UI**: modal with color picker, width selector, dash toggle, arrow direction (→/—/←/↔), live preview, edit/delete existing types
+- **Full integration**: custom types appear in relation form selects, graph filter, graph legend, graph type selector buttons, badge styling (inline style for custom, Tailwind classes for built-in)
+- **Cross-relation support**: global-graph component updated with dynamic type select and badge styling for custom types
+- **JSON export/import**: `exportData`/`importData` include `customRelationTypes`; `exportSubjectJSON` includes only used custom types; `importSubjectJSON` imports custom types on import
+- **FORMAT.md**: fully updated with `customRelationTypes`, `tags`, `resources`, `nodePositions` documentation
+- **README.md**: updated features list, AI section with generation prompt for LLMs
+- **AGENTS.md**: data model, key functions, pro features, relation types table, session summary updated
+- **Help modal AI section**: comprehensive prompt for LLMs to generate importable JSON, complete schema reference
 
 ### Current State
 | Feature | Status |
@@ -167,21 +179,13 @@ Extend the app with teacher-friendly templates, student-friendly study tools, an
 | Pomodoro timer | ✅ Stable |
 | Session stats | ✅ Stable |
 | Progress chart | ✅ Stable |
-| app.js syntax | ✅ Fixed |
-| Unicode accents in HTML | ✅ Fixed |
-| Debug JS cleanup | ✅ Done |
-
-### Remaining
-- Refactor `app.js` into smaller per-feature modules when needed
-- All features working; no known bugs
+| Custom relation types | ✅ Stable |
+| JSON format docs | ✅ Updated |
+| LLM generation guide | ✅ Added |
 
 ### Current Module Structure
 | Module | File | Responsibility |
 |--------|------|---------------|
 | Core | `js/app.js` | Vue data, computed, lifecycle, graph, evaluation, assessment, navigation, keyboard, toast, backup, search |
-| Editor | `js/editor.js` | Subject/concept/relation CRUD, templates, import/export, inline edit, drag-drop, bulk tag |
+| Editor | `js/editor.js` | Subject/concept/relation CRUD, templates, import/export, inline edit, drag-drop, bulk tag, custom relation types management |
 | Study | `js/study.js` | Flashcards, pomodoro, streak calendar, study plan export, progress chart, onboarding |
-
-### Debug Files Cleaned
-Removed leftover debug/backup files:
-- `js/app_check.js`, `js/app_inner.js`, `find_paren.js`, `find_error.js`, `check_syntax.js`, `count_braces.js`

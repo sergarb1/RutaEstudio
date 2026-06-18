@@ -101,7 +101,14 @@
         reminderEnabled: localStorage.getItem('re-reminder-enabled') === 'true',
         reminderInterval: null,
         reminderPermission: Notification.permission,
-        lang: GC.lang
+        lang: GC.lang,
+
+        customTypeName: '',
+        customTypeColor: '#06b6d4',
+        customTypeDash: false,
+        customTypeWidth: 2,
+        customTypeArrow: 'to',
+        customTypeEditId: null
       };
     },
 
@@ -214,6 +221,9 @@
         return this.currentSubject.concepts.filter(c =>
           !this.currentSubject.relations.some(r => r.from === c.id || r.to === c.id)
         ).length;
+      },
+      allRelationTypes() {
+        return GC.store.allRelationTypes();
       },
       templateGroups() {
         return GC.templates || {};

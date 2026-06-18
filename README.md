@@ -8,7 +8,8 @@ Aplicación web interactiva 100% offline para crear grafos de conocimiento, eval
 
 - **Múltiples asignaturas** — gestiona varias materias con sus propios conceptos y relaciones
 - **Grafo interactivo** — visualiza y edita relaciones entre conceptos con vis-network
-- **4 tipos de relación** — prerrequisito, pertenece, relacionado, profundiza
+- **Tipos de relación personalizables** — crea tus propios tipos con color, grosor, línea discontinua y dirección de flecha
+- **4 tipos nativos** — prerrequisito, pertenece, relacionado, profundiza
 - **Autoevaluación** — valora tu dominio de cada concepto en una escala 1-5
 - **Plan de estudio** — ordenación topológica BFS, DFS o Desbloqueador con recomendaciones contextuales
 - **Pomodoro integrado** — temporizador 15/25/45 min en el modo estudio para sesiones enfocadas
@@ -84,7 +85,7 @@ curl -o fallback/vis-network.min.js https://unpkg.com/vis-network@9.1.9/dist/vis
 
 Exporta tus datos como JSON y compártelos con un asistente de IA:
 
-**Prompt recomendado:**
+**Prompt para analizar tus datos:**
 
 ```
 Tengo este grafo de conocimiento en formato JSON:
@@ -97,7 +98,46 @@ Basándote en estos datos:
 4. ¿Qué áreas de conocimiento tengo débiles?
 ```
 
-El asistente analizará tu grafo y te dará recomendaciones personalizadas.
+**Prompt para GENERAR una asignatura nueva:**
+
+```
+Genera un archivo JSON para la app Ruta de Estudio con una asignatura sobre [tema].
+
+Formato exacto:
+{
+  "subjects": [{
+    "id": "ex-001",
+    "name": "Nombre de la asignatura",
+    "description": "Descripción general",
+    "concepts": [
+      {
+        "id": "c1", "name": "Nombre",
+        "description": "Descripción con **bold** o *italic*",
+        "weight": 5,
+        "tags": ["etiqueta"],
+        "resources": []
+      }
+    ],
+    "relations": [
+      { "from": "c1", "to": "c2", "type": "prerrequisito" }
+    ],
+    "nodePositions": {}
+  }],
+  "assessments": [],
+  "crossRelations": [],
+  "customRelationTypes": []
+}
+
+Reglas:
+- Usa IDs cortos (c1, c2, etc.)
+- weight de 1 (básico) a 10 (avanzado)
+- Tipos válidos: prerrequisito, pertenece, relacionado, profundiza
+- Crea ≥10 conceptos y ≥12 relaciones variadas
+- assessments y crossRelations pueden ir vacíos
+- Devuelve solo JSON válido, sin explicaciones
+```
+
+Después, importa el JSON generado con **Ajustes → Importar datos**.
 
 ## 🔄 Flujo de datos
 

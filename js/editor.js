@@ -226,7 +226,15 @@
     exportSubjectJSON() {
       if (!this.currentSubject) return;
       const assessments = this.store.subjectAssessments(this.currentSubject.id);
-      const data = { subjects: [JSON.parse(JSON.stringify(this.currentSubject))], assessments, crossRelations: [] };
+      const usedCustomTypes = (this.store.customRelationTypes || []).filter(t =>
+        this.currentSubject.relations.some(r => r.type === t.id)
+      );
+      const data = {
+        subjects: [JSON.parse(JSON.stringify(this.currentSubject))],
+        assessments,
+        crossRelations: [],
+        customRelationTypes: usedCustomTypes
+      };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -280,6 +288,16 @@
           try {
             const d = JSON.parse(ev.target.result);
             if (!d.subjects?.length) throw new Error('No hay asignaturas en el archivo');
+
+            if (d.customRelationTypes?.length) {
+              for (const t of d.customRelationTypes) {
+                const exists = this.store.customRelationTypes.some(x => x.id === t.id);
+                if (!exists) {
+                  this.store.addCustomRelationType(t.name, t.color, t.dash, t.width, t.arrow);
+                }
+              }
+            }
+
             for (const s of d.subjects) {
               s.id = crypto.randomUUID();
               s.concepts.forEach(c => { c.id = crypto.randomUUID(); c.tags = c.tags || []; });
@@ -327,6 +345,81 @@
         reader.readAsText(input.files[0]);
       };
       input.click();
+    },
+
+    // ==================== TIPOS DE RELACIÓN PERSONALIZADOS ====================
+    openCustomTypes() {
+      this.modal = 'customTypes';
+      this.customTypeName = '';
+      this.customTypeColor = '#06b6d4';
+      this.customTypeDash = false;
+      this.customTypeWidth = 2;
+      this.customTypeArrow = 'to';
+      this.customTypeEditId = null;
+    },
+
+    addCustomType() {
+      if (!this.customTypeName.trim()) return;
+      this.store.addCustomRelationType(
+        this.customTypeName.trim(),
+        this.customTypeColor,
+        this.customTypeDash,
+        parseInt(this.customTypeWidth) || 2,
+        this.customTypeArrow
+      );
+      this.customTypeName = '';
+      this.showToast('Tipo de relación creado', 'success');
+    },
+
+    editCustomType(type) {
+      this.customTypeEditId = type.id;
+      this.customTypeName = type.name;
+      this.customTypeColor = type.color;
+      this.customTypeDash = type.dash === true || Array.isArray(type.dash);
+      this.customTypeWidth = type.width;
+      this.customTypeArrow = type.arrow;
+    },
+
+    saveCustomTypeEdit() {
+      if (!this.customTypeEditId || !this.customTypeName.trim()) return;
+      this.store.updateCustomRelationType(this.customTypeEditId, {
+        name: this.customTypeName.trim(),
+        color: this.customTypeColor,
+        dash: this.customTypeDash,
+        width: parseInt(this.customTypeWidth) || 2,
+        arrow: this.customTypeArrow
+      });
+      this.customTypeEditId = null;
+      this.showToast('Tipo de relación actualizado', 'success');
+    },
+
+    cancelCustomTypeEdit() {
+      this.customTypeEditId = null;
+    },
+
+    deleteCustomType(id) {
+      const t = this.store.customRelationTypes.find(x => x.id === id);
+      if (!t) return;
+      if (confirm('¿Borrar el tipo "' + t.name + '"?')) {
+        this.store.removeCustomRelationType(id);
+        this.showToast('Tipo de relación borrado', 'success');
+      }
+    },
+
+    // ==================== HELPERS DE RELACIONES ====================
+    relBadgeClass(type) {
+      const map = {
+        prerrequisito: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
+        pertenece: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
+        relacionado: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
+        profundiza: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
+      };
+      return map[type] || '';
+    },
+    relBadgeStyle(type) {
+      if (['prerrequisito','pertenece','relacionado','profundiza'].includes(type)) return null;
+      const info = GC.store.getRelationTypeInfo(type);
+      return { backgroundColor: info.color + '33', color: info.color };
     }
   };
 

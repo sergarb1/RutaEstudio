@@ -27,18 +27,17 @@ GC.graph = {
       return n;
     });
 
-    const colors = { prerrequisito: '#3b82f6', pertenece: '#22c55e', relacionado: '#f59e0b', profundiza: '#a855f7' };
-    const dashes = { prerrequisito: false, pertenece: [10, 5], relacionado: [5, 5], profundiza: false };
-    const widths = { prerrequisito: 2, pertenece: 2, relacionado: 1, profundiza: 3 };
-
-    const edges = relations.map(r => ({
-      from: r.from, to: r.to, label: r.type,
-      color: { color: colors[r.type] || '#94a3b8', highlight: colors[r.type] || '#94a3b8' },
-      dashes: dashes[r.type] || false,
-      width: widths[r.type] || 2,
-      arrows: r.type !== 'relacionado' ? 'to' : undefined,
-      font: { size: 10, color: '#64748b' }
-    }));
+    const edges = relations.map(r => {
+      const info = GC.store.getRelationTypeInfo(r.type);
+      return {
+        from: r.from, to: r.to, label: info.name,
+        color: { color: info.color, highlight: info.color },
+        dashes: info.dash || false,
+        width: info.width || 2,
+        arrows: info.arrow === 'none' ? undefined : info.arrow === 'to' ? 'to' : info.arrow,
+        font: { size: 10, color: '#64748b' }
+      };
+    });
 
     const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
 
@@ -94,13 +93,16 @@ GC.graph = {
       };
     });
 
-    const edges = relations.map(r => ({
-      from: r.from, to: r.to, label: r.type,
-      color: { color: '#94a3b8' },
-      font: { size: 9 },
-      dashes: r.type === 'relacionado' || r.type === 'pertenece',
-      arrows: r.type !== 'relacionado' ? 'to' : undefined
-    }));
+    const edges = relations.map(r => {
+      const info = GC.store.getRelationTypeInfo(r.type);
+      return {
+        from: r.from, to: r.to, label: info.name,
+        color: { color: '#94a3b8' },
+        font: { size: 9 },
+        dashes: Array.isArray(info.dash) || (info.dash === true),
+        arrows: info.arrow === 'none' ? undefined : info.arrow === 'to' ? 'to' : info.arrow
+      };
+    });
 
     const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     const options = {
@@ -149,17 +151,18 @@ GC.graph = {
     }));
 
     const allRels = GC.allRelations(subjects, crossRelations);
-    const colors = { prerrequisito: '#3b82f6', pertenece: '#22c55e', relacionado: '#f59e0b', profundiza: '#a855f7' };
-    const dashes = { prerrequisito: false, pertenece: [10, 5], relacionado: [5, 5], profundiza: false };
 
-    const edges = allRels.map(r => ({
-      from: r.from, to: r.to,
-      color: { color: colors[r.type] || '#94a3b8' },
-      dashes: dashes[r.type] || false,
-      width: r.type === 'profundiza' ? 3 : r.type === 'relacionado' ? 1 : 2,
-      arrows: r.type !== 'relacionado' ? 'to' : undefined,
-      font: { size: 9, color: '#64748b' }
-    }));
+    const edges = allRels.map(r => {
+      const info = GC.store.getRelationTypeInfo(r.type);
+      return {
+        from: r.from, to: r.to,
+        color: { color: info.color },
+        dashes: info.dash || false,
+        width: info.width || 2,
+        arrows: info.arrow === 'none' ? undefined : info.arrow === 'to' ? 'to' : info.arrow,
+        font: { size: 9, color: '#64748b' }
+      };
+    });
 
     const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     const options = {

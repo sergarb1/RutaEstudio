@@ -1,6 +1,6 @@
 # Formato de datos — Ruta de Estudio
 
-Este documento especifica el formato JSON utilizado por la aplicación.
+Este documento especifica el formato JSON utilizado por la aplicación. Es válido tanto para exportar/importar datos completos como para que LLMs generen contenido importable.
 
 ## Estructura raíz
 
@@ -8,7 +8,8 @@ Este documento especifica el formato JSON utilizado por la aplicación.
 {
   "subjects": [ ... ],
   "assessments": [ ... ],
-  "crossRelations": [ ... ]
+  "crossRelations": [ ... ],
+  "customRelationTypes": [ ... ]
 }
 ```
 
@@ -16,19 +17,21 @@ Este documento especifica el formato JSON utilizado por la aplicación.
 
 | Campo | Tipo | Obligatorio | Descripción |
 |-------|------|-------------|-------------|
-| `id` | `string` (UUID) | Sí | Identificador único |
+| `id` | `string` | Sí | Identificador único |
 | `name` | `string` | Sí | Nombre de la asignatura |
 | `description` | `string` | No | Descripción opcional |
 | `concepts` | `Concept[]` | Sí | Lista de conceptos |
 | `relations` | `Relation[]` | Sí | Lista de relaciones internas |
+| `nodePositions` | `object` | No | Mapa `conceptId: { x, y }` para posiciones guardadas |
 
 ```json
 {
-  "id": "a1b2c3d4-...",
+  "id": "ex-py-1",
   "name": "Programación en Python",
   "description": "Curso introductorio de Python 3",
   "concepts": [],
-  "relations": []
+  "relations": [],
+  "nodePositions": {}
 }
 ```
 
@@ -36,19 +39,34 @@ Este documento especifica el formato JSON utilizado por la aplicación.
 
 | Campo | Tipo | Obligatorio | Descripción |
 |-------|------|-------------|-------------|
-| `id` | `string` (UUID) | Sí | Identificador único |
+| `id` | `string` | Sí | Identificador único |
 | `name` | `string` | Sí | Nombre del concepto |
-| `description` | `string` | No | Descripción opcional |
+| `description` | `string` | No | Descripción opcional (soporta Markdown: **bold**, *italic*, `code`, [links](), listas) |
 | `weight` | `number` (1-10) | Sí | Peso o dificultad del concepto |
+| `tags` | `string[]` | No | Etiquetas para filtrar y agrupar |
+| `resources` | `Resource[]` | No | Recursos asociados (enlaces, vídeos, PDFs) |
 
 ```json
 {
   "id": "c1",
   "name": "Variables y tipos",
-  "description": "int, float, str, bool, asignación",
-  "weight": 3
+  "description": "**int**, **float**, cadenas, booleanos",
+  "weight": 3,
+  "tags": ["básico"],
+  "resources": [
+    { "id": "r1", "type": "link", "title": "W3Schools Python", "url": "https://..." }
+  ]
 }
 ```
+
+### Resource
+
+| Campo | Tipo | Obligatorio | Descripción |
+|-------|------|-------------|-------------|
+| `id` | `string` | Sí | Identificador único |
+| `type` | `string` | Sí | `link`, `video`, `pdf`, `article` |
+| `title` | `string` | Sí | Título del recurso |
+| `url` | `string` | Sí | URL del recurso |
 
 ## Relation
 
@@ -58,7 +76,7 @@ Este documento especifica el formato JSON utilizado por la aplicación.
 | `to` | `string` | Sí | ID del concepto destino |
 | `type` | `string` | Sí | Tipo de relación (ver abajo) |
 
-### Tipos de relación
+### Tipos de relación nativos
 
 | Tipo | Significado | Visual en grafo |
 |------|-------------|-----------------|
@@ -66,6 +84,10 @@ Este documento especifica el formato JSON utilizado por la aplicación.
 | `pertenece` | A es subconcepto de B | Flecha discontinua verde |
 | `relacionado` | Bidireccional, débil | Línea punteada ámbar |
 | `profundiza` | A profundiza B | Flecha gruesa púrpura |
+
+### Tipos personalizados
+
+Se pueden crear tipos adicionales con nombre, color, grosor, línea discontinua y dirección de flecha. Ver `customRelationTypes` más abajo. Cuando se usa un tipo personalizado, el campo `type` de la relación debe coincidir con el `id` del tipo definido en `customRelationTypes`.
 
 ```json
 {
@@ -77,13 +99,7 @@ Este documento especifica el formato JSON utilizado por la aplicación.
 
 ## CrossRelation
 
-Relación entre conceptos de **diferentes** asignaturas.
-
-| Campo | Tipo | Obligatorio | Descripción |
-|-------|------|-------------|-------------|
-| `from` | `string` | Sí | ID del concepto origen |
-| `to` | `string` | Sí | ID del concepto destino |
-| `type` | `string` | Sí | Mismos tipos que Relation |
+Relación entre conceptos de **diferentes** asignaturas. Misma estructura que Relation.
 
 ```json
 {
@@ -93,11 +109,33 @@ Relación entre conceptos de **diferentes** asignaturas.
 }
 ```
 
+## CustomRelationType
+
+| Campo | Tipo | Obligatorio | Descripción |
+|-------|------|-------------|-------------|
+| `id` | `string` | Sí | Identificador único (ej: `custom_1712345678_abcd`) |
+| `name` | `string` | Sí | Nombre visible del tipo |
+| `color` | `string` | Sí | Color hexadecimal (ej: `#06b6d4`) |
+| `dash` | `boolean` o `number[]` | Sí | `false` para línea sólida, `true` o `[10, 5]` para discontinua |
+| `width` | `number` | Sí | Grosor de línea (1-4) |
+| `arrow` | `string` | Sí | Dirección: `to`, `none`, `from`, `both` |
+
+```json
+{
+  "id": "custom_1712345678_abcd",
+  "name": "Complementa",
+  "color": "#06b6d4",
+  "dash": false,
+  "width": 2,
+  "arrow": "to"
+}
+```
+
 ## Assessment (evaluación)
 
 | Campo | Tipo | Obligatorio | Descripción |
 |-------|------|-------------|-------------|
-| `id` | `string` (UUID) | Sí | Identificador único |
+| `id` | `string` | Sí | Identificador único |
 | `subjectId` | `string` | Sí | ID de la asignatura evaluada |
 | `date` | `string` (ISO 8601) | Sí | Fecha y hora de la evaluación |
 | `results` | `object` | Sí | Mapa de `conceptId: score (0-100)` |
@@ -107,7 +145,7 @@ Relación entre conceptos de **diferentes** asignaturas.
 {
   "id": "e1f2g3h4-...",
   "subjectId": "a1b2c3d4-...",
-  "date": "2026-06-16T10:30:00.000Z",
+  "date": "2026-06-18T10:30:00.000Z",
   "results": {
     "c1": 80,
     "c2": 45
@@ -126,35 +164,28 @@ Relación entre conceptos de **diferentes** asignaturas.
 | 40–69 | Amarillo (#eab308) | En proceso |
 | 0–39 | Rojo (#ef4444) | No dominado |
 
-## Ejemplo completo
+## Ejemplo completo mínimo
 
 ```json
 {
   "subjects": [
     {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "id": "ex-001",
       "name": "Programación en Python",
       "description": "Curso introductorio",
       "concepts": [
-        { "id": "c1", "name": "Variables", "description": "int, str", "weight": 3 }
+        { "id": "c1", "name": "Variables", "description": "int, str", "weight": 3 },
+        { "id": "c2", "name": "Condicionales", "description": "if/else", "weight": 4 }
       ],
       "relations": [
         { "from": "c1", "to": "c2", "type": "prerrequisito" }
-      ]
+      ],
+      "nodePositions": {}
     }
   ],
-  "assessments": [
-    {
-      "id": "660e8400-e29b-41d4-a716-446655440000",
-      "subjectId": "550e8400-e29b-41d4-a716-446655440000",
-      "date": "2026-06-16T10:00:00.000Z",
-      "results": { "c1": 80 },
-      "notes": {}
-    }
-  ],
-  "crossRelations": [
-    { "from": "c1", "to": "m3", "type": "relacionado" }
-  ]
+  "assessments": [],
+  "crossRelations": [],
+  "customRelationTypes": []
 }
 ```
 
@@ -166,3 +197,5 @@ Relación entre conceptos de **diferentes** asignaturas.
 - No se permiten relaciones duplicadas (mismo `from` + `to` + `type`)
 - `weight` debe estar entre 1 y 10
 - `score` debe estar entre 0 y 100
+- Los tipos personalizados en `customRelationTypes` deben tener `id`, `name`, `color`, `dash`, `width`, `arrow`
+- Cuando se use un tipo personalizado en una relación, su `type` debe existir en `customRelationTypes`

@@ -5,6 +5,7 @@ GC.store = Vue.reactive({
   subjects: [],
   assessments: [],
   crossRelations: [],
+  customRelationTypes: [],
   _history: [],
   _historyIndex: -1,
   _isRestoring: false,
@@ -19,7 +20,8 @@ GC.store = Vue.reactive({
     this._history.push({
       subjects: JSON.parse(JSON.stringify(this.subjects)),
       assessments: JSON.parse(JSON.stringify(this.assessments)),
-      crossRelations: JSON.parse(JSON.stringify(this.crossRelations))
+      crossRelations: JSON.parse(JSON.stringify(this.crossRelations)),
+      customRelationTypes: JSON.parse(JSON.stringify(this.customRelationTypes))
     });
     if (this._history.length > MAX_HISTORY) this._history.shift();
     this._historyIndex = this._history.length - 1;
@@ -44,6 +46,7 @@ GC.store = Vue.reactive({
     this.subjects = s.subjects;
     this.assessments = s.assessments;
     this.crossRelations = s.crossRelations;
+    this.customRelationTypes = s.customRelationTypes || [];
     this._saveOnly();
     this._isRestoring = false;
   },
@@ -55,6 +58,7 @@ GC.store = Vue.reactive({
         this.subjects = d.subjects || [];
         this.assessments = d.assessments || [];
         this.crossRelations = d.crossRelations || [];
+        this.customRelationTypes = d.customRelationTypes || [];
       }
       this._pushHistory();
     } catch (e) {
@@ -66,7 +70,8 @@ GC.store = Vue.reactive({
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       subjects: this.subjects,
       assessments: this.assessments,
-      crossRelations: this.crossRelations
+      crossRelations: this.crossRelations,
+      customRelationTypes: this.customRelationTypes
     }));
   },
 
@@ -703,6 +708,45 @@ GC.store = Vue.reactive({
     this.save();
   },
 
+  addCustomRelationType(name, color, dash, width, arrow) {
+    const id = 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    this.customRelationTypes.push({ id, name, color, dash, width, arrow });
+    this.save();
+    return id;
+  },
+
+  updateCustomRelationType(id, data) {
+    const t = this.customRelationTypes.find(x => x.id === id);
+    if (t) { Object.assign(t, data); this.save(); }
+  },
+
+  removeCustomRelationType(id) {
+    this.customRelationTypes = this.customRelationTypes.filter(x => x.id !== id);
+    this.save();
+  },
+
+  getRelationTypeInfo(typeId) {
+    const builtIn = {
+      prerrequisito: { name: 'Prerrequisito', color: '#3b82f6', dash: false, width: 2, arrow: 'to' },
+      pertenece: { name: 'Pertenece', color: '#22c55e', dash: [10, 5], width: 2, arrow: 'to' },
+      relacionado: { name: 'Relacionado', color: '#f59e0b', dash: [5, 5], width: 1, arrow: 'none' },
+      profundiza: { name: 'Profundiza', color: '#a855f7', dash: false, width: 3, arrow: 'to' }
+    };
+    if (builtIn[typeId]) return builtIn[typeId];
+    const custom = this.customRelationTypes.find(x => x.id === typeId);
+    return custom || builtIn.relacionado;
+  },
+
+  allRelationTypes() {
+    const builtIn = [
+      { id: 'prerrequisito', name: 'Prerrequisito', color: '#3b82f6', dash: false, width: 2, arrow: 'to', builtIn: true },
+      { id: 'pertenece', name: 'Pertenece', color: '#22c55e', dash: [10, 5], width: 2, arrow: 'to', builtIn: true },
+      { id: 'relacionado', name: 'Relacionado', color: '#f59e0b', dash: [5, 5], width: 1, arrow: 'none', builtIn: true },
+      { id: 'profundiza', name: 'Profundiza', color: '#a855f7', dash: false, width: 3, arrow: 'to', builtIn: true }
+    ];
+    return [...builtIn, ...this.customRelationTypes];
+  },
+
   submitAssessment(subjectId, scores, notes) {
     const a = {
       id: crypto.randomUUID(),
@@ -775,7 +819,8 @@ GC.store = Vue.reactive({
     return JSON.stringify({
       subjects: this.subjects,
       assessments: this.assessments,
-      crossRelations: this.crossRelations
+      crossRelations: this.crossRelations,
+      customRelationTypes: this.customRelationTypes
     }, null, 2);
   },
 
@@ -786,6 +831,7 @@ GC.store = Vue.reactive({
       this.subjects = d.subjects;
       this.assessments = d.assessments || [];
       this.crossRelations = d.crossRelations || [];
+      this.customRelationTypes = d.customRelationTypes || [];
       this.save();
       return true;
     } catch (e) {

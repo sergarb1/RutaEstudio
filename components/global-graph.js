@@ -39,10 +39,7 @@
                 </optgroup>
               </select>
               <select v-model="crossType" class="border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm">
-                <option value="relacionado">Relacionado</option>
-                <option value="prerrequisito">Prerrequisito</option>
-                <option value="pertenece">Pertenece</option>
-                <option value="profundiza">Profundiza</option>
+                <option v-for="t in allCustomTypes" :key="t.id" :value="t.id" v-text="t.name"></option>
               </select>
               <select v-model="crossTo" class="border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm">
                 <option value="">Concepto destino</option>
@@ -73,7 +70,8 @@
               <div v-for="(r, i) in store.crossRelations" :key="i" class="flex items-center gap-2 text-xs bg-slate-50 dark:bg-slate-900/50 rounded-lg p-2">
                 <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="conceptName(r.from)"></span>
                 <span class="text-xs px-1.5 py-0.5 rounded font-medium"
-                  :class="typeClass(r.type)">{{ r.type }}</span>
+                  :class="typeClass(r.type) || 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'"
+                  :style="typeStyle(r.type)">{{ typeName(r.type) }}</span>
                 <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="conceptName(r.to)"></span>
                 <button @click="removeCross(i)" class="ml-auto text-red-500 hover:underline">\u2715</button>
               </div>
@@ -87,6 +85,12 @@
       store: Object
     },
     emits: ['back'],
+    computed: {
+      allCustomTypes() {
+        if (!GC.store) return [];
+        return GC.store.allRelationTypes();
+      }
+    },
     data() {
       return {
         filterSubject: '',
@@ -120,12 +124,21 @@
         return GC.conceptName(this.subjects, id);
       },
       typeClass(type) {
-        return {
+        const map = {
           'prerrequisito': 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
           'pertenece': 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
           'relacionado': 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
           'profundiza': 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
-        }[type] || '';
+        };
+        return map[type] || '';
+      },
+      typeStyle(type) {
+        if (['prerrequisito','pertenece','relacionado','profundiza'].includes(type)) return null;
+        const info = GC.store.getRelationTypeInfo(type);
+        return { backgroundColor: info.color + '33', color: info.color };
+      },
+      typeName(type) {
+        return GC.store.getRelationTypeInfo(type).name;
       },
       addCrossRelation() {
         if (!this.crossFrom || !this.crossTo) return;
