@@ -200,6 +200,101 @@
         <text x="${w - pad}" y="16" text-anchor="end" fill="${trendColor}" font-size="11" font-weight="600">${trend >= 0 ? '+' : ''}${trend}%</text>
       </svg>`;
     },
+
+    // Donut chart: % concepts in each level
+    distributionDonutSVG() {
+      if (!this.lastAssessment) return '';
+      const results = this.lastAssessment.results;
+      const vals = Object.values(results);
+      if (!vals.length) return '';
+      let red = 0, yellow = 0, green = 0;
+      vals.forEach(v => {
+        if (v < 40) red++;
+        else if (v < 70) yellow++;
+        else green++;
+      });
+      const total = red + yellow + green || 1;
+      const rP = red / total * 100;
+      const yP = yellow / total * 100;
+      const gP = green / total * 100;
+      const cx = 120, cy = 120, r = 90, pad = 8;
+      const polar = (pct, off = 0) => {
+        const a = (pct / 100 * 360 - 90) * Math.PI / 180;
+        return { x: cx + (r - off) * Math.cos(a), y: cy + (r - off) * Math.sin(a) };
+      };
+      const arc = (pct, color, label, val) => {
+        if (pct < 0.5) return '';
+        const p1 = polar(0), p2 = polar(pct);
+        const large = pct > 50 ? 1 : 0;
+        const midPct = pct / 2;
+        const mid = polar(midPct, 28);
+        const p1r = polar(0, 5), p2r = polar(pct, 5);
+        return `<path d="M${p1r.x},${p1r.y} A${r - 5},${r - 5} 0 ${large} 1 ${p2r.x},${p2r.y}" fill="none" stroke="${color}" stroke-width="10" />
+          <text x="${mid.x}" y="${mid.y + 4}" text-anchor="middle" fill="${color}" font-size="14" font-weight="700">${Math.round(pct)}%</text>
+          <text x="${mid.x}" y="${mid.y + 18}" text-anchor="middle" fill="#94a3b8" font-size="8">${val}</text>`;
+      };
+      const w = 240, h = 240;
+      return `<svg viewBox="0 0 ${w} ${h + 20}" class="w-full" style="max-height:260px">
+        <rect width="100%" height="100%" fill="transparent" />
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e2e8f0" stroke-width="10" />
+        ${arc(rP, '#ef4444', 'débiles', red)}
+        ${arc(yP, '#eab308', 'en proceso', yellow)}
+        ${arc(gP, '#22c55e', 'dominados', green)}
+        <text x="${cx}" y="${cy + 4}" text-anchor="middle" fill="#94a3b8" font-size="11">${total} conceptos</text>
+        <text x="${w / 2}" y="${h + 14}" text-anchor="middle" fill="#94a3b8" font-size="9">${GC.t ? GC.t('results.summary') : 'Distribución'}</text>
+      </svg>`;
+    },
+
+    // Horizontal bar: each concept's score
+    conceptBarsSVG() {
+      if (!this.lastAssessment || !this.currentSubject) return '';
+      const concepts = this.currentSubject.concepts;
+      const results = this.lastAssessment.results;
+      const items = concepts.map(c => ({ name: c.name, score: results[c.id] || 0 }));
+      items.sort((a, b) => a.score - b.score);
+      const barH = 20, gap = 4, pad = 10, labelW = 140, h = items.length * (barH + gap) + pad * 2;
+      const w = 500, barMax = w - labelW - pad * 3;
+      return `<svg viewBox="0 0 ${w} ${h}" class="w-full" style="max-height:${Math.min(h, 400)}px">
+        <rect width="100%" height="100%" fill="transparent" />
+        ${items.map((c, i) => {
+          const y = pad + i * (barH + gap);
+          const bw = c.score / 100 * barMax;
+          const color = c.score >= 70 ? '#22c55e' : c.score >= 40 ? '#eab308' : '#ef4444';
+          return `<text x="${labelW - 6}" y="${y + barH / 2 + 4}" text-anchor="end" fill="#94a3b8" font-size="9" class="truncate">${c.name}</text>
+            <rect x="${labelW + 2}" y="${y}" width="${bw}" height="${barH}" rx="4" fill="${color}" opacity="0.8" />
+            <text x="${labelW + 6 + bw}" y="${y + barH / 2 + 4}" fill="${color}" font-size="9" font-weight="600">${c.score}%</text>`;
+        }).join('')}
+      </svg>`;
+    },
+
+    // Activity: assessments per week
+    activityBarsSVG() {
+      const ass = this.subjectAssessmentsList;
+      if (!ass.length) return '';
+      const byWeek = {};
+      ass.forEach(a => {
+        const d = new Date(a.date);
+        const week = d.getFullYear() + '-W' + Math.ceil((d.getDate() + (new Date(d.getFullYear(), d.getMonth(), 1).getDay() - 1)) / 7);
+        byWeek[week] = (byWeek[week] || 0) + 1;
+      });
+      const weeks = Object.keys(byWeek).sort();
+      const vals = weeks.map(w => byWeek[w]);
+      const max = Math.max(...vals, 1);
+      const barW = 40, gap = 8, pad = 10, h = 150;
+      const w = weeks.length * (barW + gap) + pad * 2;
+      const yScale = (h - pad * 2) / max;
+      return `<svg viewBox="0 0 ${Math.max(w, 300)} ${h + 20}" class="w-full" style="max-height:200px">
+        <rect width="100%" height="100%" fill="transparent" />
+        ${weeks.map((wk, i) => {
+          const x = pad + i * (barW + gap);
+          const bh = vals[i] * yScale;
+          const y = h - pad - bh;
+          return `<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="3" fill="#6366f1" opacity="0.7" />
+            <text x="${x + barW / 2}" y="${h + 12}" text-anchor="middle" fill="#94a3b8" font-size="7">${wk.slice(-4)}</text>
+            <text x="${x + barW / 2}" y="${y - 4}" text-anchor="middle" fill="#6366f1" font-size="8" font-weight="600">${vals[i]}</text>`;
+        }).join('')}
+      </svg>`;
+    },
     exportStudyPlanText() {
       if (!this.currentSubject || !this.lastAssessment) return;
       const plan = GC.studyPlan.calculate(this.currentSubject, this.lastAssessment, this.planAlgorithm);
