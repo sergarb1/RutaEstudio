@@ -348,6 +348,54 @@
       a.download = 'plan-estudio-' + this.currentSubject.name.replace(/\s+/g, '_') + '.txt';
       a.click();
       this.showToast('Plan de estudio exportado', 'success');
+    },
+
+    // Linear regression prediction for each concept
+    predictionChartSVG() {
+      const ass = this.subjectAssessmentsList;
+      if (ass.length < 2 || !this.currentSubject) return '';
+      const concepts = this.currentSubject.concepts;
+      const sortedAss = [...ass].reverse(); // oldest first
+      const n = sortedAss.length;
+
+      const predictions = concepts.map(c => {
+        const scores = sortedAss.map(a => a.results[c.id]).filter(v => v != null);
+        if (scores.length < 2) return null;
+        const m = scores.length;
+        const sumX = scores.reduce((s, _, i) => s + i, 0);
+        const sumY = scores.reduce((s, v) => s + v, 0);
+        const sumXY = scores.reduce((s, v, i) => s + i * v, 0);
+        const sumX2 = scores.reduce((s, _, i) => s + i * i, 0);
+        const slope = (m * sumXY - sumX * sumY) / (m * sumX2 - sumX * sumX || 1);
+        const intercept = (sumY - slope * sumX) / m;
+        const nextScore = Math.round(Math.max(0, Math.min(100, slope * m + intercept)));
+        const lastScore = scores[scores.length - 1];
+        const change = nextScore - lastScore;
+        return { id: c.id, name: c.name, lastScore, nextScore, change, slope, scores };
+      }).filter(Boolean);
+
+      predictions.sort((a, b) => b.change - a.change);
+      const top = predictions.slice(0, 5);
+      const bottom = predictions.filter(p => p.change < 0).slice(-5).reverse();
+      const show = [...top, ...bottom];
+      if (!show.length) return '';
+
+      const h = show.length * 24 + 20, w = 500;
+      const barMax = 80, pad = 10, labelW = 130;
+      return `<svg viewBox="0 0 ${w} ${h}" class="w-full" style="max-height:${Math.min(h, 300)}px">
+        <rect width="100%" height="100%" fill="transparent" />
+        ${show.map((c, i) => {
+          const y = pad + i * 24;
+          const dir = c.change >= 0 ? 1 : -1;
+          const bw = Math.min(Math.abs(c.change), 50) / 50 * barMax;
+          const color = c.change >= 0 ? '#22c55e' : '#ef4444';
+          const xBar = c.change >= 0 ? labelW + 2 : labelW + 2 + barMax - bw;
+          return `<text x="${labelW - 4}" y="${y + 14}" text-anchor="end" fill="#94a3b8" font-size="9">${c.name}</text>
+            <rect x="${xBar}" y="${y + 2}" width="${bw}" height="16" rx="3" fill="${color}" opacity="0.7" />
+            <text x="${labelW + 4 + (c.change >= 0 ? bw : 0)}" y="${y + 14}" fill="${color}" font-size="9" font-weight="600">${c.change >= 0 ? '+' : ''}${c.change}%</text>
+            <text x="${labelW + barMax + 40}" y="${y + 14}" fill="#94a3b8" font-size="8">${c.lastScore}% → ${c.nextScore}%</text>`;
+        }).join('')}
+      </svg>`;
     }
   };
 
