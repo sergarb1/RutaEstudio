@@ -3,633 +3,1202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grafo de Conocimiento — Plan de estudio personalizado</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <script src="https://unpkg.com/vis-network@9.1.9/dist/vis-network.min.js"></script>
+  <title>Ruta de Estudio — Te guiamos en tu estudio</title>
+
+  <!-- Tailwind CSS config first, then CDN + fallback local -->
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = { darkMode: 'class' };
+    (function() {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.tailwindcss.com';
+      s.onerror = function() {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'fallback/tailwind.min.css';
+        document.head.appendChild(link);
+      };
+      document.head.appendChild(s);
+    })();
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
-    #graph-container { width: 100%; height: 500px; border-radius: 1rem; background: #f8fafc; }
-    .heat-red { color: #ef4444; }
-    .heat-yellow { color: #eab308; }
-    .heat-green { color: #22c55e; }
-    [x-cloak] { display: none !important; }
-  </style>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/app.css" />
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen" x-data="app()" x-cloak>
-  <div class="max-w-6xl mx-auto px-4 py-6">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors">
 
-    <!-- Header -->
-    <header class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-2xl font-black tracking-tight">
-          <span class="text-indigo-600">🧠</span> Grafo de Conocimiento
-        </h1>
-        <p class="text-sm text-slate-500">Define conceptos, evalúa dominio, genera tu plan de estudio</p>
-      </div>
-      <div class="flex gap-2">
-        <button @click="exportData()" class="text-xs bg-white border rounded-lg px-3 py-2 hover:bg-slate-50 font-medium">📤 Exportar</button>
-        <button @click="importData()" class="text-xs bg-white border rounded-lg px-3 py-2 hover:bg-slate-50 font-medium">📥 Importar</button>
-      </div>
-    </header>
+  <div id="app" v-cloak :class="{'focus-mode': focusMode}">
+    <div class="max-w-6xl mx-auto px-4 py-6" :class="focusMode ? 'max-w-full px-2' : ''">
 
-    <!-- Subjects list -->
-    <div x-show="view === 'subjects'">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold">Mis asignaturas</h2>
-        <button @click="addSubject()" class="bg-indigo-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-indigo-700">+ Nueva</button>
-      </div>
-      <template x-if="subjects.length === 0">
-        <div class="text-center py-16 text-slate-400">
-          <p class="text-5xl mb-4">📚</p>
-          <p class="text-lg font-medium">No tienes asignaturas todavía</p>
-          <p class="text-sm mt-1">Crea una para empezar a mapear conceptos</p>
-        </div>
-      </template>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <template x-for="s in subjects" :key="s.id">
-          <div @click="selectSubject(s)" class="bg-white rounded-2xl p-5 border border-slate-200 hover:border-indigo-300 hover:shadow-md cursor-pointer transition">
-            <h3 class="font-bold text-lg" x-text="s.name"></h3>
-            <p class="text-sm text-slate-500 mt-1" x-text="s.description || 'Sin descripción'"></p>
-            <div class="flex items-center gap-3 mt-3 text-xs text-slate-400">
-              <span x-text="s.concepts.length + ' conceptos'"></span>
-              <span x-text="s.relations.length + ' relaciones'"></span>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
-
-    <!-- Subject detail -->
-    <div x-show="view === 'subject'">
-      <button @click="view='subjects'; destroyGraph()" class="text-sm text-indigo-600 font-medium mb-4 flex items-center gap-1">← Volver</button>
-      <div class="flex items-start justify-between mb-4">
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-8">
         <div>
-          <h2 class="text-xl font-bold" x-text="currentSubject.name"></h2>
-          <p class="text-sm text-slate-500" x-text="currentSubject.description"></p>
+          <h1 class="text-2xl font-black tracking-tight">
+            <span class="text-indigo-600">🧠</span> Ruta de Estudio
+          </h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Te guiamos en tu estudio</p>
         </div>
-        <div class="flex gap-2">
-          <button @click="editSubject()" class="text-xs bg-white border rounded-lg px-3 py-2 font-medium">✏️ Editar</button>
-          <button @click="deleteSubject()" class="text-xs bg-white border border-red-200 text-red-600 rounded-lg px-3 py-2 font-medium hover:bg-red-50">🗑️</button>
+        <div class="flex items-center gap-2">
+          <button @click="toggleDark()"
+                  class="text-lg bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  v-text="dark ? '☀️' : '🌙'"
+                  :title="dark ? 'Modo claro' : 'Modo oscuro'"></button>
+          <button @click="modal='shortcuts'" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Atajos (?)">⌨</button>
+          <button @click="store.undo()" :disabled="!store.canUndo"
+                  :class="store.canUndo ? 'hover:bg-slate-50 dark:hover:bg-slate-700' : 'opacity-30 cursor-not-allowed'"
+                  class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-2 font-medium transition" title="Deshacer (Ctrl+Z)">↩</button>
+          <button @click="store.redo()" :disabled="!store.canRedo"
+                  :class="store.canRedo ? 'hover:bg-slate-50 dark:hover:bg-slate-700' : 'opacity-30 cursor-not-allowed'"
+                  class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-2 font-medium transition" title="Rehacer (Ctrl+Shift+Z)">↪</button>
+          <button @click="exportData()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">📤 Exportar</button>
+          <button @click="exportTemplate()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">📋 Plantilla</button>
+          <button @click="importData()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">📥 Importar</button>
         </div>
+      </header>
+
+      <!-- ===== SUBJECTS VIEW ===== -->
+      <div v-if="view === 'subjects'" class="fade-enter-active">
+        <subject-list
+          :subjects="subjects"
+          @select="selectSubject"
+          @add="addSubject"
+          @help="showHelp"
+          @example="loadExample"
+          @globalGraph="goToGlobalGraph"
+          @suggestions="goToSuggestions"
+          @aiGenerator="goToAIGenerator"
+          @import="importData"
+          @exportTemplate="exportTemplate"
+          @importSubject="importSubjectJSON"
+        />
       </div>
 
-      <!-- Tabs -->
-      <div class="flex gap-1 mb-4 bg-white rounded-xl p-1 border border-slate-200 text-sm font-medium">
-        <button @click="tab='concepts'" :class="tab==='concepts'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📘 Conceptos</button>
-        <button @click="tab='graph'; setTimeout(()=>renderGraph(),100)" :class="tab==='graph'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">🔗 Grafo</button>
-        <button @click="tab='assess'; startAssessment()" :class="tab==='assess'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📝 Evaluar</button>
-        <button @click="tab='results'" :class="tab==='results'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📊 Resultados</button>
-        <button @click="tab='history'" :class="tab==='history'?'bg-indigo-600 text-white':'text-slate-500 hover:bg-slate-100'" class="px-4 py-2 rounded-lg transition flex-1">📈 Historial</button>
-      </div>
+      <!-- ===== SUBJECT DETAIL VIEW ===== -->
+      <div v-if="view === 'subject' && currentSubject" class="fade-enter-active">
+        <button @click="view='subjects'; destroyGraph()" class="text-sm text-indigo-600 dark:text-indigo-400 font-medium mb-4 flex items-center gap-1 hover:underline transition">← Volver</button>
 
-      <!-- Concepts tab -->
-      <div x-show="tab === 'concepts'" class="bg-white rounded-2xl p-5 border border-slate-200">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold">Conceptos</h3>
-          <button @click="addConcept()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">+ Añadir</button>
-        </div>
-        <template x-if="currentSubject.concepts.length === 0">
-          <p class="text-sm text-slate-400 py-8 text-center">Aún no hay conceptos. ¡Añade el primero!</p>
-        </template>
-        <div class="space-y-2">
-          <template x-for="(c, i) in currentSubject.concepts" :key="c.id">
-            <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-3 border border-slate-100">
-              <span class="text-xs font-bold text-indigo-600 w-6" x-text="i+1"></span>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium text-sm" x-text="c.name"></p>
-                <p class="text-xs text-slate-400 truncate" x-text="c.description || '—'"></p>
-              </div>
-              <span class="text-xs bg-slate-200 rounded px-2 py-0.5 font-medium" x-text="'Peso: '+c.weight"></span>
-              <button @click="editConcept(i)" class="text-xs text-indigo-600 font-medium">✏️</button>
-              <button @click="deleteConcept(i)" class="text-xs text-red-500 font-medium">✕</button>
-            </div>
-          </template>
-        </div>
-
-        <!-- Relations -->
-        <div x-show="currentSubject.concepts.length >= 2" class="mt-6 pt-4 border-t border-slate-200">
-          <h3 class="font-bold mb-3">Relaciones</h3>
-          <div class="space-y-2">
-            <template x-for="(r, i) in currentSubject.relations" :key="i">
-              <div class="flex items-center gap-2 text-sm bg-slate-50 rounded-lg p-2 border border-slate-100">
-                <span class="font-medium text-indigo-600" x-text="conceptName(r.from)"></span>
-                <span class="text-xs px-1.5 py-0.5 rounded font-medium"
-                  :class="{'bg-blue-100 text-blue-700': r.type==='prerrequisito', 'bg-green-100 text-green-700': r.type==='pertenece', 'bg-amber-100 text-amber-700': r.type==='relacionado', 'bg-purple-100 text-purple-700': r.type==='profundiza'}"
-                  x-text="r.type"></span>
-                <span class="font-medium text-indigo-600" x-text="conceptName(r.to)"></span>
-                <button @click="deleteRelation(i)" class="ml-auto text-xs text-red-500">✕</button>
-              </div>
-            </template>
-          </div>
-          <template x-if="currentSubject.relations.length === 0">
-            <p class="text-xs text-slate-400">Pasa a la pestaña Grafo para conectar conceptos visualmente</p>
-          </template>
-        </div>
-      </div>
-
-      <!-- Graph tab -->
-      <div x-show="tab === 'graph'" class="bg-white rounded-2xl p-5 border border-slate-200">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="font-bold">Grafo de conceptos</h3>
-          <div class="flex gap-2 text-xs">
-            <button @click="currentRelationType='prerrequisito'" :class="currentRelationType==='prerrequisito'?'bg-blue-600 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Prerrequisito</button>
-            <button @click="currentRelationType='pertenece'" :class="currentRelationType==='pertenece'?'bg-green-600 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Pertenece</button>
-            <button @click="currentRelationType='relacionado'" :class="currentRelationType==='relacionado'?'bg-amber-500 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Relacionado</button>
-            <button @click="currentRelationType='profundiza'" :class="currentRelationType==='profundiza'?'bg-purple-600 text-white':'bg-slate-100'" class="px-2 py-1 rounded font-medium">Profundiza</button>
-          </div>
-        </div>
-        <p class="text-xs text-slate-400 mb-2">Haz clic en un concepto origen, luego en un concepto destino para crear una relación</p>
-        <div id="graph-container"></div>
-      </div>
-
-      <!-- Assessment tab -->
-      <div x-show="tab === 'assess'" class="bg-white rounded-2xl p-5 border border-slate-200">
-        <template x-if="currentSubject.concepts.length === 0">
-          <p class="text-sm text-slate-400 py-8 text-center">Añade conceptos primero para poder evaluarlos</p>
-        </template>
-        <template x-if="currentSubject.concepts.length > 0">
+        <div class="flex items-start justify-between mb-4">
           <div>
+            <h2 class="text-xl font-bold" v-text="currentSubject.name"></h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" v-text="currentSubject.description"></p>
+          </div>
+          <div class="flex gap-2">
+            <button @click="exportSubjectJSON()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 font-medium transition hover:bg-slate-50 dark:hover:bg-slate-700" title="Exportar esta asignatura">📤 Asignatura</button>
+            <button @click="editSubject()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 font-medium transition hover:bg-slate-50 dark:hover:bg-slate-700">✏️ Editar</button>
+            <button @click="deleteSubject()" class="text-xs bg-white dark:bg-slate-800 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg px-3 py-2 font-medium hover:bg-red-50 dark:hover:bg-red-900/30 transition">🗑️</button>
+          </div>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="flex gap-3 mb-4 text-xs">
+          <span class="bg-white dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+            📚 <span v-text="currentSubject.concepts.length"></span> conceptos
+          </span>
+          <span class="bg-white dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+            🔗 <span v-text="currentSubject.relations.length"></span> relaciones
+          </span>
+          <span class="bg-white dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+            📅 <span v-text="subjectAssessmentsList.length"></span> evaluaciones
+          </span>
+          <span v-if="isolatedCount > 0" class="bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-1.5 border border-amber-200 dark:border-amber-800/40 text-amber-600 dark:text-amber-400 text-xs font-medium">
+            ⚠️ <span v-text="isolatedCount"></span> aislados
+          </span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-1 mb-4 bg-white dark:bg-slate-800 rounded-xl p-1 border border-slate-200 dark:border-slate-700 text-sm font-medium overflow-x-auto tabs-scroll">
+          <button @click="tab='concepts'"
+                  :class="tab==='concepts'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">📘 Conceptos</button>
+          <button @click="tab='graph'"
+                  :class="tab==='graph'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">🔗 Grafo</button>
+          <button @click="tab='deps'"
+                  :class="tab==='deps'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">🌳 Árbol</button>
+          <button @click="tab='assess'"
+                  :class="tab==='assess'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">📝 Evaluar</button>
+          <button @click="tab='batchAssess'"
+                  :class="tab==='batchAssess'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">📋 Masivo</button>
+          <button @click="tab='results'"
+                  :class="tab==='results'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">📊 Resultados</button>
+          <button @click="tab='history'"
+                  :class="tab==='history'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">📅 Historial</button>
+          <button @click="tab='study'"
+                  :class="tab==='study'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="px-4 py-2 rounded-lg transition flex-shrink-0">🎴 Estudiar</button>
+        </div>
+
+        <!-- Concepts tab -->
+        <div v-if="tab === 'concepts'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-bold">Conceptos</h3>
+            <div class="flex items-center gap-2 flex-wrap">
+              <input v-model="conceptSearch" placeholder="Buscar concepto..."
+                     class="border dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs bg-transparent w-36 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+              <select v-if="availableTags.length" v-model="tagFilter"
+                      class="border dark:border-slate-600 rounded-lg px-2 py-1.5 text-xs bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <option value="">Todas</option>
+                <option v-for="t in availableTags" :key="t" :value="t" v-text="t"></option>
+              </select>
+              <button @click="addConcept()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition flex-shrink-0">+ Añadir</button>
+              <button @click="toggleBulkTag()"
+                      :class="bulkTagMode ? 'bg-amber-500 text-white' : 'bg-white dark:bg-slate-800 border dark:border-slate-600'"
+                      class="text-xs border rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition">🏷️ Etiquetar</button>
+              <button @click="exportConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Exportar CSV">CSV</button>
+              <button @click="importConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Importar CSV">📥 CSV</button>
+            </div>
+          </div>
+
+          <!-- Bulk tag bar -->
+          <div v-if="bulkTagMode" class="flex items-center gap-2 mb-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40">
+            <span class="text-xs text-amber-700 dark:text-amber-300 font-medium">🏷️ Marca los conceptos y asigna etiqueta:</span>
+            <input v-model="bulkTagValue" placeholder="Nombre de etiqueta" class="flex-1 border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-2 py-1.5 text-xs" />
+            <button @click="applyBulkTag()" class="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-700 transition">Aplicar</button>
+            <button @click="toggleBulkTag()" class="text-xs text-slate-400 hover:underline">Cancelar</button>
+          </div>
+
+          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-12 text-center">
+            <span class="text-3xl block mb-2">🧠</span>
+            Aún no hay conceptos. ¡Añade el primero o usa el asistente IA!
+          </p>
+          <p v-if="currentSubject.concepts.length > 0 && filteredConcepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-4 text-center">Ningún concepto coincide con "{{ conceptSearch }}"</p>
+
+          <div class="space-y-2">
+            <div v-for="c in filteredConcepts" :key="c.id"
+                 draggable="true"
+                 @dragstart="dragStart(c, $event)"
+                 @dragover.prevent="dragOver(c, $event)"
+                 @drop.prevent="dropConcept(c)"
+                 @dragend="dragEnd()"
+                 class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700"
+                 :class="{'opacity-40 border-dashed border-indigo-400': dragId === c.id}">
+              <input v-if="bulkTagMode" type="checkbox" v-model="bulkChecked[c.id]" class="rounded border-slate-300 dark:border-slate-600 text-indigo-600" />
+              <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 w-6 cursor-grab active:cursor-grabbing" v-text="currentSubject.concepts.indexOf(c)+1"></span>
+              <div class="flex-1 min-w-0">
+                <!-- Inline editing -->
+                <template v-if="inlineEditId === c.id">
+                  <input v-model="inlineEditName" @keyup.enter="saveInlineEdit()" @keyup.escape="cancelInlineEdit()"
+                         class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded px-2 py-1 text-sm mb-1 font-medium" />
+                  <textarea v-model="inlineEditDesc" @keyup.escape="cancelInlineEdit()"
+                            class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded px-2 py-1 text-xs" rows="1"></textarea>
+                  <div class="flex gap-1 mt-1">
+                    <button @click="saveInlineEdit()" class="text-xs text-green-600 font-medium">Guardar</button>
+                    <button @click="cancelInlineEdit()" class="text-xs text-slate-400">Cancelar</button>
+                  </div>
+                </template>
+                <template v-if="inlineEditId !== c.id">
+                  <p class="font-medium text-sm" @dblclick="startInlineEdit(c.id)" v-text="c.name"></p>
+                  <p class="text-xs text-slate-400 dark:text-slate-500 truncate" @dblclick="startInlineEdit(c.id)" v-html="GC.md(c.description) || '<span class=text-slate-300>—</span>'"></p>
+                </template>
+                <div v-if="c.tags?.length && inlineEditId !== c.id" class="flex gap-1 mt-1">
+                  <span v-for="t in c.tags" :key="t"
+                        class="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded px-1.5 py-0.5 font-medium" v-text="t"></span>
+                </div>
+              </div>
+              <span class="text-xs bg-slate-200 dark:bg-slate-700 rounded px-2 py-0.5 font-medium" v-text="'Peso: '+c.weight"></span>
+              <button @click="openInspector(c.id)" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline" title="Inspector de concepto">🔍</button>
+              <button @click="editConcept(c.id)" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline">✏️</button>
+              <button @click="deleteConcept(c.id)" class="text-xs text-red-500 dark:text-red-400 font-medium hover:underline">✕</button>
+            </div>
+          </div>
+
+          <!-- Relations section -->
+          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold">Relaciones</h3>
+              <button @click="showRelationForm = !showRelationForm"
+                      class="text-xs bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition"
+                      v-text="showRelationForm ? 'Cerrar' : '+ Nueva relación'"></button>
+            </div>
+
+            <div v-if="showRelationForm"
+                 class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700 mb-3 space-y-2">
+              <div class="grid sm:grid-cols-3 gap-2">
+                <select v-model="relFormFrom" class="border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm">
+                  <option value="">Concepto origen</option>
+                  <option v-for="c in currentSubject.concepts" :key="c.id" :value="c.id" v-text="c.name"></option>
+                </select>
+                <select v-model="relFormType" class="border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm">
+                  <option value="prerrequisito">Prerrequisito</option>
+                  <option value="pertenece">Pertenece</option>
+                  <option value="relacionado">Relacionado</option>
+                  <option value="profundiza">Profundiza</option>
+                </select>
+                <select v-model="relFormTo" class="border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm">
+                  <option value="">Concepto destino</option>
+                  <option v-for="c in currentSubject.concepts" :key="c.id" :value="c.id" v-text="c.name"></option>
+                </select>
+              </div>
+              <button @click="addRelationFromForm()" class="w-full bg-indigo-600 text-white text-sm font-bold py-2 rounded-lg hover:bg-indigo-700 transition" :disabled="!relFormFrom || !relFormTo">Crear relación</button>
+            </div>
+
+            <div class="space-y-2">
+              <div v-for="(r, i) in currentSubject.relations" :key="i"
+                   class="flex items-center gap-2 text-sm bg-slate-50 dark:bg-slate-900/50 rounded-lg p-2 border border-slate-100 dark:border-slate-700">
+                <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="conceptName(r.from)"></span>
+                <span class="text-xs px-1.5 py-0.5 rounded font-medium"
+                      :class="{'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300': r.type==='prerrequisito', 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300': r.type==='pertenece', 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300': r.type==='relacionado', 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300': r.type==='profundiza'}"
+                      v-text="r.type"></span>
+                <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="conceptName(r.to)"></span>
+                <button @click="deleteRelation(i)" class="ml-auto text-xs text-red-500 dark:text-red-400 hover:underline">✕</button>
+              </div>
+            </div>
+            <p v-if="currentSubject.relations.length === 0" class="text-xs text-slate-400 dark:text-slate-500">Usa el formulario o la pestaña Grafo para conectar conceptos</p>
+          </div>
+        </div>
+
+        <!-- Graph tab -->
+        <div v-if="tab === 'graph'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 relative">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="font-bold">Grafo de conceptos</h3>
+            <div class="flex items-center gap-2">
+              <div v-if="graphLoading" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1">
+                <span class="inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span>
+                Renderizando...
+              </div>
+              <button @click="showLegend = !showLegend" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium">
+                {{ showLegend ? '✕' : '📖' }} Leyenda
+              </button>
+            </div>
+          </div>
+          <!-- Filters row -->
+          <div class="flex flex-wrap items-center gap-2 mb-3 text-xs">
+            <span class="text-slate-400 dark:text-slate-500 font-medium">Filtrar:</span>
+            <select v-model="graphRelFilter" class="border dark:border-slate-600 rounded-lg px-2 py-1 bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
+              <option value="">Todas las relaciones</option>
+              <option value="prerrequisito">Prerrequisito</option>
+              <option value="pertenece">Pertenece</option>
+              <option value="relacionado">Relacionado</option>
+              <option value="profundiza">Profundiza</option>
+            </select>
+            <div class="flex items-center gap-1">
+              <span class="text-slate-400">Peso min:</span>
+              <input type="range" min="1" max="10" v-model.number="graphWeightMin" class="w-20 h-1 accent-indigo-600" />
+              <span class="text-slate-400 w-4" v-text="graphWeightMin"></span>
+            </div>
+          </div>
+          <!-- Legend overlay -->
+          <div v-if="showLegend" class="absolute top-20 right-2 z-10 bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-slate-200 dark:border-slate-700 text-xs space-y-1.5 w-44">
+            <p class="font-bold mb-1.5 text-slate-500 dark:text-slate-400 uppercase tracking-wide">Tipos de relación</p>
+            <div class="flex items-center gap-2"><span class="w-4 h-0.5 bg-blue-500"></span> Prerrequisito</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-0.5 bg-green-500" style="border-top:2px dashed #22c55e;height:0"></span> Pertenece</div>
+            <div class="flex items-center gap-2"><span class="w-4 border-t border-dotted border-amber-500 h-0"></span> Relacionado</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-0.5 bg-purple-500" style="height:3px"></span> Profundiza</div>
+            <p class="font-bold mt-2 mb-1 text-slate-500 dark:text-slate-400 uppercase tracking-wide">Colores de nodo</p>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span> &gt;70% Dominado</div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> 40-70% En proceso</div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> &lt;40% No dominado</div>
+          </div>
+          <div class="flex flex-wrap gap-1 text-xs">
+            <button @click="currentRelationType='prerrequisito'"
+                    :class="currentRelationType==='prerrequisito'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 dark:text-slate-300'"
+                    class="px-2 py-1 rounded font-medium transition">Prerrequisito</button>
+            <button @click="currentRelationType='pertenece'"
+                    :class="currentRelationType==='pertenece'?'bg-green-600 text-white':'bg-slate-100 dark:bg-slate-700 dark:text-slate-300'"
+                    class="px-2 py-1 rounded font-medium transition">Pertenece</button>
+            <button @click="currentRelationType='relacionado'"
+                    :class="currentRelationType==='relacionado'?'bg-amber-500 text-white':'bg-slate-100 dark:bg-slate-700 dark:text-slate-300'"
+                    class="px-2 py-1 rounded font-medium transition">Relacionado</button>
+            <button @click="currentRelationType='profundiza'"
+                    :class="currentRelationType==='profundiza'?'bg-purple-600 text-white':'bg-slate-100 dark:bg-slate-700 dark:text-slate-300'"
+                    class="px-2 py-1 rounded font-medium transition">Profundiza</button>
+          </div>
+          <p class="text-xs text-slate-400 dark:text-slate-500 mb-2 mt-2">Haz clic en un concepto origen, luego en un concepto destino para crear una relación</p>
+          <div id="graph-container" class="dark:border dark:border-slate-700"></div>
+        </div>
+
+        <!-- Dependency Tree tab -->
+        <div v-if="tab === 'deps'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+          <h3 class="font-bold mb-4">Árbol de dependencias</h3>
+          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">Añade conceptos primero</p>
+          <div v-if="currentSubject.concepts.length > 0" class="space-y-1">
+            <div v-for="c in conceptTree" :key="c.id" class="text-sm">
+              <div class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                   @click="openInspector(c.id)">
+                <span class="text-slate-400 dark:text-slate-500 w-5 flex-shrink-0" v-text="c.depth === 0 ? '🌱' : '└─'"></span>
+                <span class="font-medium" v-text="c.name"></span>
+                <span v-if="c.blockers.length" class="text-xs text-red-400" v-text="'⚠️ ' + c.blockers.length + ' blockers'"></span>
+                <span v-if="c.score != null" class="text-xs ml-auto" :style="'color:'+GC.heatColor(c.score)" v-text="Math.round(c.score) + '%'"></span>
+              </div>
+              <div v-for="child in c.children" :key="child.id" class="ml-5">
+                <div class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                     @click="openInspector(child.id)">
+                  <span class="text-slate-400 w-4 flex-shrink-0">└─</span>
+                  <span class="font-medium" v-text="child.name"></span>
+                  <span v-if="child.score != null" class="text-xs ml-auto" :style="'color:'+GC.heatColor(child.score)" v-text="Math.round(child.score) + '%'"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Assessment tab -->
+        <div v-if="tab === 'batchAssess'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold">Evaluación rápida</h3>
+            <button @click="submitAssessment()" class="bg-green-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-green-700 transition">📊 Guardar todo</button>
+          </div>
+          <p class="text-xs text-slate-400 dark:text-slate-500 mb-4">Ajusta los sliders para puntuar todos los conceptos de una sola vez</p>
+          <div class="space-y-3 max-h-[60vh] overflow-y-auto">
+            <div v-for="c in currentSubject.concepts" :key="c.id"
+                 class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl px-4 py-3 border border-slate-100 dark:border-slate-700">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate" v-text="c.name"></p>
+                <p class="text-xs text-slate-400 truncate" v-text="c.description || '—'"></p>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" min="0" max="100" step="5"
+                       v-model.number="assessScores[c.id]"
+                       class="w-28 h-1.5 accent-indigo-600" />
+                <span class="text-xs font-bold w-10 text-center" v-text="(assessScores[c.id] || 0) + '%'"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assessment tab -->
+        <div v-if="tab === 'assess'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">Añade conceptos primero para poder evaluarlos</p>
+          <div v-if="currentSubject.concepts.length > 0">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-bold">Autoevaluación</h3>
-              <span class="text-sm text-slate-500" x-text="(assessIndex+1)+' / '+currentSubject.concepts.length"></span>
+              <span class="text-sm text-slate-500 dark:text-slate-400" v-text="(assessIndex+1)+' / '+currentSubject.concepts.length"></span>
             </div>
-            <div class="w-full bg-slate-200 rounded-full h-2 mb-4">
+            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2">
               <div class="bg-indigo-600 h-2 rounded-full transition-all" :style="'width:'+((assessIndex+1)/currentSubject.concepts.length*100)+'%'"></div>
             </div>
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-              <p class="text-xs text-slate-400 font-medium uppercase tracking-wide mb-1">Concepto <span x-text="assessIndex+1"></span></p>
-              <p class="text-xl font-bold mb-1" x-text="currentSubject.concepts[assessIndex].name"></p>
-              <p class="text-sm text-slate-500 mb-4" x-text="currentSubject.concepts[assessIndex].description || 'Sin descripción'"></p>
-              <p class="text-sm font-medium mb-2">¿Cómo valoras tu dominio?</p>
+            <div class="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-4">
+              <span v-text="'Evaluados: ' + Object.keys(assessScores).length + ' / ' + currentSubject.concepts.length"></span>
+              <span v-if="Object.keys(assessScores).length < currentSubject.concepts.length" class="text-amber-500">⚠️</span>
+            </div>
+            <div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+              <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wide mb-1">Concepto <span v-text="assessIndex+1"></span></p>
+              <p class="text-xl font-bold mb-1" v-text="currentSubject.concepts[assessIndex].name"></p>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mb-4" v-text="currentSubject.concepts[assessIndex].description || 'Sin descripción'"></p>
+              <p class="text-sm font-medium mb-2">¿Cómo valoras tu dominio? <span class="text-xs text-slate-400 font-normal">(tecla 1-5)</span></p>
               <div class="flex gap-2 mb-4">
-                <template x-for="n in 5" :key="n">
-                  <button @click="assessScores[currentSubject.concepts[assessIndex].id] = n*20"
-                    :class="assessScores[currentSubject.concepts[assessIndex].id] === n*20 ? 'bg-indigo-600 text-white ring-2 ring-indigo-300' : 'bg-white border border-slate-200 hover:border-indigo-300'"
-                    class="w-12 h-12 rounded-xl font-bold text-sm transition">
-                    <span x-text="n"></span>
-                  </button>
-                </template>
+                <button v-for="n in 5" :key="n"
+                        @click="assessScores[currentSubject.concepts[assessIndex].id] = n*20"
+                        :class="assessScores[currentSubject.concepts[assessIndex].id] === n*20 ? 'bg-indigo-600 text-white ring-2 ring-indigo-300 dark:ring-indigo-500' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:border-indigo-300 dark:hover:border-indigo-500'"
+                        class="w-12 h-12 rounded-xl font-bold text-sm transition">
+                  <span v-text="n"></span>
+                </button>
               </div>
-              <div class="flex justify-between text-xs text-slate-400 px-1">
-                <span>Nada</span>
-                <span>Poco</span>
-                <span>Medio</span>
-                <span>Bastante</span>
-                <span>Total</span>
+              <div class="flex justify-between text-xs text-slate-400 dark:text-slate-500 px-1">
+                <span>Nada</span><span>Poco</span><span>Medio</span><span>Bastante</span><span>Total</span>
               </div>
               <div class="mt-4">
                 <p class="text-sm font-medium mb-1">Notas (opcional)</p>
-                <input type="text" x-model="assessNotes[currentSubject.concepts[assessIndex].id]" placeholder="¿Qué te cuesta? ¿Qué has entendido?" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" />
+                <input type="text" v-model="assessNotes[currentSubject.concepts[assessIndex].id]"
+                       placeholder="¿Qué te cuesta? ¿Qué has entendido?"
+                       class="w-full border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm" />
               </div>
             </div>
             <div class="flex justify-between mt-4">
-              <button @click="prevConcept()" :disabled="assessIndex===0" :class="assessIndex===0?'opacity-30 cursor-not-allowed':''" class="text-sm font-medium text-indigo-600 px-4 py-2">← Anterior</button>
-              <template x-if="assessIndex < currentSubject.concepts.length - 1">
-                <button @click="nextConcept()" class="bg-indigo-600 text-white text-sm font-bold px-6 py-2 rounded-xl">Siguiente →</button>
-              </template>
-              <template x-if="assessIndex === currentSubject.concepts.length - 1">
-                <button @click="submitAssessment()" class="bg-green-600 text-white text-sm font-bold px-6 py-2 rounded-xl">📊 Ver resultados</button>
-              </template>
+              <button @click="prevConcept()" :disabled="assessIndex===0"
+                      :class="assessIndex===0?'opacity-30 cursor-not-allowed':''"
+                      class="text-sm font-medium text-indigo-600 dark:text-indigo-400 px-4 py-2 hover:underline transition">← Anterior</button>
+              <button v-if="assessIndex < currentSubject.concepts.length - 1"
+                      @click="nextConcept()"
+                      class="bg-indigo-600 text-white text-sm font-bold px-6 py-2 rounded-xl hover:bg-indigo-700 transition">Siguiente →</button>
+              <button v-if="assessIndex === currentSubject.concepts.length - 1"
+                      @click="submitAssessment()"
+                      class="bg-green-600 text-white text-sm font-bold px-6 py-2 rounded-xl hover:bg-green-700 transition">📊 Ver resultados</button>
             </div>
           </div>
-        </template>
-      </div>
+        </div>
 
-      <!-- Results tab -->
-      <div x-show="tab === 'results'" class="space-y-4">
-        <template x-if="!lastAssessment">
-          <div class="text-center py-12 text-slate-400 bg-white rounded-2xl border border-slate-200">
+        <!-- Results tab -->
+        <div v-if="tab === 'results'" class="space-y-4">
+          <div v-if="!lastAssessment"
+               class="text-center py-12 text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
             <p class="text-4xl mb-3">📊</p>
             <p class="font-medium">Aún no hay evaluaciones</p>
             <p class="text-sm mt-1">Haz una evaluación en la pestaña "Evaluar"</p>
           </div>
-        </template>
-        <template x-if="lastAssessment">
-          <div>
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 mb-4">
+          <div v-if="lastAssessment">
+            <!-- Summary -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 mb-4">
               <div class="flex items-center justify-between mb-3">
                 <h3 class="font-bold">Resumen</h3>
-                <span class="text-xs text-slate-400" x-text="new Date(lastAssessment.date).toLocaleDateString()"></span>
+                <div class="flex items-center gap-2">
+                  <span class="text-lg font-black text-indigo-600 dark:text-indigo-400" v-text="overallScore + '% global'"></span>
+                  <span class="text-xs text-slate-400 dark:text-slate-500" v-text="new Date(lastAssessment.date).toLocaleDateString()"></span>
+                </div>
               </div>
               <div class="grid grid-cols-3 gap-3 text-center">
-                <div class="bg-red-50 rounded-xl p-3">
-                  <p class="text-2xl font-black text-red-600" x-text="stats().red"></p>
-                  <p class="text-xs text-red-500">Repasar</p>
+                <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-3">
+                  <p class="text-2xl font-black text-red-600 dark:text-red-400" v-text="stats.red"></p>
+                  <p class="text-xs text-red-500 dark:text-red-400">Repasar</p>
                 </div>
-                <div class="bg-amber-50 rounded-xl p-3">
-                  <p class="text-2xl font-black text-amber-600" x-text="stats().yellow"></p>
-                  <p class="text-xs text-amber-500">Reforzar</p>
+                <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3">
+                  <p class="text-2xl font-black text-amber-600 dark:text-amber-400" v-text="stats.yellow"></p>
+                  <p class="text-xs text-amber-500 dark:text-amber-400">Reforzar</p>
                 </div>
-                <div class="bg-green-50 rounded-xl p-3">
-                  <p class="text-2xl font-black text-green-600" x-text="stats().green"></p>
-                  <p class="text-xs text-green-500">Dominado</p>
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-3">
+                  <p class="text-2xl font-black text-green-600 dark:text-green-400" v-text="stats.green"></p>
+                  <p class="text-xs text-green-500 dark:text-green-400">Dominado</p>
                 </div>
+              </div>
+            </div>
+
+            <!-- Progress chart -->
+            <div v-if="subjectAssessmentsList.length >= 2"
+                 class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 mb-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold">📈 Evolución del progreso</h3>
+                <span class="text-xs text-slate-400 dark:text-slate-500" v-text="subjectAssessmentsList.length + ' evaluaciones'"></span>
+              </div>
+              <div class="progress-chart" v-html="progressChartSVG()"></div>
+            </div>
+
+            <!-- Streak calendar -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold">🔥 Racha de estudio</h3>
+                <div class="flex items-center gap-3 text-xs">
+                  <span class="text-green-600 dark:text-green-400 font-medium" v-text="'🔥 ' + streak.current + ' días'"></span>
+                  <span class="text-amber-500 font-medium" v-text="'🏆 Récord: ' + streak.best"></span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <div v-for="(day, di) in streak.days" :key="di"
+                     class="w-7 h-7 rounded flex items-center justify-center text-[10px] font-medium transition cursor-default"
+                     :title="day.label"
+                     :class="day.active ? 'bg-green-500 text-white' : day.future ? 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500'"
+                     v-text="day.num"></div>
               </div>
             </div>
 
             <!-- Study plan -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200">
-              <h3 class="font-bold mb-3">📋 Plan de estudio</h3>
-              <template x-if="studyPlan().repasar.length === 0 && studyPlan().reforzar.length === 0">
-                <p class="text-sm text-green-600 font-medium">¡Todo dominado! Sigue así 🎉</p>
-              </template>
-              <div x-show="studyPlan().repasar.length > 0" class="mb-4">
-                <p class="text-sm font-bold text-red-600 flex items-center gap-1 mb-2">🔴 Repasar (dominio &lt; 40%)</p>
-                <div class="space-y-2">
-                  <template x-for="item in studyPlan().repasar" :key="item.id">
-                    <div class="bg-red-50 border border-red-100 rounded-xl p-3">
-                      <p class="font-medium text-sm" x-text="item.name"></p>
-                      <p class="text-xs text-red-500 mt-0.5" x-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
-                      <p class="text-xs text-slate-500 mt-0.5" x-text="item.recommendation"></p>
-                    </div>
-                  </template>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold">📋 Plan de estudio</h3>
+                <div class="flex items-center gap-2">
+                  <button @click="exportStudyPlanText()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium">📄 Exportar</button>
+                  <div class="flex gap-1 text-xs bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+                  <button @click="planAlgorithm='bfs'"
+                          :class="planAlgorithm==='bfs'?'bg-white dark:bg-slate-600 shadow-sm':'hover:bg-slate-50 dark:hover:bg-slate-600'"
+                          class="px-3 py-1.5 rounded font-medium transition">BFS</button>
+                  <button @click="planAlgorithm='dfs'"
+                          :class="planAlgorithm==='dfs'?'bg-white dark:bg-slate-600 shadow-sm':'hover:bg-slate-50 dark:hover:bg-slate-600'"
+                          class="px-3 py-1.5 rounded font-medium transition">DFS</button>
+                  <button @click="planAlgorithm='desbloqueador'"
+                          :class="planAlgorithm==='desbloqueador'?'bg-amber-500 text-white shadow-sm':'hover:bg-slate-50 dark:hover:bg-slate-600'"
+                          class="px-3 py-1.5 rounded font-medium transition">🔥 Desbloqueador</button>
                 </div>
               </div>
-              <div x-show="studyPlan().reforzar.length > 0" class="mb-4">
-                <p class="text-sm font-bold text-amber-600 flex items-center gap-1 mb-2">🟡 Reforzar (dominio 40-70%)</p>
+              <p v-if="studyPlan().repasar.length === 0 && studyPlan().reforzar.length === 0"
+                 class="text-sm text-green-600 dark:text-green-400 font-medium">¡Todo dominado! Sigue así 🎉</p>
+
+              <div v-if="studyPlan().repasar.length > 0" class="mb-4">
+                <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center gap-1 mb-2">🔴 Repasar (dominio &lt; 40%)</p>
                 <div class="space-y-2">
-                  <template x-for="item in studyPlan().reforzar" :key="item.id">
-                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-3">
-                      <p class="font-medium text-sm" x-text="item.name"></p>
-                      <p class="text-xs text-amber-500 mt-0.5" x-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
-                      <p class="text-xs text-slate-500 mt-0.5" x-text="item.recommendation"></p>
-                    </div>
-                  </template>
+                  <div v-for="item in studyPlan().repasar" :key="item.id"
+                       class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/40 rounded-xl p-3">
+                    <p class="font-medium text-sm" v-text="item.name"></p>
+                    <p class="text-xs text-red-500 dark:text-red-400 mt-0.5" v-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" v-text="item.recommendation"></p>
+                  </div>
                 </div>
               </div>
-              <div x-show="studyPlan().avanzar.length > 0">
-                <p class="text-sm font-bold text-green-600 flex items-center gap-1 mb-2">🟢 Listo para avanzar (dominio &gt; 70%)</p>
+              <div v-if="studyPlan().reforzar.length > 0" class="mb-4">
+                <p class="text-sm font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 mb-2">🟡 Reforzar (dominio 40-70%)</p>
                 <div class="space-y-2">
-                  <template x-for="item in studyPlan().avanzar" :key="item.id">
-                    <div class="bg-green-50 border border-green-100 rounded-xl p-3">
-                      <p class="font-medium text-sm" x-text="item.name"></p>
-                      <p class="text-xs text-green-500 mt-0.5" x-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
-                      <p class="text-xs text-slate-500 mt-0.5" x-text="item.recommendation"></p>
-                    </div>
-                  </template>
+                  <div v-for="item in studyPlan().reforzar" :key="item.id"
+                       class="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 rounded-xl p-3">
+                    <p class="font-medium text-sm" v-text="item.name"></p>
+                    <p class="text-xs text-amber-500 dark:text-amber-400 mt-0.5" v-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" v-text="item.recommendation"></p>
+                  </div>
+                </div>
+              </div>
+              <div v-if="studyPlan().avanzar.length > 0">
+                <p class="text-sm font-bold text-green-600 dark:text-green-400 flex items-center gap-1 mb-2">🟢 Listo para avanzar (dominio &gt; 70%)</p>
+                <div class="space-y-2">
+                  <div v-for="item in studyPlan().avanzar" :key="item.id"
+                       class="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800/40 rounded-xl p-3">
+                    <p class="font-medium text-sm" v-text="item.name"></p>
+                    <p class="text-xs text-green-500 dark:text-green-400 mt-0.5" v-text="'Dominio: '+lastAssessment.results[item.id]+'%'"></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" v-text="item.recommendation"></p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Colored graph -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200 mt-4">
+            <!-- Roadmap -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+              <h3 class="font-bold mb-3">🛤️ Roadmap de estudio</h3>
+              <div v-if="!lastAssessment" class="text-sm text-slate-400 py-4 text-center">Evalúa conceptos para ver tu roadmap.</div>
+              <div v-if="lastAssessment">
+                <div v-if="roadmap.ahora.length" class="mb-3">
+                  <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1.5 flex items-center gap-1">🔴 Ahora (prioritarios)</p>
+                  <div class="space-y-1">
+                    <div v-for="r in roadmap.ahora" :key="r.id"
+                         @click="openInspector(r.id)"
+                         class="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2 border border-red-100 dark:border-red-800/40 cursor-pointer hover:border-red-300 transition text-sm">
+                      <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span>
+                      <span class="font-medium" v-text="r.name"></span>
+                      <span v-if="r.unlocks > 0" class="text-xs text-red-500 ml-auto" v-text="'desbloquea ' + r.unlocks"></span>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="roadmap.siguiente.length" class="mb-3">
+                  <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1.5 flex items-center gap-1">🟡 Siguiente (preparados)</p>
+                  <div class="space-y-1">
+                    <div v-for="r in roadmap.siguiente" :key="r.id"
+                         @click="openInspector(r.id)"
+                         class="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 border border-amber-100 dark:border-amber-800/40 cursor-pointer hover:border-amber-300 transition text-sm">
+                      <span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
+                      <span class="font-medium" v-text="r.name"></span>
+                      <span class="text-xs text-amber-500 ml-auto" v-if="r.mastery > 0" v-text="r.mastery + '%'"></span>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="roadmap.pronto.length">
+                  <p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1">⚪ Pronto (avanzados / bloqueados)</p>
+                  <div class="space-y-1">
+                    <div v-for="r in roadmap.pronto" :key="r.id"
+                         @click="openInspector(r.id)"
+                         class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-100 dark:border-slate-700 cursor-pointer hover:border-slate-300 transition text-sm">
+                      <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span>
+                      <span class="font-medium" v-text="r.name"></span>
+                      <span v-if="r.blockedBy.length" class="text-xs text-slate-400 ml-auto" v-text="'bloqueado por: ' + r.blockedBy.join(', ')"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Heat graph -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
               <h3 class="font-bold mb-3">🎨 Mapa de calor</h3>
-              <div id="graph-heat-container" style="width:100%;height:400px;border-radius:1rem;background:#f8fafc;"></div>
+              <div v-if="heatGraphLoading" class="flex items-center justify-center py-12 text-sm text-slate-400">
+                <span class="inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mr-2"></span>
+                Cargando mapa de calor...
+              </div>
+              <div id="graph-heat-container" class="dark:border dark:border-slate-700" :class="heatGraphLoading ? 'hidden' : ''"></div>
             </div>
           </div>
-        </template>
+        </div>
+
+        <!-- Study flashcards tab -->
+        <div v-if="tab === 'study'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold">🎴 Modo estudio</h3>
+            <div class="flex items-center gap-2 text-xs">
+              <select v-model="studyFilter" class="border dark:border-slate-600 rounded-lg px-2 py-1.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <option value="all">Todos los conceptos</option>
+                <option value="weak">Solo débiles (&lt;40%)</option>
+                <option value="mid">En proceso (40-70%)</option>
+                <option value="strong">Dominados (&gt;70%)</option>
+              </select>
+              <span class="text-slate-400" v-text="studyCards.length + ' tarjetas'"></span>
+            </div>
+          </div>
+
+          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-12 text-center">
+            Añade conceptos para poder estudiar
+          </p>
+
+          <div v-if="studyCards.length > 0" class="flex flex-col items-center">
+            <!-- Pomodoro timer -->
+            <div class="w-full max-w-md mb-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg" v-text="pomodoroRunning ? '⏱️' : '⏲️'"></span>
+                  <span class="text-lg font-bold tabular-nums" v-text="pomodoroDisplay"></span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <select v-model="pomodoroMinutes" class="text-[10px] border dark:border-slate-600 rounded px-1.5 py-1 bg-transparent focus:outline-none">
+                    <option :value="15">15 min</option>
+                    <option :value="25">25 min</option>
+                    <option :value="45">45 min</option>
+                  </select>
+                  <button v-if="!pomodoroRunning" @click="startPomodoro()" class="text-xs bg-green-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-green-700 transition font-medium">Iniciar</button>
+                  <button v-if="pomodoroRunning" @click="pausePomodoro()" class="text-xs bg-amber-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-amber-600 transition font-medium">Pausar</button>
+                  <button @click="resetPomodoro()" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-1.5 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-medium">Reiniciar</button>
+                </div>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mt-2">
+                <div class="bg-green-500 h-1.5 rounded-full transition-all" :style="'width:'+(pomodoroProgress*100)+'%'"></div>
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-full max-w-md mb-4">
+              <div class="flex justify-between text-xs text-slate-400 mb-1">
+                <span v-text="'Completadas: ' + studyDone + ' / ' + studyCards.length"></span>
+                <span v-text="Math.round(studyDone / studyCards.length * 100) + '%'"></span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                <div class="bg-green-500 h-2 rounded-full transition-all" :style="'width:'+(studyDone/studyCards.length*100)+'%'"></div>
+              </div>
+            </div>
+
+            <!-- Flashcard -->
+            <div v-if="studyIndex < studyCards.length" class="w-full max-w-md">
+              <div class="flashcard-container mb-6 cursor-pointer" @click="studyFlip = !studyFlip">
+                <div class="flashcard-inner" :class="{ 'flipped': studyFlip }">
+                  <div class="flashcard-front bg-indigo-50 dark:bg-indigo-900/30 border-2 border-indigo-200 dark:border-indigo-700 rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
+                    <span class="text-xs text-indigo-400 dark:text-indigo-300 font-medium mb-2" v-text="'Concepto ' + (studyIndex + 1)"></span>
+                    <p class="text-xl font-bold mb-2" v-text="studyCards[studyIndex].name"></p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Toca para ver la descripción</p>
+                    <div v-if="studyCards[studyIndex].tags?.length" class="flex gap-1 mt-3 flex-wrap justify-center">
+                      <span v-for="t in studyCards[studyIndex].tags" :key="t" class="text-[10px] bg-indigo-200 dark:bg-indigo-800/60 text-indigo-700 dark:text-indigo-300 rounded px-1.5 py-0.5 font-medium" v-text="t"></span>
+                    </div>
+                  </div>
+                  <div class="flashcard-back bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-600 rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
+                    <span class="text-xs text-slate-400 font-medium mb-2">Descripción</span>
+                    <p class="text-base leading-relaxed" v-html="GC.md(studyCards[studyIndex].description) || '<span class=text-slate-300>—</span>'"></p>
+                    <p class="text-xs text-slate-400 mt-3" v-text="'Peso: ' + studyCards[studyIndex].weight + '/10'"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Confidence buttons -->
+              <div class="flex gap-3 max-w-md mx-auto">
+                <button @click="studyAnswer(false)" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
+                  ❌ No lo sé
+                </button>
+                <button @click="studyAnswer(true)" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
+                  ✅ Lo sé
+                </button>
+              </div>
+              <p class="text-xs text-slate-400 text-center mt-3">Las tarjetas que falles volverán a aparecer</p>
+            </div>
+
+            <!-- Session complete -->
+            <div v-if="studyIndex >= studyCards.length && studyCards.length > 0" class="text-center py-8">
+              <p class="text-5xl mb-3">🎉</p>
+              <p class="text-lg font-bold text-green-600 dark:text-green-400">¡Sesión completada!</p>
+              <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto my-4">
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-3">
+                  <p class="text-xl font-black text-green-600 dark:text-green-400" v-text="studyDone"></p>
+                  <p class="text-xs text-green-500">Correctas</p>
+                </div>
+                <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-3">
+                  <p class="text-xl font-black text-red-600 dark:text-red-400" v-text="studyWrong"></p>
+                  <p class="text-xs text-red-500">Fallos</p>
+                </div>
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-3">
+                  <p class="text-xl font-black text-indigo-600 dark:text-indigo-400" v-text="studyTotalCards"></p>
+                  <p class="text-xs text-indigo-500">Repasados</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 dark:text-slate-500" v-text="'Precisión: ' + (studyTotalCards > 0 ? Math.round(studyDone / (studyDone + studyWrong) * 100) : 0) + '%'"></p>
+              <button @click="resetStudy()" class="mt-4 bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl hover:bg-indigo-700 transition text-sm">Repetir sesión</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- History tab -->
+        <div v-if="tab === 'history'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold">Historial de evaluaciones</h3>
+            <button v-if="subjectAssessmentsList.length >= 2 && !compareA && !compareB"
+                    @click="compareA = subjectAssessmentsList[subjectAssessmentsList.length-1]; compareB = subjectAssessmentsList[subjectAssessmentsList.length-2]"
+                    class="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition font-medium">📊 Comparar últimas 2</button>
+            <button v-if="compareA || compareB" @click="compareA=null; compareB=null"
+                    class="text-xs text-slate-400 dark:text-slate-500 hover:underline">✕ Cerrar comparación</button>
+          </div>
+
+          <!-- Comparison results -->
+          <div v-if="compareA && compareB" class="mb-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">
+              Comparando <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="new Date(compareA.date).toLocaleDateString()"></span>
+              vs <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="new Date(compareB.date).toLocaleDateString()"></span>
+            </p>
+            <div class="space-y-1.5 max-h-64 overflow-y-auto">
+              <div v-for="item in compareDiff" :key="item.id"
+                   class="flex items-center gap-2 text-sm py-1.5 px-2 rounded hover:bg-white dark:hover:bg-slate-800 cursor-pointer"
+                   @click="openInspector(item.id)">
+                <span class="flex-1 font-medium truncate" v-text="item.name"></span>
+                <span class="text-xs text-slate-400 w-10 text-right" v-text="item.before + '%'"></span>
+                <span class="text-xs font-bold w-4 text-center">&rarr;</span>
+                <span class="text-xs text-slate-400 w-10 text-right" v-text="item.after + '%'"></span>
+                <span v-if="item.diff > 0" class="text-xs text-green-600 dark:text-green-400 font-bold w-12 text-right">+{{ item.diff }}% ↑</span>
+                <span v-else-if="item.diff < 0" class="text-xs text-red-600 dark:text-red-400 font-bold w-12 text-right">{{ item.diff }}% ↓</span>
+                <span v-else class="text-xs text-slate-300 dark:text-slate-600 w-12 text-right">—</span>
+              </div>
+            </div>
+          </div>
+
+          <p v-if="subjectAssessmentsList.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">Aún no hay evaluaciones para esta asignatura</p>
+          <div class="space-y-3">
+            <div v-for="a in subjectAssessmentsList" :key="a.id"
+                 class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 transition"
+                 :class="{'ring-2 ring-indigo-400': a.id === compareA?.id || a.id === compareB?.id}">
+              <div class="flex items-start gap-3">
+                <input v-if="subjectAssessmentsList.length >= 2" type="checkbox"
+                       :checked="a.id === compareA?.id || a.id === compareB?.id"
+                       :disabled="compareA && compareB && a.id !== compareA?.id && a.id !== compareB?.id"
+                        @change="compareA === null ? compareA = a : compareB === null ? compareB = a : (compareA = a, compareB = null)"
+                       class="mt-1 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500" />
+                <div class="flex-1 min-w-0">
+                  <div @click="viewAssessment(a)" class="cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-medium" v-text="new Date(a.date).toLocaleDateString()"></span>
+                      <span class="text-xs text-slate-400 dark:text-slate-500" v-text="Object.keys(a.results).length + ' conceptos'"></span>
+                    </div>
+                    <div class="flex gap-2">
+                      <span class="text-xs px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium" v-text="GC.heatCount(a.results,'red')+' repasar'"></span>
+                      <span class="text-xs px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-medium" v-text="GC.heatCount(a.results,'yellow')+' reforzar'"></span>
+                      <span class="text-xs px-2 py-0.5 rounded bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 font-medium" v-text="GC.heatCount(a.results,'green')+' dominado'"></span>
+                    </div>
+                  </div>
+                  <button @click.stop="deleteAssessment(a.id)" class="mt-2 text-xs text-red-400 hover:text-red-600 transition">Eliminar evaluación</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- History tab -->
-      <div x-show="tab === 'history'" class="bg-white rounded-2xl p-5 border border-slate-200">
-        <h3 class="font-bold mb-4">Historial de evaluaciones</h3>
-        <template x-if="subjectAssessments().length === 0">
-          <p class="text-sm text-slate-400 py-8 text-center">Aún no hay evaluaciones para esta asignatura</p>
-        </template>
-        <div class="space-y-3">
-          <template x-for="a in subjectAssessments()" :key="a.id">
-            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-medium" x-text="new Date(a.date).toLocaleDateString()"></span>
-                <span class="text-xs text-slate-400" x-text="Object.keys(a.results).length + ' conceptos'"></span>
+      <!-- ===== GLOBAL GRAPH VIEW ===== -->
+      <div v-if="view === 'globalGraph'" class="fade-enter-active">
+        <global-graph :subjects="subjects" :store="store" @back="view='subjects'" />
+      </div>
+
+      <!-- ===== SUGGESTIONS VIEW ===== -->
+      <div v-if="view === 'suggestions'" class="fade-enter-active">
+        <suggestions-panel
+          :subjects="subjects"
+          :assessments="assessments"
+          :suggestions="suggestions"
+          @back="view='subjects'"
+        />
+      </div>
+
+      <!-- ===== AI GENERATOR VIEW ===== -->
+      <div v-if="view === 'aiGenerator'" class="fade-enter-active">
+        <ai-generator :store="store" @back="view='subjects'" />
+      </div>
+
+      <!-- Footer -->
+      <footer class="text-center text-slate-400 dark:text-slate-500 text-xs mt-12 pt-6 border-t border-slate-200 dark:border-slate-700">
+        <p>Hecho con ❤️ por <a href="https://github.com/sergarb1" class="text-indigo-600 dark:text-indigo-400 hover:underline">sergarb1</a> · Datos locales en tu navegador</p>
+      </footer>
+    </div>
+
+    <!-- ===== HELP MODAL ===== -->
+    <help-modal v-if="modal === 'help'" @close="modal=''" />
+
+    <!-- ===== SUBJECT / CONCEPT MODALS ===== -->
+    <div v-if="modal === 'subject' || modal === 'concept'"
+         class="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50 p-4"
+         @click.self="modal=''">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <h3 class="font-bold text-lg mb-4" v-text="modalTitle"></h3>
+
+        <div v-if="modal === 'subject'" class="space-y-3">
+          <!-- Tab selector -->
+          <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5 text-xs font-medium">
+            <button @click="templateTab='manual'"
+                    :class="templateTab==='manual'?'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100':'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'"
+                    class="flex-1 px-3 py-1.5 rounded transition">Desde cero</button>
+            <button @click="templateTab='template'"
+                    :class="templateTab==='template'?'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100':'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'"
+                    class="flex-1 px-3 py-1.5 rounded transition">📋 Desde plantilla</button>
+          </div>
+
+          <!-- Manual form -->
+          <div v-if="templateTab === 'manual'" class="space-y-3">
+            <div>
+              <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Nombre</label>
+              <input v-model="editName" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Descripción</label>
+              <textarea v-model="editDesc" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea>
+            </div>
+            <button @click="saveSubject()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition">Guardar</button>
+          </div>
+
+          <!-- Template selector -->
+          <div v-if="templateTab === 'template'" class="space-y-3 max-h-[60vh] overflow-y-auto">
+            <input v-model="templateSearch" placeholder="Buscar plantilla..." class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm" />
+            <div v-for="group in filteredTemplates" :key="group.key" class="space-y-2">
+              <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide flex items-center gap-1">
+                <span v-text="group.emoji || '📚'"></span>
+                <span v-text="group.label"></span>
+                <span class="font-normal text-slate-300 dark:text-slate-600" v-text="group.subjects.length + ' módulos'"></span>
+              </p>
+              <div v-for="subj in group.subjects" :key="subj.key"
+                   @click="createFromTemplate(group.key, subj.key)"
+                   class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 transition">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium" v-text="subj.name"></p>
+                  <p class="text-xs text-slate-400 dark:text-slate-500 truncate" v-text="subj.description"></p>
+                </div>
+                <div class="flex gap-1 flex-shrink-0">
+                  <span class="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded px-1.5 py-0.5 font-medium" v-text="subj.concepts.length + ' conceptos'"></span>
+                  <span class="text-[10px] bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded px-1.5 py-0.5 font-medium" v-text="subj.relations.length + ' relaciones'"></span>
+                </div>
               </div>
-              <div class="flex gap-2">
-                <span class="text-xs px-2 py-0.5 rounded bg-red-100 text-red-600 font-medium" x-text="heatCount(a.results,'red')+' repasar'"></span>
-                <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-600 font-medium" x-text="heatCount(a.results,'yellow')+' reforzar'"></span>
-                <span class="text-xs px-2 py-0.5 rounded bg-green-100 text-green-600 font-medium" x-text="heatCount(a.results,'green')+' dominado'"></span>
+            </div>
+            <p v-if="filteredTemplates.length === 0" class="text-sm text-slate-400 dark:text-slate-500 text-center py-4">No hay plantillas que coincidan con "{{ templateSearch }}"</p>
+          </div>
+        </div>
+
+        <div v-if="modal === 'concept'" class="space-y-3">
+          <div>
+            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Nombre del concepto</label>
+            <input v-model="editConceptName" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Descripción</label>
+            <textarea v-model="editConceptDesc" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea>
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Peso/dificultad (1-10)</label>
+            <input type="number" min="1" max="10" v-model="editConceptWeight" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Etiquetas (separadas por coma)</label>
+            <input v-model="editConceptTags" placeholder="ej: fácil, examen, teoría" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
+          </div>
+          <button @click="saveConcept()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition">Guardar</button>
+        </div>
+
+        <button @click="modal=''" class="text-xs text-slate-400 dark:text-slate-500 mt-3 w-full text-center hover:underline">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <Transition name="modal">
+    <div v-if="toast" @click="dismissToast()"
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl shadow-2xl border cursor-pointer transition text-sm font-medium flex items-center gap-2"
+         :class="toast.type === 'success' ? 'bg-green-600 text-white border-green-700' : toast.type === 'error' ? 'bg-red-600 text-white border-red-700' : toast.type === 'warning' ? 'bg-amber-500 text-white border-amber-600' : 'bg-slate-800 text-white border-slate-700'">
+      <span v-text="toast.message"></span>
+      <button v-if="toast.action" @click.stop="toast.action(); dismissToast()" class="underline font-bold ml-2 whitespace-nowrap" v-text="toast.actionLabel || 'Deshacer'"></button>
+    </div>
+  </Transition>
+
+  <!-- Global Search Modal -->
+  <Transition name="modal">
+    <div v-if="globalSearchOpen" class="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/40 dark:bg-black/60"
+         @click.self="closeGlobalSearch()">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-700">
+          <input id="global-search-input" v-model="globalSearch" placeholder="Buscar en todas las asignaturas..."
+                 class="w-full bg-transparent text-base outline-none placeholder-slate-400" />
+        </div>
+        <div class="max-h-80 overflow-y-auto p-2">
+          <div v-if="!globalSearch.trim()" class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">
+            Escribe para buscar conceptos por nombre, descripción o etiqueta
+          </div>
+          <div v-if="globalSearch.trim() && globalResults.length === 0" class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">
+            Sin resultados para "{{ globalSearch }}"
+          </div>
+          <template v-for="(group, si) in groupBy(globalResults, 'subjectName')" :key="si">
+            <p class="text-xs font-bold text-slate-400 dark:text-slate-500 px-2 pt-2 pb-1 uppercase tracking-wide" v-text="group.key"></p>
+            <div v-for="item in group.items" :key="item.concept.id"
+                 @click="goToConcept(item.subjectId, item.concept.id)"
+                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition text-sm">
+              <span class="text-base">🧠</span>
+              <div class="flex-1 min-w-0">
+                <p class="font-medium truncate" v-text="item.concept.name"></p>
+                <p class="text-xs text-slate-400 truncate" v-text="item.concept.description || '—'"></p>
               </div>
+              <span class="text-xs text-slate-400" v-text="'Peso: ' + item.concept.weight"></span>
             </div>
           </template>
         </div>
+        <div class="p-2 border-t border-slate-200 dark:border-slate-700 text-[10px] text-slate-400 text-center">
+          <kbd class="bg-slate-100 dark:bg-slate-700 px-1 rounded">↑↓</kbd> navegar <kbd class="bg-slate-100 dark:bg-slate-700 px-1 rounded">Esc</kbd> cerrar
+        </div>
       </div>
     </div>
+  </Transition>
 
-    <!-- Footer -->
-    <footer class="text-center text-slate-400 text-xs mt-12 pt-6 border-t border-slate-200">
-      <p>Hecho con ❤️ por <a href="https://github.com/sergarb1" class="text-indigo-600">sergarb1</a> · Datos locales en tu navegador</p>
-    </footer>
-  </div>
-
-  <!-- Modals -->
-  <div x-show="modal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="modal=''">
-    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-      <h3 class="font-bold text-lg mb-4" x-text="modalTitle"></h3>
-      <template x-if="modal === 'subject'">
-        <div class="space-y-3">
-          <div><label class="text-xs font-medium text-slate-500">Nombre</label><input x-model="editName" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" /></div>
-          <div><label class="text-xs font-medium text-slate-500">Descripción</label><textarea x-model="editDesc" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea></div>
-          <button @click="saveSubject()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm">Guardar</button>
+  <!-- Shortcuts cheat sheet -->
+  <Transition name="modal">
+    <div v-if="modal === 'shortcuts'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60"
+         @click.self="modal=''">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-lg">Atajos de teclado</h3>
+          <button @click="modal=''" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl">&times;</button>
         </div>
-      </template>
-      <template x-if="modal === 'concept'">
-        <div class="space-y-3">
-          <div><label class="text-xs font-medium text-slate-500">Nombre del concepto</label><input x-model="editConceptName" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" /></div>
-          <div><label class="text-xs font-medium text-slate-500">Descripción</label><textarea x-model="editConceptDesc" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea></div>
-          <div><label class="text-xs font-medium text-slate-500">Peso/dificultad (1-10)</label><input type="number" min="1" max="10" x-model="editConceptWeight" class="w-full border rounded-lg px-3 py-2 text-sm mt-1" /></div>
-          <button @click="saveConcept()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm">Guardar</button>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span>Buscar global</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+K</kbd></div>
+          <div class="flex justify-between"><span>Deshacer</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+Z</kbd></div>
+          <div class="flex justify-between"><span>Rehacer</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+Shift+Z</kbd></div>
+          <div class="flex justify-between"><span>Modo foco (grafo)</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+F</kbd></div>
+          <div class="flex justify-between"><span>Cerrar modales</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Esc</kbd></div>
+          <div class="flex justify-between"><span>Puntuar evaluación</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">1-5</kbd></div>
+          <div class="flex justify-between"><span>Navegar evaluación</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">← →</kbd></div>
+          <div class="flex justify-between"><span>Este panel</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">?</kbd></div>
         </div>
-      </template>
-      <button @click="modal=''" class="text-xs text-slate-400 mt-3 w-full text-center">Cancelar</button>
+      </div>
     </div>
-  </div>
+  </Transition>
 
+  <!-- Focus mode toggle button -->
+  <button v-if="view === 'subject' && tab === 'graph'"
+         @click="toggleFocusMode()"
+         class="fixed bottom-4 right-4 z-30 bg-indigo-600 text-white w-10 h-10 rounded-full shadow-lg hover:bg-indigo-700 transition flex items-center justify-center text-lg"
+         :title="focusMode ? 'Salir de modo foco' : 'Modo foco'">
+    {{ focusMode ? '✕' : '⛶' }}
+  </button>
+
+  <!-- Inspector Panel (slide‑over) -->
+  <Transition name="inspector">
+    <div v-if="inspectorConcept"
+         class="fixed inset-0 z-50 flex justify-end"
+         @click.self="closeInspector()">
+      <div class="w-full max-w-lg bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-700 shadow-2xl overflow-y-auto flex flex-col"
+           @click.stop>
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
+        <div>
+          <p class="text-xs text-slate-400 dark:text-slate-500 font-medium">Inspector de concepto</p>
+          <p class="font-bold text-base" v-text="currentSubject?.concepts.find(c=>c.id===inspectorConcept)?.name || 'Concepto'"></p>
+          <p v-if="currentSubject?.concepts.find(c=>c.id===inspectorConcept)?.description" class="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-relaxed" v-html="GC.md(currentSubject.concepts.find(c=>c.id===inspectorConcept).description)"></p>
+        </div>
+        <button @click="closeInspector()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg p-1">&times;</button>
+      </div>
+      <!-- Tabs -->
+      <div class="flex gap-0.5 px-4 pt-3 border-b border-slate-200 dark:border-slate-700 text-xs font-medium">
+        <button @click="inspectorTab='walkthrough'"
+                :class="inspectorTab==='walkthrough'?'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600':'text-slate-400'"
+                class="pb-2 px-2 transition">Walkthrough</button>
+        <button @click="inspectorTab='resources'"
+                :class="inspectorTab==='resources'?'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600':'text-slate-400'"
+                class="pb-2 px-2 transition">Recursos</button>
+      </div>
+      <!-- Tab: Walkthrough -->
+      <div v-show="inspectorTab==='walkthrough'" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
+        <div v-if="inspector?.isIsolated" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-3 text-amber-700 dark:text-amber-300 text-xs">
+          ⚠️ Este concepto está aislado: no tiene relaciones con otros conceptos.
+        </div>
+        <div v-if="inspector?.recommendation" class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+          <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Recomendación</p>
+          <p v-text="inspector.recommendation" class="leading-relaxed"></p>
+        </div>
+        <div v-if="inspector?.blockers?.length">
+          <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1">Bloqueado por</p>
+          <div class="space-y-1">
+            <div v-for="b in inspector.blockers" :key="b.id"
+                 @click="openInspector(b.id)"
+                 class="bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2 border border-red-100 dark:border-red-800/40 cursor-pointer hover:border-red-300 transition text-sm">
+              <span class="font-medium" v-text="b.name"></span>
+              <span v-if="b.score != null" class="ml-2" :style="'color:'+GC.heatColor(b.score)" v-text="Math.round(b.score)+'%'"></span>
+            </div>
+          </div>
+        </div>
+        <div v-if="inspector?.weakBlockers?.length">
+          <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">Necesitan refuerzo</p>
+          <div class="space-y-1">
+            <div v-for="b in inspector.weakBlockers" :key="b.id"
+                 @click="openInspector(b.id)"
+                 class="bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 border border-amber-100 dark:border-amber-800/40 cursor-pointer hover:border-amber-300 transition text-sm">
+              <span class="font-medium" v-text="b.name"></span>
+              <span class="ml-2" :style="'color:'+GC.heatColor(b.score)" v-text="Math.round(b.score)+'%'"></span>
+            </div>
+          </div>
+        </div>
+        <div v-if="inspector?.dependents?.length">
+          <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1">Conceptos que dependen de este</p>
+          <div class="space-y-1">
+            <div v-for="d in inspector.dependents" :key="d.id"
+                 @click="openInspector(d.id)"
+                 class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg px-3 py-2 border border-indigo-100 dark:border-indigo-800/40 cursor-pointer hover:border-indigo-300 transition text-sm">
+              <span class="font-medium" v-text="d.name"></span>
+              <span v-if="d.score != null" class="ml-2" :style="'color:'+GC.heatColor(d.score)" v-text="Math.round(d.score)+'%'"></span>
+            </div>
+          </div>
+        </div>
+        <div v-if="!inspector?.blockers?.length && !inspector?.dependents?.length && !inspector?.weakBlockers?.length" class="text-sm text-slate-400 py-4 text-center">
+          No hay relaciones para este concepto.
+        </div>
+      </div>
+      <!-- Tab: Recursos -->
+      <div v-show="inspectorTab==='resources'" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
+        <div v-if="inspectorConcept && currentSubject">
+          <div v-for="r in (currentSubject.concepts.find(c=>c.id===inspectorConcept)?.resources || [])" :key="r.id"
+               class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-lg px-3 py-2 border border-slate-200 dark:border-slate-700 mb-2">
+            <span class="text-xs text-slate-400 w-5" v-text="r.type==='link'?'🔗':'📝'"></span>
+            <div class="flex-1 min-w-0">
+              <a :href="r.url" target="_blank" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline truncate block" v-text="r.title"></a>
+            </div>
+            <button @click="removeResource(r.id)" class="text-red-400 hover:text-red-600 text-xs p-1">&times;</button>
+          </div>
+          <div v-if="!(currentSubject.concepts.find(c=>c.id===inspectorConcept)?.resources?.length)" class="text-sm text-slate-400 py-2 text-center">
+            Sin recursos añadidos.
+          </div>
+          <!-- Add resource form -->
+          <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">Añadir recurso</p>
+            <div class="flex gap-1 mb-2">
+              <button @click="newResourceType='link'"
+                      :class="newResourceType==='link'?'bg-indigo-600 text-white':'bg-slate-100 dark:bg-slate-700'"
+                      class="px-3 py-1 rounded text-xs font-medium">Enlace</button>
+              <button @click="newResourceType='note'"
+                      :class="newResourceType==='note'?'bg-indigo-600 text-white':'bg-slate-100 dark:bg-slate-700'"
+                      class="px-3 py-1 rounded text-xs font-medium">Nota</button>
+            </div>
+            <input v-model="newResourceUrl" :placeholder="newResourceType==='link'?'URL del recurso':'Texto de la nota'" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mb-2" />
+            <input v-model="newResourceTitle" placeholder="Título (opcional)" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mb-2" />
+            <button @click="addResource()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition">Añadir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
+
+  <!-- Onboarding overlay -->
+  <Transition name="modal">
+    <div v-if="showOnboarding" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 dark:bg-black/70">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-700 mx-4">
+        <!-- Step indicator -->
+        <div class="flex gap-1 mb-6">
+          <div v-for="s in onboardingSteps.length" :key="s"
+               class="h-1 flex-1 rounded-full transition"
+               :class="s - 1 === onboardingStep ? 'bg-indigo-600' : s - 1 < onboardingStep ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'"></div>
+        </div>
+
+        <!-- Step 0: Welcome -->
+        <div v-if="onboardingStep === 0" class="text-center space-y-3">
+          <p class="text-5xl">🧠</p>
+          <h3 class="text-xl font-bold">Bienvenido a Ruta de Estudio</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Conecta conceptos, domina tu ruta. Estudia con propósito.
+          </p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Organiza tus asignaturas como un grafo interactivo. Define conceptos, conéctalos con relaciones, evalúa tu dominio y obtén un plan de estudio personalizado con Pomodoro incluido.
+          </p>
+          <p class="text-xs text-slate-400 dark:text-slate-500">Todo funciona 100% offline. Tus datos se guardan en el navegador.</p>
+        </div>
+
+        <!-- Step 1: Create subject -->
+        <div v-if="onboardingStep === 1" class="text-center space-y-3">
+          <p class="text-5xl">📋</p>
+          <h3 class="text-xl font-bold">Crea tu primera asignatura</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Haz clic en <strong>"+ Nueva"</strong> o elige una <strong>plantilla educativa</strong> prediseñada con conceptos y relaciones ya creados. Tenemos plantillas de ESO, Bachillerato, FP Informática, FP Administrativo y transversales.
+          </p>
+          <p class="text-xs text-slate-400">Los profesores pueden preparar la asignatura en 2 clics.</p>
+        </div>
+
+        <!-- Step 2: Concepts -->
+        <div v-if="onboardingStep === 2" class="text-center space-y-3">
+          <p class="text-5xl">📘</p>
+          <h3 class="text-xl font-bold">Añade conceptos</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Cada concepto tiene nombre, descripción, peso/dificultad y etiquetas. Puedes añadirlos uno a uno, importarlos desde CSV o generarlos con IA.
+          </p>
+          <p class="text-xs text-slate-400">También puedes editar el nombre y descripción con doble clic.</p>
+        </div>
+
+        <!-- Step 3: Relations -->
+        <div v-if="onboardingStep === 3" class="text-center space-y-3">
+          <p class="text-5xl">🔗</p>
+          <h3 class="text-xl font-bold">Conecta conceptos</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Las relaciones definen cómo se conectan los conceptos: <strong>prerrequisito</strong> (A antes que B), <strong>pertenece</strong> (subconcepto), <strong>relacionado</strong> o <strong>profundiza</strong>.
+          </p>
+          <p class="text-xs text-slate-400">Puedes crearlas desde el formulario o haciendo clic en el grafo.</p>
+        </div>
+
+        <!-- Step 4: Evaluate -->
+        <div v-if="onboardingStep === 4" class="text-center space-y-3">
+          <p class="text-5xl">📊</p>
+          <h3 class="text-xl font-bold">Evalúa tu dominio</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Puntúa cada concepto del 0 al 100% según tu nivel. Usa la evaluación uno a uno con las teclas <kbd>1</kbd> a <kbd>5</kbd>, o la evaluación masiva con sliders.
+          </p>
+          <p class="text-xs text-slate-400">Puedes hacer tantas evaluaciones como quieras y ver tu evolución.</p>
+        </div>
+
+        <!-- Step 5: Study plan -->
+        <div v-if="onboardingStep === 5" class="text-center space-y-3">
+          <p class="text-5xl">🛤️</p>
+          <h3 class="text-xl font-bold">Sigue tu plan de estudio</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            En la pestaña <strong>Resultados</strong> verás qué repasar (rojo), qué reforzar (amarillo) y qué dominas (verde). Usa los algoritmos BFS, DFS o el <strong>🔥 Desbloqueador</strong> para priorizar.
+          </p>
+          <p class="text-xs text-slate-400">También puedes usar el modo estudio con flashcards para repasar visualmente.</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <button @click="onboardingStep > 0 ? onboardingStep-- : null"
+                  :class="onboardingStep === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'"
+                  class="text-sm font-medium text-slate-500 dark:text-slate-400 px-4 py-2 rounded-lg transition">← Anterior</button>
+          <div class="flex gap-1">
+            <span v-for="s in onboardingSteps.length" :key="s"
+                  class="w-2 h-2 rounded-full transition cursor-pointer"
+                  :class="s - 1 === onboardingStep ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'"
+                  @click="onboardingStep = s - 1"></span>
+          </div>
+          <button v-if="onboardingStep < onboardingSteps.length - 1"
+                  @click="onboardingStep++"
+                  class="bg-indigo-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-indigo-700 transition">Siguiente →</button>
+          <button v-if="onboardingStep === onboardingSteps.length - 1"
+                  @click="closeOnboarding()"
+                  class="bg-green-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-green-700 transition">🚀 ¡Empezar!</button>
+        </div>
+
+        <button @click="closeOnboarding()" class="text-xs text-slate-400 dark:text-slate-500 mt-3 w-full text-center hover:underline">Saltar tutorial</button>
+      </div>
+    </div>
+  </Transition>
+
+  <!-- Bootloader: loads scripts in order with CDN + local fallback -->
   <script>
-    function app() {
-      return {
-        subjects: [],
-        assessments: [],
-        view: 'subjects',
-        tab: 'concepts',
-        currentSubject: null,
-        modal: '',
-        modalTitle: '',
-        editName: '', editDesc: '',
-        editConceptName: '', editConceptDesc: '', editConceptWeight: 5, editConceptIdx: -1,
-        currentRelationType: 'prerrequisito',
-        network: null,
-        assessIndex: 0,
-        assessScores: {},
-        assessNotes: {},
-        lastAssessment: null,
+    (function() {
+      var queue = [
+        { src: 'https://unpkg.com/vue@3/dist/vue.global.prod.js', fallback: 'fallback/vue.global.prod.js' },
+        { src: 'https://unpkg.com/vis-network@9.1.9/dist/vis-network.min.js', fallback: 'fallback/vis-network.min.js' },
+        { src: 'js/helpers.js' },
+        { src: 'js/store.js' },
+        { src: 'js/graph-engine.js' },
+        { src: 'js/study-plan.js' },
+        { src: 'components/subject-list.js' },
+        { src: 'components/global-graph.js' },
+        { src: 'components/suggestions-panel.js' },
+        { src: 'components/help-modal.js' },
+        { src: 'components/ai-generator.js' },
+        { src: 'js/templates.js' },
+        { src: 'js/editor.js' },
+        { src: 'js/study.js' },
+        { src: 'js/app.js' }
+      ];
 
-        init() {
-          const d = JSON.parse(localStorage.getItem('grafo-conocimiento') || 'null');
-          if (d) { this.subjects = d.subjects || []; this.assessments = d.assessments || []; }
-        },
-        save() {
-          localStorage.setItem('grafo-conocimiento', JSON.stringify({ subjects: this.subjects, assessments: this.assessments }));
-        },
-
-        // Subjects
-        addSubject() {
-          this.modal = 'subject'; this.modalTitle = 'Nueva asignatura';
-          this.editName = ''; this.editDesc = '';
-        },
-        editSubject() {
-          this.modal = 'subject'; this.modalTitle = 'Editar asignatura';
-          this.editName = this.currentSubject.name;
-          this.editDesc = this.currentSubject.description || '';
-        },
-        saveSubject() {
-          if (!this.editName.trim()) return;
-          if (this.currentSubject && this.modalTitle.includes('Editar')) {
-            this.currentSubject.name = this.editName.trim();
-            this.currentSubject.description = this.editDesc.trim();
+      function load(idx) {
+        if (idx >= queue.length) return;
+        var entry = queue[idx];
+        var s = document.createElement('script');
+        s.src = entry.src;
+        s.onload = function() { load(idx + 1); };
+        s.onerror = function() {
+          if (entry.fallback) {
+            var f = document.createElement('script');
+            f.src = entry.fallback;
+            f.onload = function() { load(idx + 1); };
+            f.onerror = function() { load(idx + 1); };
+            document.head.appendChild(f);
           } else {
-            this.subjects.push({ id: crypto.randomUUID(), name: this.editName.trim(), description: this.editDesc.trim(), concepts: [], relations: [] });
+            load(idx + 1);
           }
-          this.modal = ''; this.save();
-        },
-        selectSubject(s) {
-          this.currentSubject = s; this.view = 'subject'; this.tab = 'concepts';
-          this.lastAssessment = this.subjectAssessments()[0] || null;
-        },
-        deleteSubject() {
-          if (confirm('¿Borrar "' + this.currentSubject.name + '"?')) {
-            this.subjects = this.subjects.filter(s => s.id !== this.currentSubject.id);
-            this.view = 'subjects'; this.destroyGraph(); this.save();
-          }
-        },
-
-        // Concepts
-        addConcept() {
-          this.modal = 'concept'; this.modalTitle = 'Nuevo concepto';
-          this.editConceptName = ''; this.editConceptDesc = ''; this.editConceptWeight = 5; this.editConceptIdx = -1;
-        },
-        editConcept(i) {
-          const c = this.currentSubject.concepts[i];
-          this.modal = 'concept'; this.modalTitle = 'Editar concepto';
-          this.editConceptName = c.name; this.editConceptDesc = c.description || ''; this.editConceptWeight = c.weight;
-          this.editConceptIdx = i;
-        },
-        saveConcept() {
-          if (!this.editConceptName.trim()) return;
-          const data = { name: this.editConceptName.trim(), description: this.editConceptDesc.trim(), weight: Math.max(1, Math.min(10, parseInt(this.editConceptWeight) || 5)) };
-          if (this.editConceptIdx >= 0) {
-            Object.assign(this.currentSubject.concepts[this.editConceptIdx], data);
-          } else {
-            data.id = crypto.randomUUID();
-            this.currentSubject.concepts.push(data);
-          }
-          this.modal = ''; this.save();
-        },
-        deleteConcept(i) {
-          const c = this.currentSubject.concepts[i];
-          this.currentSubject.concepts.splice(i, 1);
-          this.currentSubject.relations = this.currentSubject.relations.filter(r => r.from !== c.id && r.to !== c.id);
-          this.save();
-        },
-        conceptName(id) {
-          const c = this.currentSubject.concepts.find(x => x.id === id);
-          return c ? c.name : '?';
-        },
-        addRelation(from, to) {
-          if (from === to) return;
-          if (this.currentSubject.relations.some(r => r.from === from && r.to === to)) return;
-          this.currentSubject.relations.push({ from, to, type: this.currentRelationType });
-          this.save();
-        },
-        deleteRelation(i) {
-          this.currentSubject.relations.splice(i, 1); this.save();
-          if (this.network) this.renderGraph();
-        },
-
-        // Graph (vis-network)
-        destroyGraph() { if (this.network) { this.network.destroy(); this.network = null; } },
-        renderGraph() {
-          this.destroyGraph();
-          const container = document.getElementById('graph-container');
-          if (!container || this.currentSubject.concepts.length === 0) return;
-          const nodes = this.currentSubject.concepts.map(c => ({
-            id: c.id, label: c.name + (c.weight ? '\n[peso: ' + c.weight + ']' : ''), shape: 'ellipse',
-            color: { background: '#e0e7ff', border: '#6366f1', highlight: { background: '#c7d2fe', border: '#4f46e5' } },
-            font: { family: 'Inter', size: 14 }
-          }));
-          const colors = { prerrequisito: '#3b82f6', pertenece: '#22c55e', relacionado: '#f59e0b', profundiza: '#a855f7' };
-          const dashes = { prerrequisito: false, pertenece: [10, 5], relacionado: [5, 5], profundiza: false };
-          const widths = { prerrequisito: 2, pertenece: 2, relacionado: 1, profundiza: 3 };
-          const edges = this.currentSubject.relations.map(r => ({
-            from: r.from, to: r.to, label: r.type,
-            color: { color: colors[r.type] || '#94a3b8', highlight: colors[r.type] || '#94a3b8' },
-            dashes: dashes[r.type] || false, width: widths[r.type] || 2,
-            arrows: r.type !== 'relacionado' ? 'to' : undefined,
-            font: { size: 10, color: '#64748b' }
-          }));
-          const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
-          const options = {
-            layout: { hierarchical: { enabled: false, sortMethod: 'directed' } },
-            physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -40, centralGravity: 0.005, springLength: 150, springConstant: 0.02 } },
-            interaction: { hover: true, tooltipDelay: 200 },
-            edges: { smooth: true }
-          };
-          this.network = new vis.Network(container, data, options);
-          let clickCount = 0, clickFrom = null;
-          this.network.on('click', (params) => {
-            if (params.nodes.length > 0) {
-              const id = params.nodes[0];
-              if (clickFrom === null) { clickFrom = id; clickCount = 1; }
-              else if (clickFrom !== id) {
-                this.addRelation(clickFrom, id);
-                clickFrom = null; clickCount = 0;
-                this.renderGraph();
-              } else { clickFrom = null; clickCount = 0; }
-            }
-          });
-        },
-
-        // Assessment
-        startAssessment() {
-          this.assessIndex = 0; this.assessScores = {}; this.assessNotes = {};
-          this.tab = 'assess';
-        },
-        nextConcept() {
-          if (this.assessIndex < this.currentSubject.concepts.length - 1) this.assessIndex++;
-        },
-        prevConcept() {
-          if (this.assessIndex > 0) this.assessIndex--;
-        },
-        submitAssessment() {
-          const results = {};
-          this.currentSubject.concepts.forEach(c => {
-            results[c.id] = this.assessScores[c.id] || 0;
-          });
-          const a = { id: crypto.randomUUID(), subjectId: this.currentSubject.id, date: new Date().toISOString(), results, notes: { ...this.assessNotes } };
-          this.assessments.unshift(a);
-          this.lastAssessment = a;
-          this.save();
-          this.tab = 'results';
-          setTimeout(() => this.renderHeatGraph(), 200);
-        },
-        subjectAssessments() {
-          return this.assessments.filter(a => a.subjectId === this.currentSubject.id);
-        },
-
-        // Stats
-        stats() {
-          const r = this.lastAssessment;
-          if (!r) return { red: 0, yellow: 0, green: 0 };
-          let red = 0, yellow = 0, green = 0;
-          Object.values(r.results).forEach(v => {
-            if (v < 40) red++; else if (v < 70) yellow++; else green++;
-          });
-          return { red, yellow, green };
-        },
-        heatCount(results, type) {
-          let count = 0;
-          Object.values(results).forEach(v => {
-            if (type === 'red' && v < 40) count++;
-            else if (type === 'yellow' && v >= 40 && v < 70) count++;
-            else if (type === 'green' && v >= 70) count++;
-          });
-          return count;
-        },
-
-        // Study plan (BFS)
-        studyPlan() {
-          const r = this.lastAssessment;
-          if (!r || !this.currentSubject) return { repasar: [], reforzar: [], avanzar: [] };
-          const cat = { repasar: [], reforzar: [], avanzar: [] };
-          const getRec = (id, mastery) => {
-            const c = this.currentSubject.concepts.find(x => x.id === id);
-            if (!c) return '';
-            if (mastery < 40) {
-              const prereqs = this.currentSubject.relations.filter(x => x.to === id && x.type === 'prerrequisito');
-              if (prereqs.some(p => (r.results[p.from] || 0) < 40))
-                return '⚠️ Tiene prerrequisitos sin dominar. Repasa primero: ' + prereqs.filter(p => (r.results[p.from] || 0) < 40).map(p => this.conceptName(p.from)).join(', ');
-              return '📖 Repasa: ' + c.name + '. Practica con ejercicios básicos.';
-            }
-            if (mastery < 70) {
-              const next = this.currentSubject.relations.filter(x => x.from === id && x.type === 'prerrequisito');
-              if (next.length > 0)
-                return '📈 Sólido. Puedes avanzar a: ' + next.map(x => this.conceptName(x.to)).join(', ');
-              return '📈 Refuerza con ejercicios de nivel medio.';
-            }
-            const next = this.currentSubject.relations.filter(x => x.from === id && x.type === 'prerrequisito');
-            if (next.length > 0)
-              return '✅ Dominado. Siguiente: ' + next.map(x => this.conceptName(x.to) + ((r.results[x.to] || 0) < 70 ? ' (pendiente)' : '')).join(', ');
-            return '✅ Dominado. No hay más conceptos que dependan de este.';
-          };
-          // BFS: sort by prerequisite depth
-          const visited = new Set();
-          const queue = [];
-          const inDegree = {};
-          this.currentSubject.concepts.forEach(c => { inDegree[c.id] = 0; });
-          this.currentSubject.relations.filter(r2 => r2.type === 'prerrequisito').forEach(r2 => { inDegree[r2.to] = (inDegree[r2.to] || 0) + 1; });
-          const roots = this.currentSubject.concepts.filter(c => (inDegree[c.id] || 0) === 0);
-          roots.forEach(c => queue.push(c.id));
-          const sorted = [];
-          while (queue.length > 0) {
-            const id = queue.shift();
-            if (visited.has(id)) continue;
-            visited.add(id);
-            sorted.push(id);
-            this.currentSubject.relations.filter(r2 => r2.from === id && r2.type === 'prerrequisito').forEach(r2 => {
-              inDegree[r2.to] = (inDegree[r2.to] || 0) - 1;
-              if (inDegree[r2.to] === 0) queue.push(r2.to);
-            });
-          }
-          // Add orphaned nodes
-          this.currentSubject.concepts.forEach(c => { if (!visited.has(c.id)) sorted.push(c.id); });
-          sorted.forEach(id => {
-            const m = r.results[id] || 0;
-            const c = this.currentSubject.concepts.find(x => x.id === id);
-            if (!c) return;
-            const item = { id, name: c.name, mastery: m, recommendation: getRec(id, m) };
-            if (m < 40) cat.repasar.push(item);
-            else if (m < 70) cat.reforzar.push(item);
-            else cat.avanzar.push(item);
-          });
-          return cat;
-        },
-
-        // Heat graph
-        renderHeatGraph() {
-          const container = document.getElementById('graph-heat-container');
-          if (!container || !this.lastAssessment || this.currentSubject.concepts.length === 0) return;
-          const colors = this.currentSubject.concepts.map(c => {
-            const s = this.lastAssessment.results[c.id] || 0;
-            let bg, border;
-            if (s < 40) { bg = '#fecaca'; border = '#ef4444'; }
-            else if (s < 70) { bg = '#fef08a'; border = '#eab308'; }
-            else { bg = '#bbf7d0'; border = '#22c55e'; }
-            return { id: c.id, label: c.name + '\n' + s + '%', shape: 'ellipse', color: { background: bg, border, highlight: { background: bg, border } }, font: { size: 13, face: 'Inter' } };
-          });
-          const edges = this.currentSubject.relations.map(r => ({
-            from: r.from, to: r.to, label: r.type, color: { color: '#94a3b8' }, font: { size: 9 },
-            dashes: r.type === 'relacionado' || r.type === 'pertenece', arrows: r.type !== 'relacionado' ? 'to' : undefined
-          }));
-          const data = { nodes: new vis.DataSet(colors), edges: new vis.DataSet(edges) };
-          const options = { layout: { hierarchical: { enabled: false } }, physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 140 } }, interaction: { hover: true } };
-          new vis.Network(container, data, options);
-        },
-
-        // Persistence
-        exportData() {
-          const blob = new Blob([JSON.stringify({ subjects: this.subjects, assessments: this.assessments }, null, 2)], { type: 'application/json' });
-          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'grafo-conocimiento.json'; a.click();
-        },
-        importData() {
-          const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
-          input.onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-              try {
-                const d = JSON.parse(ev.target.result);
-                if (d.subjects) this.subjects = d.subjects;
-                if (d.assessments) this.assessments = d.assessments;
-                this.save();
-                alert('Datos importados correctamente');
-              } catch (err) { alert('Error al importar: ' + err.message); }
-            };
-            reader.readAsText(e.target.files[0]);
-          };
-          input.click();
-        }
-      };
-    }
+        };
+        document.head.appendChild(s);
+      }
+      load(0);
+    })();
   </script>
 </body>
 </html>

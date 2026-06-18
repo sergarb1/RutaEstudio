@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual — Ruta de Estudio</title>
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = { darkMode: 'class' };
+    (function() {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.tailwindcss.com';
+      s.onerror = function() {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'fallback/tailwind.min.css';
+        document.head.appendChild(link);
+      };
+      document.head.appendChild(s);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+    .toc a { transition: color 0.15s; }
+    .toc a:hover { color: #6366f1; }
+    kbd { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Header -->
+    <header class="mb-10">
+      <h1 class="text-4xl font-black text-indigo-600">\uD83E\uDDE0 Ruta de Estudio</h1>
+      <p class="text-base text-indigo-500 dark:text-indigo-400 mt-1 italic">Conecta conceptos, domina tu ruta. Estudia con prop\u00f3sito.</p>
+      <p class="text-lg text-slate-500 mt-1">Manual completo de usuario</p>
+      <p class="text-sm text-slate-400 mt-1">Versión PRO — 100% offline, sin build step</p>
+    </header>
+
+    <!-- TOC -->
+    <nav class="toc mb-10 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
+      <h2 class="font-bold text-lg mb-3">\uD83D\uDCD6 Índice</h2>
+      <ol class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-sm list-decimal ml-5">
+        <li><a href="#intro" class="text-indigo-600 hover:underline">Introducción</a></li>
+        <li><a href="#start" class="text-indigo-600 hover:underline">Primeros pasos</a></li>
+        <li><a href="#subjects" class="text-indigo-600 hover:underline">Asignaturas</a></li>
+        <li><a href="#templates" class="text-indigo-600 hover:underline">Plantillas educativas</a></li>
+        <li><a href="#concepts" class="text-indigo-600 hover:underline">Conceptos</a></li>
+        <li><a href="#relations" class="text-indigo-600 hover:underline">Relaciones</a></li>
+        <li><a href="#graph" class="text-indigo-600 hover:underline">Grafo</a></li>
+        <li><a href="#tree" class="text-indigo-600 hover:underline">Árbol de dependencias</a></li>
+        <li><a href="#assess" class="text-indigo-600 hover:underline">Evaluaciones</a></li>
+        <li><a href="#results" class="text-indigo-600 hover:underline">Resultados</a></li>
+        <li><a href="#history" class="text-indigo-600 hover:underline">Historial</a></li>
+        <li><a href="#study" class="text-indigo-600 hover:underline">Modo estudio</a></li>
+        <li><a href="#inspector" class="text-indigo-600 hover:underline">Inspector</a></li>
+        <li><a href="#tags" class="text-indigo-600 hover:underline">Etiquetas</a></li>
+        <li><a href="#search" class="text-indigo-600 hover:underline">Búsqueda global</a></li>
+        <li><a href="#undoredo" class="text-indigo-600 hover:underline">Deshacer/Rehacer</a></li>
+        <li><a href="#io" class="text-indigo-600 hover:underline">Exportar/Importar</a></li>
+        <li><a href="#csv" class="text-indigo-600 hover:underline">CSV</a></li>
+        <li><a href="#ai" class="text-indigo-600 hover:underline">Generador IA</a></li>
+        <li><a href="#shortcuts" class="text-indigo-600 hover:underline">Atajos</a></li>
+        <li><a href="#dark" class="text-indigo-600 hover:underline">Modo oscuro</a></li>
+        <li><a href="#onboarding" class="text-indigo-600 hover:underline">Onboarding</a></li>
+        <li><a href="#backup" class="text-indigo-600 hover:underline">Auto-backup</a></li>
+        <li><a href="#data" class="text-indigo-600 hover:underline">Modelo de datos</a></li>
+        <li><a href="#tips" class="text-indigo-600 hover:underline">Consejos</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1. Intro -->
+    <section id="intro" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">1. Introducción</h2>
+      <p class="text-slate-600 leading-relaxed mb-3">
+        <strong>Ruta de Estudio</strong> es una aplicación web 100% offline para crear mapas conceptuales 
+        interactivos, evaluar tu dominio de cada tema y generar planes de estudio personalizados con temporizador Pomodoro.
+      </p>
+      <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 text-sm text-indigo-800">
+        <strong>Stack:</strong> Vue 3 + Tailwind CSS + vis-network &middot; Todo en un HTML, sin npm, sin build.
+        Los datos se guardan en <code class="bg-indigo-100 px-1 rounded">localStorage</code>.
+      </div>
+    </section>
+
+    <!-- 2. Start -->
+    <section id="start" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">2. Primeros pasos</h2>
+      <ol class="space-y-2 text-slate-600 list-decimal ml-5 leading-relaxed">
+        <li><strong>Crea una asignatura</strong> desde la pantalla principal con el botón "+ Nueva" o desde una de las <strong>32 plantillas educativas</strong>.</li>
+        <li><strong>Añade conceptos</strong> (temas, unidades, habilidades) con el botón "+ Añadir".</li>
+        <li><strong>Conéctalos</strong> en la pestaña Grafo: haz clic en un concepto (origen) y luego en otro (destino).</li>
+        <li><strong>Evalúa tu dominio</strong> en la pestaña Evaluar, concepto por concepto o en modo Masivo.</li>
+        <li><strong>Revisa tu plan</strong> en Resultados: roadmap, mapa de calor, gráfico de progreso.</li>
+      </ol>
+      <p class="mt-3 text-sm text-slate-400">La primera vez verás un tutorial interactivo de 6 pasos. También puedes generar datos con IA o importar un JSON existente.</p>
+    </section>
+
+    <!-- 3. Subjects -->
+    <section id="subjects" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">3. Asignaturas</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Desde la pantalla principal puedes gestionar todas tus asignaturas:</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><strong>+ Nueva</strong> &mdash; crea una asignatura con nombre y descripción.</li>
+          <li><strong>\uD83E\uDD16 IA</strong> &mdash; abre el generador con inteligencia artificial.</li>
+          <li><strong>\u2753 Ayuda</strong> &mdash; guía rápida y formato de datos.</li>
+          <li><strong>\uD83D\uDEE0️ Exportar / Importar</strong> &mdash; copia de seguridad completa en JSON.</li>
+          <li><strong>\uD83D\uDCCB Plantilla</strong> &mdash; descarga un JSON de ejemplo rellenable.</li>
+          <li><strong>\u2B07 Importar asignatura</strong> &mdash; importa una sola asignatura desde un JSON.</li>
+        </ul>
+        <p>Al hacer clic en una asignatura entras en su vista detallada con todas las pestañas.</p>
+        <p class="text-sm bg-slate-100 rounded-xl p-3">
+          Si tienes 2+ asignaturas, aparece el botón <strong>\uD83D\uDD17 Ver grafo global</strong> para visualizar 
+          relaciones entre conceptos de distintas materias.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3b. Templates -->
+    <section id="templates" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">3b. Plantillas educativas</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Al crear una asignatura, el modal ofrece dos pestañas:</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><strong>Desde cero</strong> &mdash; creas la asignatura con nombre y descripción manualmente.</li>
+          <li><strong>Desde plantilla</strong> &mdash; seleccionas entre <strong>32 módulos prediseñados</strong> organizados por nivel educativo.</li>
+        </ul>
+        <div class="grid gap-2 sm:grid-cols-2 mt-3">
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">ESO (6 módulos)</h4>
+            <p class="text-xs text-slate-500 mt-1">Matemáticas 1º-3º, Lengua, Biología, Geografía e Historia, Física y Química, Inglés</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">Bachillerato (8 módulos)</h4>
+            <p class="text-xs text-slate-500 mt-1">Matemáticas I y II, Lengua, Historia de España, Química, Biología, Inglés, Historia del Arte</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">FP Informática (10 módulos)</h4>
+            <p class="text-xs text-slate-500 mt-1">Programación, Bases de Datos, Entornos de Desarrollo, Sistemas, Lenguajes de Marcas, FOL, Inglés Técnico, Despliegue, Interfaces, Empresa</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">FP Administrativo (6 módulos)</h4>
+            <p class="text-xs text-slate-500 mt-1">Ofimática, Gestión Administrativa, RRHH, Contabilidad, Comunicación Empresarial, FOL</p>
+          </div>
+        </div>
+        <p class="text-sm bg-indigo-50 rounded-xl p-3">
+          Cada plantilla incluye conceptos con peso y descripción, y relaciones de prerrequisito predefinidas. 
+          Al seleccionarla, se genera una asignatura completa con IDs únicos.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Concepts -->
+    <section id="concepts" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">4. Conceptos</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Cada asignatura contiene conceptos. Cada concepto tiene:</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><strong>Nombre</strong> (único recomendado, se detectan duplicados)</li>
+          <li><strong>Descripción</strong> con soporte <a href="#markdown" class="text-indigo-600 hover:underline">Markdown</a></li>
+          <li><strong>Peso/dificultad</strong> del 1 al 10 (afecta al tamaño del nodo en el grafo y al algoritmo Desbloqueador)</li>
+          <li><strong>Etiquetas</strong> separadas por coma para categorizar</li>
+        </ul>
+
+        <h3 class="font-bold text-base mt-4">\uD83D\uDCDC Lista de conceptos</h3>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><strong>Buscar</strong> filtra por nombre, descripción o etiqueta.</li>
+          <li><strong>Filtro por etiqueta</strong> desplegable junto al buscador.</li>
+          <li><strong>Drag & drop</strong> arrastra por el número para reordenar.</li>
+          <li><strong>Edición inline:</strong> doble clic en nombre o descripción para editar sin modal.</li>
+          <li><strong>\uD83D\uDD0D</strong> abre el Inspector de concepto.</li>
+          <li><strong>\u270F️</strong> edita en el modal completo (incluye peso y etiquetas).</li>
+          <li><strong>CSV / \uD83D\uDCE5 CSV</strong> exporta/importa en formato hoja de cálculo.</li>
+          <li><strong>\uD83C\uDFF7️ Etiquetar</strong> modo masivo: marca varios conceptos y asigna una etiqueta a todos.</li>
+        </ul>
+
+        <h3 id="markdown" class="font-bold text-base mt-4">\uD83D\uDCDD Markdown en descripciones</h3>
+        <p>Las descripciones soportan formato básico:</p>
+        <div class="bg-slate-100 rounded-xl p-4 text-sm space-y-1">
+          <code><span class="text-slate-500">**</span>negrita<span class="text-slate-500">**</span></code> &rarr; <strong>negrita</strong><br>
+          <code><span class="text-slate-500">*</span>cursiva<span class="text-slate-500">*</span></code> &rarr; <em>cursiva</em><br>
+          <code><span class="text-slate-500">`</span>código<span class="text-slate-500">`</span></code> &rarr; <code>código</code><br>
+          <code><span class="text-slate-500">[texto](</span>url<span class="text-slate-500">)</span></code> &rarr; <a class="text-indigo-600 hover:underline">enlace</a><br>
+          <code><span class="text-slate-500">- </span>elemento</code> &rarr; lista con viñetas
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Relations -->
+    <section id="relations" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">5. Relaciones</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Hay 4 tipos de relación entre conceptos:</p>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-1"><span class="w-4 h-0.5 bg-blue-500"></span> <strong>Prerrequisito</strong></div>
+            <p class="text-sm text-slate-500">A debe saberse antes que B. Relación direccional.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-1"><span class="w-4 h-0.5 bg-green-500" style="border-top:2px dashed #22c55e;height:0"></span> <strong>Pertenece</strong></div>
+            <p class="text-sm text-slate-500">A es subconcepto de B. Relación jerárquica.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-2"><span class="w-4 border-t border-dotted border-amber-500 h-0"></span> <strong>Relacionado</strong></div>
+            <p class="text-sm text-slate-500">Conexión bidireccional débil. Sin flecha.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-1"><span class="w-4 h-0.5 bg-purple-500" style="height:3px"></span> <strong>Profundiza</strong></div>
+            <p class="text-sm text-slate-500">A profundiza o amplía B. Trazo más grueso.</p>
+          </div>
+        </div>
+        <p class="mt-2">Las relaciones se crean desde el <strong>grafo</strong> (clic → clic) o desde el formulario en la pestaña Conceptos. No se permiten relaciones duplicadas ni de un concepto consigo mismo.</p>
+      </div>
+    </section>
+
+    <!-- 6. Graph -->
+    <section id="graph" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">6. Grafo</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Visualización interactiva con <strong>vis-network</strong>. Cada nodo es un concepto; las aristas son relaciones.</p>
+
+        <h3 class="font-bold text-base">Interacción</h3>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><strong>Arrastrar nodos</strong> &mdash; la posición se guarda automáticamente.</li>
+          <li><strong>Crear relación</strong> &mdash; selecciona el tipo (botones coloridos) y haz clic en origen → destino.</li>
+          <li><strong>Zoom</strong> con scroll o gesto táctil.</li>
+          <li><strong>Tooltips</strong> al pasar el ratón sobre un nodo.</li>
+        </ul>
+
+        <h3 class="font-bold text-base">\uD83D\uDCD6 Leyenda</h3>
+        <p>Botón <strong>Leyenda</strong> en la esquina superior derecha del grafo. Muestra los tipos de relación con sus colores y los rangos de puntuación.</p>
+
+        <h3 class="font-bold text-base">\uD83D\uDD0D Filtros</h3>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><strong>Por tipo de relación</strong> &mdash; dropdown que filtra las aristas visibles.</li>
+          <li><strong>Peso mínimo</strong> &mdash; slider que oculta conceptos por debajo del peso indicado.</li>
+        </ul>
+
+        <h3 class="font-bold text-base">\uD83D\uDDA5️ Modo foco (<kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs">Ctrl+F</kbd>)</h3>
+        <p>Pantalla completa sin distracciones: oculta header, tabs y filtros. Botón flotante \u2716 para salir.</p>
+      </div>
+    </section>
+
+    <!-- 7. Tree -->
+    <section id="tree" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">7. Árbol de dependencias</h2>
+      <p class="text-slate-600 leading-relaxed">
+        La pestaña <strong>Árbol</strong> muestra una vista jerárquica de los prerrequisitos. 
+        Los conceptos raíz (sin prerrequisitos) aparecen en el nivel superior, con sus dependientes anidados.
+        Cada entrada muestra el score de la última evaluación y el número de bloqueadores.
+        Haz clic en cualquier concepto para abrir el Inspector.
+      </p>
+    </section>
+
+    <!-- 8. Assess -->
+    <section id="assess" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">8. Evaluaciones</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Evalúa tu dominio de cada concepto del 0% al 100%. Dos modos:</p>
+
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-base">\uD83D\uDCDD Individual</h3>
+          <p class="text-sm text-slate-500 mt-1">Concepto por concepto con navegación \u2190 \u2192. Puntúa con botones del 1 al 5 (o teclado). Notas opcionales por concepto.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-base">\uD83D\uDCCB Masivo</h3>
+          <p class="text-sm text-slate-500 mt-1">Todos los conceptos en una tabla con sliders. Pre-rellena con la última evaluación si existe. Útil para reevaluaciones rápidas.</p>
+        </div>
+
+        <p class="text-sm bg-slate-100 rounded-xl p-3">
+          Al guardar, aparece un <strong>toast</strong> con botón \u21A9 Deshacer para eliminar la evaluación recién creada.
+        </p>
+      </div>
+    </section>
+
+    <!-- 9. Results -->
+    <section id="results" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">9. Resultados</h2>
+      <div class="space-y-4 text-slate-600 leading-relaxed">
+
+        <div>
+          <h3 class="font-bold text-base">\uD83D\uDCCA Resumen</h3>
+          <p>Porcentaje global, conteo de conceptos en verde/ámbar/rojo y fecha de la evaluación.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83D\uDEE4️ Roadmap de estudio</h3>
+          <p>Tres grupos ordenados por prioridad:</p>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li><span class="text-red-600 font-medium">\uD83D\uDD34 Ahora</span> &mdash; conceptos con &lt;40% sin bloqueadores (prioritarios).</li>
+            <li><span class="text-amber-600 font-medium">\uD83D\uDFE1 Siguiente</span> &mdash; entre 40-70% o dominados que desbloquean otros.</li>
+            <li><span class="text-slate-400 font-medium">\u26AA Pronto</span> &mdash; bloqueados por prerreq. débiles o dominados sin dependientes.</li>
+          </ul>
+          <p class="text-sm mt-1">Ordenado por <strong>unlockScore</strong> (potencial de desbloqueo).</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83C\uDFAF Plan de estudio (BFS / DFS / Desbloqueador)</h3>
+          <p>Tres algoritmos para generar el orden de estudio recomendado:</p>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li><strong>BFS</strong> &mdash;先优先级（先学习先修课程）</li>
+            <li><strong>DFS</strong> &mdash; 深度优先，深入后再拓宽</li>
+            <li><strong>\uD83D\uDD25 Desbloqueador</strong> &mdash; prioriza conceptos con más potencial de desbloqueo: <code>dependientes × (100 − mastery) × weight</code></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83C\uDFA8 Mapa de calor</h3>
+          <p>Grafo coloreado por nivel de dominio: verde (>70%), amarillo (40-70%), rojo (<40%). 
+          <strong>Haz clic en cualquier nodo</strong> para abrir el Inspector de concepto.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83D\uDCC8 Evolución</h3>
+          <p>Gráfico SVG de la puntuación global en el tiempo con línea de tendencia. Aparece cuando hay 2 o más evaluaciones. El indicador +X% o -X% muestra la tendencia general.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83D\uDCE4 Exportar plan de estudio</h3>
+          <p>Botón <strong>Exportar plan .txt</strong> que genera un documento imprimible con:</p>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li>Asignatura, fecha y algoritmo usado</li>
+            <li>Grupos de <strong>Repasar</strong> (&lt;40%), <strong>Reforzar</strong> (40-70%) y <strong>Avanzar</strong> (&gt;70%)</li>
+            <li><strong>Roadmap</strong> completo (ahora / siguiente / pronto)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. History -->
+    <section id="history" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">10. Historial</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Todas las evaluaciones ordenadas por fecha. Cada entrada muestra:</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li>Fecha y número de conceptos evaluados</li>
+          <li>Resumen visual: repasar (rojo) / reforzar (ámbar) / dominado (verde)</li>
+          <li>Checkbox para seleccionar y <strong>comparar</strong></li>
+          <li>Botón <strong>Eliminar evaluación</strong> con confirmación</li>
+        </ul>
+
+        <h3 class="font-bold text-base">\uD83D\uDCCA Comparar evaluaciones</h3>
+        <p>Selecciona 2 evaluaciones con los checkboxes (o usa "Comparar últimas 2") para ver una tabla diff 
+        con las diferencias: <span class="text-green-600">+X% ↑</span> / <span class="text-red-600">-X% ↓</span>. 
+        Ordenado por mayor cambio absoluto. Haz clic en un concepto para abrir el Inspector.</p>
+      </div>
+    </section>
+
+    <!-- 11. Study mode -->
+    <section id="study" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">11. Modo estudio</h2>
+      <div class="space-y-4 text-slate-600 leading-relaxed">
+
+        <div>
+          <h3 class="font-bold text-base">\uD83C\uDCCF Flashcards</h3>
+          <p>Repaso interactivo en la pestaña <strong>Estudio</strong>:</p>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li>Haz clic en la tarjeta para <strong>voltearla</strong> y ver la descripción.</li>
+            <li>Pulsa <strong>"Lo sé"</strong> o <strong>"No lo sé"</strong> para avanzar.</li>
+            <li>Las tarjetas falladas se <strong>reinsertan</strong> unas posiciones más adelante (repetición espaciada).</li>
+            <li>Filtro por nivel: <strong>Débiles</strong> (&lt;40%), <strong>Medias</strong> (40-70%), <strong>Fuertes</strong> (&gt;70%), o <strong>Todas</strong>.</li>
+            <li>Barra de progreso y contador durante la sesión.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83D\uDCCA Estadísticas de sesión</h3>
+          <p>Al finalizar todas las tarjetas, se muestra un resumen con <strong>aciertos, fallos, total y precisión</strong>.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\uD83C\uDF1F Racha de estudio</h3>
+          <p>En la pestaña <strong>Resultados</strong> se muestra un calendario visual de los últimos <strong>28 días</strong>. Los días con evaluación aparecen resaltados. La racha actual y el récord se actualizan automáticamente.</p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-base">\u23F1\uFE0F Pomodoro</h3>
+          <p>Temporizador integrado en la pestaña Estudio:</p>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li>Selecciona <strong>15, 25 o 45 minutos</strong>.</li>
+            <li>Botones <strong>Iniciar / Pausar / Reiniciar</strong>.</li>
+            <li>Barra de progreso visual y cuenta atrás.</li>
+            <li>Se <strong>pausa automáticamente</strong> al cambiar de pestaña.</li>
+            <li>Notificación al completar el tiempo.</li>
+          </ul>
+        </div>
+
+        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 text-sm text-indigo-800">
+          <strong>\uD83D\uDCA1 Consejo:</strong> Usa el Pomodoro junto con las flashcards para sesiones de estudio enfocadas.
+          Al terminar, el resumen de aciertos te ayuda a saber qué repasar.
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Inspector -->
+    <section id="inspector" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">12. Inspector de concepto</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Panel lateral que se abre desde:</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li>El botón \uD83D\uDD0D en la lista de conceptos</li>
+          <li>El roadmap en Resultados</li>
+          <li>El mapa de calor (clic en nodo)</li>
+          <li>La comparación de evaluaciones</li>
+          <li>El árbol de dependencias</li>
+        </ul>
+
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+          <h4 class="font-bold text-sm">\uD83D\uDCCB Pestaña Walkthrough</h4>
+          <ul class="list-disc ml-5 text-sm space-y-1 mt-1">
+            <li><strong>Recomendación</strong> personalizada según el dominio y bloqueadores.</li>
+            <li><strong>Bloqueadores</strong> (prerreq. con &lt;40%) en rojo.</li>
+            <li><strong>Necesitan refuerzo</strong> (prerreq. entre 40-70%) en ámbar.</li>
+            <li><strong>Dependientes</strong> (conceptos que dependen de este) en índigo.</li>
+            <li><strong>Alerta de concepto aislado</strong> si no tiene relaciones.</li>
+            <li>Navegación entre conceptos: clic en cualquier nombre dentro del inspector.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+          <h4 class="font-bold text-sm">\uD83D\uDCC1 Pestaña Recursos</h4>
+          <ul class="list-disc ml-5 text-sm space-y-1 mt-1">
+            <li>Añade enlaces o notas a cada concepto.</li>
+            <li>Los recursos se guardan en el JSON de la asignatura.</li>
+            <li>Se exportan e importan con el resto de datos.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Tags -->
+    <section id="tags" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">13. Etiquetas</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Las etiquetas (tags) permiten categorizar conceptos libremente.</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li>Se añaden al crear o editar un concepto, separadas por coma.</li>
+          <li>Aparecen como chips de color en la lista de conceptos.</li>
+          <li>Filtro desplegable "Todas" para ver solo una etiqueta.</li>
+          <li><strong>Etiquetado masivo:</strong> botón \uD83C\uDFF7️ Etiquetar, marca conceptos con checkboxes y escribe la etiqueta a aplicar.</li>
+          <li>Se conservan en export/import CSV y JSON.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 13. Search -->
+    <section id="search" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">14. Búsqueda global</h2>
+      <p class="text-slate-600 leading-relaxed">
+        <kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-medium">Ctrl+K</kbd> abre un modal de búsqueda 
+        que encuentra conceptos por nombre, descripción o etiqueta en <strong>todas las asignaturas</strong>. 
+        Los resultados se agrupan por asignatura y al hacer clic navegas directamente al Inspector de ese concepto.
+        <kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-medium">↑↓</kbd> para navegar (implementación visual),
+        <kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-medium">Esc</kbd> para cerrar.
+      </p>
+    </section>
+
+    <!-- 14. Undo/Redo -->
+    <section id="undoredo" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">15. Deshacer / Rehacer</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>La aplicación guarda un historial de hasta <strong>50 estados</strong>. Cada vez que guardas (añadir, editar, eliminar), se captura un snapshot completo.</p>
+        <ul class="list-disc ml-5 space-y-1">
+          <li><kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-medium">Ctrl+Z</kbd> — Deshacer</li>
+          <li><kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-medium">Ctrl+Shift+Z</kbd> — Rehacer</li>
+          <li>Botones \u21A9 \u21AA en el header (se desactivan cuando no hay histórico).</li>
+        </ul>
+        <p class="text-sm bg-slate-100 rounded-xl p-3">Al deshacer/rehacer, el grafo y mapa de calor se re-renderizan automáticamente.</p>
+      </div>
+    </section>
+
+    <!-- 15. IO -->
+    <section id="io" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">16. Exportar / Importar</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">\uD83D\uDCE4 Exportar todo</h4>
+            <p class="text-sm text-slate-500">Descarga todas las asignaturas, evaluaciones y relaciones cruzadas en un solo JSON.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">\uD83D\uDCE5 Importar todo</h4>
+            <p class="text-sm text-slate-500">Carga un JSON completo (sustituye todos los datos actuales).</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">\uD83D\uDCCB Plantilla</h4>
+            <p class="text-sm text-slate-500">Descarga un JSON de ejemplo para rellenar manualmente.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">\uD83D\uDCE4 Asignatura</h4>
+            <p class="text-sm text-slate-500">Exporta solo la asignatura actual con sus evaluaciones.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <h4 class="font-bold text-sm">\u2B07 Importar asignatura</h4>
+            <p class="text-sm text-slate-500">Importa un JSON de asignatura individual (añade a las existentes).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. CSV -->
+    <section id="csv" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">17. CSV</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>Los botones <strong>CSV</strong> y <strong>\uD83D\uDCE5 CSV</strong> en la pestaña Conceptos permiten trabajar con hojas de cálculo.</p>
+        <p>Formato: <code>nombre,descripción,peso,etiquetas</code></p>
+        <p>Las comillas se escapan automáticamente. Las etiquetas se separan por punto y coma (<code>;</code>) dentro del campo.</p>
+        <div class="bg-slate-100 rounded-xl p-3 text-xs overflow-x-auto">
+          <pre>nombre,descripción,peso,etiquetas
+"Derivadas","Cálculo de derivadas",7,"mates; cálculo"
+"Integrales","Cálculo de integrales",8,"mates; cálculo"</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. AI Generator -->
+    <section id="ai" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">18. Generador IA</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>El asistente IA (botón \uD83E\uDD16 en la pantalla principal) te ayuda a crear asignaturas completas.</p>
+        <ol class="list-decimal ml-5 space-y-1">
+          <li>Elige un <strong>prompt template</strong> (Matemáticas, Idiomas, Programación, Personalizado).</li>
+          <li>Copia el prompt y pégalo en ChatGPT, Claude o cualquier IA.</li>
+          <li>Pega la respuesta JSON de la IA en el área de importación.</li>
+          <li>Previsualiza y confirma la importación.</li>
+        </ol>
+        <p class="text-sm bg-indigo-50 rounded-xl p-3 text-indigo-800">
+          La IA debe devolver un JSON con la estructura: <code>{"subjects": [{"name": "...", "concepts": [...], "relations": [...]}]}</code>. 
+          Los nombres en las relaciones se resuelven automáticamente a IDs.
+        </p>
+      </div>
+    </section>
+
+    <!-- 19. Shortcuts -->
+    <section id="shortcuts" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">19. Atajos de teclado</h2>
+      <p class="text-slate-600 mb-3">Presiona <kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-medium">?</kbd> en cualquier momento para ver este panel.</p>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-slate-50 text-slate-500 text-left">
+              <th class="px-4 py-2.5 font-medium">Acción</th>
+              <th class="px-4 py-2.5 font-medium">Atajo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="px-4 py-2.5">Búsqueda global</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">Ctrl+K</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Deshacer</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">Ctrl+Z</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Rehacer</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">Ctrl+Shift+Z</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Modo foco (en grafo)</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">Ctrl+F</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Cerrar modal / búsqueda</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">Esc</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Puntuar (en evaluar)</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">1</kbd> – <kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">5</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Navegar evaluación</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">←</kbd> <kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">→</kbd></td></tr>
+            <tr><td class="px-4 py-2.5">Este panel de atajos</td><td class="px-4 py-2.5"><kbd class="bg-slate-100 px-2 py-0.5 rounded text-xs">?</kbd></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 20. Dark -->
+    <section id="dark" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">20. Modo oscuro</h2>
+      <p class="text-slate-600 leading-relaxed">
+        El botón \uD83C\uDF19/\u2600\uFE0F en el header alterna entre modo claro y oscuro. 
+        La preferencia se guarda en <code class="bg-slate-100 px-1 rounded">localStorage</code>. 
+        Por defecto respeta la preferencia del sistema operativo.
+      </p>
+    </section>
+
+    <!-- 21. Onboarding -->
+    <section id="onboarding" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">21. Onboarding interactivo</h2>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <p>La primera vez que abres la aplicación (o si no hay datos guardados) aparece un <strong>tutorial paso a paso</strong> de 6 pasos:</p>
+        <ol class="list-decimal ml-5 space-y-1 text-sm">
+          <li>Bienvenida y descripción general</li>
+          <li>Cómo crear una asignatura</li>
+          <li>Cómo añadir conceptos</li>
+          <li>Cómo conectar conceptos con relaciones</li>
+          <li>Cómo evaluar tu dominio</li>
+          <li>Cómo usar el plan de estudio</li>
+        </ol>
+        <p>Cada paso tiene un botón <strong>Siguiente</strong> y se puede cerrar en cualquier momento con <strong>Saltar</strong>. Una vez completado o cerrado, no vuelve a mostrarse (persiste en localStorage).</p>
+        <p class="text-sm bg-indigo-50 rounded-xl p-3">Para reiniciar el tutorial, borra la clave <code class="bg-indigo-100 px-1 rounded">grafo-onboarding-v2</code> del localStorage.</p>
+      </div>
+    </section>
+
+    <!-- 22. Auto-backup -->
+    <section id="backup" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">22. Auto-backup</h2>
+      <p class="text-slate-600 leading-relaxed">
+        La aplicación descarga automáticamente un JSON de respaldo cada <strong>5 minutos</strong> 
+        (solo si hay datos). El archivo se llama <code>backup-grafo-YYYY-MM-DD.json</code>. 
+        El auto-backup se detiene al cerrar la página.
+      </p>
+    </section>
+
+    <!-- 23. Data model -->
+    <section id="data" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">23. Modelo de datos</h2>
+      <p class="text-slate-600 leading-relaxed mb-3">Estructura completa del JSON de exportación/importación:</p>
+      <div class="bg-slate-800 text-slate-200 rounded-2xl p-5 text-xs overflow-x-auto leading-relaxed">
+        <pre>{
+  "subjects": [{
+    "id": "uuid",
+    "name": "Álgebra",
+    "description": "Rama de las matemáticas",
+    "concepts": [
+      {
+        "id": "uuid",
+        "name": "Derivadas",
+        "description": "**Texto** con *markdown*",
+        "weight": 7,
+        "tags": ["mates", "cálculo"],
+        "resources": [
+          { "id": "uuid", "type": "link", "title": "Video", "url": "https://..." }
+        ]
+      }
+    ],
+    "relations": [
+      { "from": "uuid-concepto-a", "to": "uuid-concepto-b", "type": "prerrequisito" }
+    ],
+    "nodePositions": {
+      "uuid-concepto-a": { "x": 150, "y": 200 }
+    }
+  }],
+  "assessments": [{
+    "id": "uuid",
+    "subjectId": "uuid",
+    "date": "2025-06-15T10:30:00.000Z",
+    "results": { "uuid-concepto": 85 },
+    "notes": { "uuid-concepto": "Me cuestan las integrales dobles" }
+  }],
+  "crossRelations": [
+    { "from": "uuid-concepto-a", "to": "uuid-concepto-b", "type": "relacionado" }
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <!-- 24. Tips -->
+    <section id="tips" class="mb-10">
+      <h2 class="text-2xl font-bold mb-3">24. Consejos y buenas prácticas</h2>
+      <ul class="space-y-2 text-slate-600 list-disc ml-5 leading-relaxed">
+        <li><strong>Empieza pequeño:</strong> Crea una asignatura con 5-10 conceptos y 3-4 relaciones para familiarizarte.</li>
+        <li><strong>Usa etiquetas</strong> para agrupar conceptos por tipo (teoría, práctica, examen) o por módulo.</li>
+        <li><strong>Evalúa con regularidad:</strong> La comparación entre evaluaciones muestra tu progreso real.</li>
+        <li><strong>El Desbloqueador</strong> es ideal cuando tienes muchas asignaturas pendientes y quieres maximizar el impacto.</li>
+        <li><strong>Exporta periódicamente</strong> tu JSON como respaldo, además del auto-backup.</li>
+        <li><strong>Usa el Inspector</strong> para entender por qué no avanzas en un concepto concreto.</li>
+        <li><strong>Arrastra los nodos</strong> en el grafo para organizarlos visualmente como prefieras.</li>
+        <li><strong>El modo foco</strong> (<kbd class="bg-slate-200 px-1.5 py-0.5 rounded text-xs">Ctrl+F</kbd>) es ideal para presentaciones o estudio sin distracciones.</li>
+        <li><strong>Etiquetado masivo:</strong> selecciona varios conceptos y aplícales la misma etiqueta de golpe.</li>
+        <li><strong>CSV</strong> es perfecto para cargar listas grandes desde Excel o Google Sheets.</li>
+        <li><strong>Usa las plantillas</strong> como punto de partida rápido; luego personaliza pesos y relaciones.</li>
+        <li><strong>Modo estudio:</strong> combina flashcards con el Pomodoro para sesiones enfocadas de 25 minutos.</li>
+        <li><strong>Repetición espaciada:</strong> las tarjetas que fallas se reinsertan automáticamente para que las repases pronto.</li>
+        <li><strong>Mantén la racha:</strong> evaluar a diario aunque sea un concepto pequeño ayuda a mantener el hábito.</li>
+        <li><strong>Exporta el plan .txt</strong> para llevar tu lista de estudio a cualquier lado sin conexión.</li>
+      </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 pt-6 mt-10 text-center text-sm text-slate-400">
+      <p>Ruta de Estudio &mdash; <a href="https://github.com/sergarb1/grafo-conocimiento" class="text-indigo-600 hover:underline">GitHub</a></p>
+      <p class="mt-1">100% offline &middot; Sin build &middot; Vue 3 + Tailwind + vis-network</p>
+    </footer>
+
+  </div>
+</body>
+</html>
