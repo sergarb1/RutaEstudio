@@ -222,13 +222,165 @@ GC.store = Vue.reactive({
       ]
     }];
 
+    }, {
+      id: 'ex-mat2-6',
+      name: 'Matem\u00e1ticas II (2\u00ba Bach)',
+      description: 'An\u00e1lisis matem\u00e1tico, \u00e1lgebra lineal, geometr\u00eda y probabilidad para 2\u00ba de Bachillerato de Ciencias',
+      concepts: [
+        { id: 'ma1', name: 'L\u00edmites y continuidad', description: 'l\u00edmites laterales, infinitos, indeterminaciones, funci\u00f3n continua, teorema de Bolzano', weight: 6, tags: ['an\u00e1lisis'] },
+        { id: 'ma2', name: 'Derivadas', description: 'regla de la cadena, derivaci\u00f3n impl\u00edcita, m\u00e1ximos/m\u00ednimos, monoton\u00eda, curvatura, optimizaci\u00f3n', weight: 7, tags: ['an\u00e1lisis'] },
+        { id: 'ma3', name: 'Integrales', description: 'integral indefinida, inmediatas, por partes, cambio de variable, \u00e1reas bajo la curva, Barrow', weight: 8, tags: ['an\u00e1lisis'] },
+        { id: 'ma4', name: 'Matrices y determinantes', description: 'operaciones con matrices, inversa, rango, determinantes 2x2 y 3x3, propiedades', weight: 6, tags: ['\u00e1lgebra'] },
+        { id: 'ma5', name: 'Sistemas de ecuaciones lineales', description: 'm\u00e9todo de Gauss, Rouch\u00e9-Frobenius, sistemas homog\u00e9neos, discusi\u00f3n de par\u00e1metros', weight: 6, tags: ['\u00e1lgebra'] },
+        { id: 'ma6', name: 'Geometr\u00eda vectorial', description: 'vectores en R\u00b2 y R\u00b3, producto escalar/vectorial, rectas y planos, posiciones relativas', weight: 6, tags: ['geometr\u00eda'] },
+        { id: 'ma7', name: 'Probabilidad y distribuciones', description: 'probabilidad condicionada, teorema de Bayes, distribuci\u00f3n binomial y normal, tipificaci\u00f3n', weight: 5, tags: ['probabilidad'] },
+        { id: 'ma8', name: 'Teorema central del l\u00edmite', description: 'muestreo, intervalo de confianza, contraste de hip\u00f3tesis, nivel de significaci\u00f3n', weight: 6, tags: ['probabilidad'] }
+      ],
+      relations: [
+        { from: 'ma1', to: 'ma2', type: 'prerrequisito' },
+        { from: 'ma2', to: 'ma3', type: 'prerrequisito' },
+        { from: 'ma4', to: 'ma5', type: 'prerrequisito' },
+        { from: 'ma7', to: 'ma8', type: 'prerrequisito' },
+        { from: 'ma1', to: 'ma6', type: 'relacionado' },
+        { from: 'ma4', to: 'ma6', type: 'prerrequisito' }
+      ]
+    }, {
+      id: 'ex-len-7',
+      name: 'Lengua Castellana y Literatura II (2\u00ba Bach)',
+      description: 'Morfolog\u00eda, sintaxis, comentario de texto y literatura desde la Edad Media hasta la Generaci\u00f3n del 27',
+      concepts: [
+        { id: 'l1', name: 'Morfolog\u00eda y clases de palabras', description: 'categor\u00edas gramaticales, formaci\u00f3n de palabras, derivaci\u00f3n y composici\u00f3n, siglas y acr\u00f3nimos', weight: 4, tags: ['lengua'] },
+        { id: 'l2', name: 'Sintaxis: oraci\u00f3n simple', description: 'sujeto y predicado, complementos verbales, atributo, CD, CI, CC, CR\u00e9g, Agente', weight: 5, tags: ['lengua'] },
+        { id: 'l3', name: 'Sintaxis: oraci\u00f3n compuesta', description: 'coordinaci\u00f3n, subordinaci\u00f3n sustantiva/adjetiva/adverbial, nexos, an\u00e1lisis sint\u00e1ctico completo', weight: 7, tags: ['lengua'] },
+        { id: 'l4', name: 'Comentario de texto', description: 'adecuaci\u00f3n, coherencia, cohesi\u00f3n, modalizaci\u00f3n, tipolog\u00eda textual, resumen y tesis', weight: 7, tags: ['texto'] },
+        { id: 'l5', name: 'Literatura medieval y Renacimiento', description: 'Mester de Juglar\u00eda, Poema del Mio Cid, Jorge Manrique, Garcilaso, \u00e9glogas y sonetos', weight: 5, tags: ['literatura'] },
+        { id: 'l6', name: 'Barroco y Neoclasicismo', description: 'G\u00f3ngora, Quevedo, Lope, Calder\u00f3n, Feijoo, Jovellanos, prosa ilustrada', weight: 5, tags: ['literatura'] },
+        { id: 'l7', name: 'Romanticismo y Realismo', description: 'Espronceda, B\u00e9quer, Larra, Gald\u00f3s, Clar\u00edn, Pardo Baz\u00e1n, novela realista', weight: 6, tags: ['literatura'] },
+        { id: 'l8', name: 'Generaci\u00f3n del 98 y Modernismo', description: 'Unamuno, Azor\u00edn, Baroja, Machado, Valle-Incl\u00e1n, Juan Ram\u00f3n Jim\u00e9nez', weight: 6, tags: ['literatura'] },
+        { id: 'l9', name: 'Generaci\u00f3n del 27', description: 'Lorca, Alberti, Salinas, Cernuda, Aleixandre, Dal\u00ed y el Surrealismo', weight: 5, tags: ['literatura'] },
+        { id: 'l10', name: 'Variedades del espa\u00f1ol', description: 'dialectos del espa\u00f1ol, andaluz, canario, espa\u00f1ol de Am\u00e9rica, biling\u00fcismo, diglosia', weight: 4, tags: ['lengua'] }
+      ],
+      relations: [
+        { from: 'l1', to: 'l2', type: 'prerrequisito' },
+        { from: 'l2', to: 'l3', type: 'prerrequisito' },
+        { from: 'l1', to: 'l4', type: 'prerrequisito' },
+        { from: 'l5', to: 'l6', type: 'prerrequisito' },
+        { from: 'l6', to: 'l7', type: 'prerrequisito' },
+        { from: 'l7', to: 'l8', type: 'prerrequisito' },
+        { from: 'l8', to: 'l9', type: 'prerrequisito' },
+        { from: 'l3', to: 'l4', type: 'relacionado' },
+        { from: 'l10', to: 'l4', type: 'relacionado' }
+      ]
+    }, {
+      id: 'ex-qui-8',
+      name: 'Qu\u00edmica (2\u00ba Bach)',
+      description: 'Estructura at\u00f3mica, enlace qu\u00edmico, termoqu\u00edmica, cin\u00e9tica, equilibrio, \u00e1cido-base y redox para 2\u00ba de Bachillerato',
+      concepts: [
+        { id: 'q1', name: 'Estructura at\u00f3mica y tabla peri\u00f3dica', description: 'n\u00fameros cu\u00e1nticos, orbitales, configuraci\u00f3n electr\u00f3nica, propiedades peri\u00f3dicas (electronegatividad, afinidad)', weight: 5, tags: ['atomo'] },
+        { id: 'q2', name: 'Enlace qu\u00edmico', description: 'enlace i\u00f3nico, covalente y met\u00e1lico, geometr\u00eda molecular (RPECV), hibridaci\u00f3n, fuerzas intermoleculares', weight: 6, tags: ['enlace'] },
+        { id: 'q3', name: 'Termoqu\u00edmica', description: 'energ\u00eda interna, entalp\u00eda, ley de Hess, entalp\u00eda de formaci\u00f3n/enlace, espontaneidad (G=H-TS)', weight: 7, tags: ['energ\u00eda'] },
+        { id: 'q4', name: 'Cin\u00e9tica qu\u00edmica', description: 'velocidad de reacci\u00f3n, ecuaciones de velocidad, orden de reacci\u00f3n, teor\u00eda de colisiones, catalizadores', weight: 6, tags: ['cin\u00e9tica'] },
+        { id: 'q5', name: 'Equilibrio qu\u00edmico', description: 'constante Kc/Kp, principio de Le Ch\u00e2telier, desplazamientos, grado de disociaci\u00f3n, presi\u00f3n y temperatura', weight: 7, tags: ['equilibrio'] },
+        { id: 'q6', name: '\u00c1cido-base', description: 'teor\u00edas de \u00e1cido-base (Arrhenius, Br\u00f6nsted), pH, fuerza de \u00e1cidos/bases, hidr\u00f3lisis, tampones', weight: 7, tags: ['\u00e1cido-base'] },
+        { id: 'q7', name: 'Reacciones redox', description: 'n\u00famero de oxidaci\u00f3n, ajuste i\u00f3nico, potencial de electrodo, pilas galv\u00e1nicas, electrolisis', weight: 7, tags: ['redox'] },
+        { id: 'q8', name: 'Qu\u00edmica org\u00e1nica (formulaci\u00f3n)', description: 'hidrocarburos, grupos funcionales, isometr\u00eda, nomenclatura IUPAC, reacciones org\u00e1nicas b\u00e1sicas', weight: 5, tags: ['org\u00e1nica'] }
+      ],
+      relations: [
+        { from: 'q1', to: 'q2', type: 'prerrequisito' },
+        { from: 'q2', to: 'q5', type: 'prerrequisito' },
+        { from: 'q1', to: 'q3', type: 'prerrequisito' },
+        { from: 'q4', to: 'q5', type: 'prerrequisito' },
+        { from: 'q5', to: 'q6', type: 'prerrequisito' },
+        { from: 'q5', to: 'q7', type: 'prerrequisito' },
+        { from: 'q3', to: 'q4', type: 'relacionado' },
+        { from: 'q2', to: 'q8', type: 'prerrequisito' }
+      ]
+    }, {
+      id: 'ex-fil-9',
+      name: 'Historia de la Filosof\u00eda (2\u00ba Bach)',
+      description: 'Principales corrientes y autores de la filosof\u00eda occidental desde Plat\u00f3n hasta Nietzsche',
+      concepts: [
+        { id: 'f1', name: 'Plat\u00f3n', description: 'teor\u00eda de las Ideas, dualismo ontol\u00f3gico, mito de la caverna, alma tripartita, Estado ideal', weight: 7, tags: ['filosof\u00eda antigua'] },
+        { id: 'f2', name: 'Arist\u00f3teles', description: 'hilemorfismo, acto y potencia, causas, \u00e9tica nicom\u00e1quea, pol\u00edtica, l\u00f3gica silog\u00edstica', weight: 7, tags: ['filosof\u00eda antigua'] },
+        { id: 'f3', name: 'Filosof\u00eda medieval (Agust\u00edn y Tom\u00e1s)', description: 'Agust\u00edn: raz\u00f3n y fe, iluminaci\u00f3n; Tom\u00e1s de Aquino: cinco v\u00edas, ley natural, esencia y existencia', weight: 6, tags: ['filosof\u00eda medieval'] },
+        { id: 'f4', name: 'Descartes y el racionalismo', description: 'duda met\u00f3dica, "pienso luego existo", dualismo cartesiano, m\u00e9todo deductivo, ideas innatas', weight: 6, tags: ['filosof\u00eda moderna'] },
+        { id: 'f5', name: 'Hume y el empirismo', description: 'impresiones e ideas, h\u00e1bito y causalidad, cr\u00edtica a la sustancia, escepticismo moderado', weight: 6, tags: ['filosof\u00eda moderna'] },
+        { id: 'f6', name: 'Kant', description: 'idealismo trascendental, giro copernicano, imperativo categ\u00f3rico, Cr\u00edtica de la Raz\u00f3n Pura y Pr\u00e1ctica', weight: 8, tags: ['filosof\u00eda moderna'] },
+        { id: 'f7', name: 'Marx', description: 'materialismo hist\u00f3rico, alienaci\u00f3n, lucha de clases, plusval\u00eda, ideolog\u00eda, cr\u00edtica al capitalismo', weight: 6, tags: ['filosof\u00eda contempor\u00e1nea'] },
+        { id: 'f8', name: 'Nietzsche', description: 'nihilismo, muerte de Dios, superhombre, voluntad de poder, eterno retorno, cr\u00edtica a la moral', weight: 7, tags: ['filosof\u00eda contempor\u00e1nea'] }
+      ],
+      relations: [
+        { from: 'f1', to: 'f2', type: 'prerrequisito' },
+        { from: 'f1', to: 'f3', type: 'prerrequisito' },
+        { from: 'f3', to: 'f4', type: 'prerrequisito' },
+        { from: 'f5', to: 'f6', type: 'prerrequisito' },
+        { from: 'f4', to: 'f5', type: 'relacionado' },
+        { from: 'f6', to: 'f7', type: 'relacionado' },
+        { from: 'f6', to: 'f8', type: 'relacionado' }
+      ]
+    }, {
+      id: 'ex-fis-10',
+      name: 'F\u00edsica (2\u00ba Bach)',
+      description: 'Cinem\u00e1tica, din\u00e1mica, campo gravitatorio, electromagnetismo, ondas y \u00f3ptica para 2\u00ba de Bachillerato de Ciencias',
+      concepts: [
+        { id: 'fi1', name: 'Cinem\u00e1tica del punto', description: 'MRU, MRUA, MCU, lanzamiento proyectiles, composici\u00f3n de movimientos, vectores posici\u00f3n/velocidad/aceleraci\u00f3n', weight: 5, tags: ['mec\u00e1nica'] },
+        { id: 'fi2', name: 'Din\u00e1mica y leyes de Newton', description: '1\u00aa/2\u00aa/3\u00aa ley, diagramas de fuerzas, rozamiento, plano inclinado, poleas, din\u00e1mica del MCU', weight: 6, tags: ['mec\u00e1nica'] },
+        { id: 'fi3', name: 'Trabajo y energ\u00eda', description: 'trabajo mec\u00e1nico, energ\u00eda cin\u00e9tica/potencial, teorema conservaci\u00f3n, fuerza conservativa, potencia', weight: 6, tags: ['mec\u00e1nica'] },
+        { id: 'fi4', name: 'Campo gravitatorio', description: 'ley de gravitaci\u00f3n universal, campo gravitatorio, energ\u00eda potencial, \u00f3rbitas, velocidad de escape, leyes de Kepler', weight: 7, tags: ['gravedad'] },
+        { id: 'fi5', name: 'Campo el\u00e9ctrico', description: 'ley de Coulomb, campo y potencial el\u00e9ctrico, trabajo, flujo, teorema de Gauss, superficies equipotenciales', weight: 7, tags: ['electromagnetismo'] },
+        { id: 'fi6', name: 'Campo magn\u00e9tico', description: 'fuerza de Lorentz, campo creado por corrientes (Biot-Savart), fuerza entre conductores, inducci\u00f3n (Faraday-Lenz)', weight: 7, tags: ['electromagnetismo'] },
+        { id: 'fi7', name: 'Movimiento ondulatorio', description: 'ecuaci\u00f3n de onda, tipos de ondas, principios de Huygens, interferencia, difracci\u00f3n, sonido, efecto Doppler', weight: 5, tags: ['ondas'] },
+        { id: 'fi8', name: '\u00d3ptica geom\u00e9trica', description: 'reflexi\u00f3n y refracci\u00f3n (Snell), lentes delgadas, espejos, f\u00f3rmula fundamental, aumento, defectos visuales', weight: 5, tags: ['\u00f3ptica'] }
+      ],
+      relations: [
+        { from: 'fi1', to: 'fi2', type: 'prerrequisito' },
+        { from: 'fi2', to: 'fi3', type: 'prerrequisito' },
+        { from: 'fi3', to: 'fi4', type: 'prerrequisito' },
+        { from: 'fi5', to: 'fi6', type: 'prerrequisito' },
+        { from: 'fi1', to: 'fi7', type: 'relacionado' },
+        { from: 'fi7', to: 'fi8', type: 'prerrequisito' },
+        { from: 'fi3', to: 'fi4', type: 'relacionado' }
+      ]
+    }, {
+      id: 'ex-bio-11',
+      name: 'Biolog\u00eda (2\u00ba Bach)',
+      description: 'Bioqu\u00edmica, gen\u00e9tica, evoluci\u00f3n, microbiolog\u00eda e inmunolog\u00eda para 2\u00ba de Bachillerato de Ciencias',
+      concepts: [
+        { id: 'b1', name: 'Bioelementos y biomol\u00e9culas', description: 'gl\u00facidos, l\u00edpidos, prote\u00ednas, enzimas, \u00e1cidos nucleicos (ADN/ARN), vitaminas, agua y sales', weight: 6, tags: ['bioqu\u00edmica'] },
+        { id: 'b2', name: 'Estructura y fisiolog\u00eda celular', description: 'c\u00e9lula procariota/eucariota, org\u00e1nulos, membrana, transporte, endocitosis/exocitosis, divisi\u00f3n celular (mitosis/meiosis)', weight: 7, tags: ['c\u00e9lula'] },
+        { id: 'b3', name: 'Metabolismo celular', description: 'respiraci\u00f3n celular, gluc\u00f3lisis, ciclo de Krebs, cadena transportadora, fotos\u00edntesis (fases lum\u00ednica/oscura)', weight: 7, tags: ['metabolismo'] },
+        { id: 'b4', name: 'Gen\u00e9tica molecular', description: 'replicaci\u00f3n ADN, transcripci\u00f3n, traducci\u00f3n, c\u00f3digo gen\u00e9tico, mutaciones, ingenier\u00eda gen\u00e9tica', weight: 8, tags: ['gen\u00e9tica'] },
+        { id: 'b5', name: 'Gen\u00e9tica mendeliana', description: 'leyes de Mendel, cruces monoh\u00edbridos/dih\u00edbridos, herencia ligada al sexo, \u00e1rboles geneal\u00f3gicos', weight: 6, tags: ['gen\u00e9tica'] },
+        { id: 'b6', name: 'Evoluci\u00f3n y biodiversidad', description: 'teor\u00edas evolutivas (Lamarck, Darwin), selecci\u00f3n natural, especiaci\u00f3n, filogenia, \u00e1rboles evolutivos', weight: 5, tags: ['evoluci\u00f3n'] },
+        { id: 'b7', name: 'Microbiolog\u00eda', description: 'bacterias, virus, hongos, protozoos, ciclos de infecci\u00f3n, antibi\u00f3ticos, microbioma humano', weight: 5, tags: ['microbiolog\u00eda'] },
+        { id: 'b8', name: 'Inmunolog\u00eda', description: 'defensas innatas y adaptativas, anticuerpos, vacunas, alergias, autoinmunidad, VIH/SIDA', weight: 6, tags: ['inmunolog\u00eda'] }
+      ],
+      relations: [
+        { from: 'b1', to: 'b2', type: 'prerrequisito' },
+        { from: 'b2', to: 'b3', type: 'prerrequisito' },
+        { from: 'b2', to: 'b4', type: 'prerrequisito' },
+        { from: 'b4', to: 'b5', type: 'prerrequisito' },
+        { from: 'b5', to: 'b6', type: 'prerrequisito' },
+        { from: 'b2', to: 'b7', type: 'relacionado' },
+        { from: 'b7', to: 'b8', type: 'prerrequisito' }
+      ]
+    }];
+
     this.crossRelations = [
       { from: 'c2', to: 'm1', type: 'relacionado' },
       { from: 'c4', to: 'm5', type: 'relacionado' },
       { from: 'w4', to: 'c5', type: 'relacionado' },
       { from: 'w5', to: 'c8', type: 'profundiza' },
       { from: 'e5', to: 'w6', type: 'relacionado' },
-      { from: 'h9', to: 'e6', type: 'relacionado' }
+      { from: 'h9', to: 'e6', type: 'relacionado' },
+      { from: 'ma2', to: 'q3', type: 'relacionado' },
+      { from: 'l4', to: 'h9', type: 'relacionado' },
+      { from: 'f1', to: 'l5', type: 'relacionado' },
+      { from: 'f6', to: 'e9', type: 'relacionado' },
+      { from: 'ma2', to: 'fi1', type: 'prerrequisito' },
+      { from: 'q5', to: 'b3', type: 'relacionado' },
+      { from: 'q1', to: 'fi5', type: 'relacionado' },
+      { from: 'b4', to: 'f7', type: 'relacionado' }
     ];
 
     this.assessments = [];
@@ -251,6 +403,23 @@ GC.store = Vue.reactive({
     this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[3].id, date: dates[1], results: { e1: 75, e2: 60, e3: 70, e4: 50, e5: 65, e6: 55, e7: 80, e8: 70, e9: 60, e10: 40 }, notes: {} });
     // History assessment
     this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[4].id, date: dates[2], results: { h1: 85, h2: 70, h3: 80, h4: 60, h5: 50, h6: 40, h7: 55, h8: 30, h9: 65, h10: 45 }, notes: {} });
+    // Math II assessments
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[5].id, date: dates[0], results: { ma1: 70, ma2: 55, ma3: 30, ma4: 85, ma5: 75, ma6: 60, ma7: 80, ma8: 40 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[5].id, date: dates[2], results: { ma1: 80, ma2: 65, ma3: 45, ma4: 90, ma5: 85, ma6: 70, ma7: 85, ma8: 55 }, notes: {} });
+    // Language assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[6].id, date: dates[1], results: { l1: 90, l2: 80, l3: 50, l4: 60, l5: 85, l6: 75, l7: 70, l8: 55, l9: 45, l10: 80 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[6].id, date: dates[2], results: { l1: 95, l2: 85, l3: 65, l4: 70, l5: 90, l6: 80, l7: 75, l8: 65, l9: 55, l10: 85 }, notes: {} });
+    // Chemistry assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[7].id, date: dates[0], results: { q1: 80, q2: 65, q3: 40, q4: 55, q5: 35, q6: 50, q7: 30, q8: 75 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[7].id, date: dates[2], results: { q1: 85, q2: 75, q3: 55, q4: 65, q5: 50, q6: 60, q7: 45, q8: 80 }, notes: {} });
+    // Philosophy assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[8].id, date: dates[2], results: { f1: 85, f2: 70, f3: 60, f4: 75, f5: 55, f6: 40, f7: 65, f8: 50 }, notes: {} });
+    // Physics assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[9].id, date: dates[1], results: { fi1: 75, fi2: 60, fi3: 65, fi4: 40, fi5: 55, fi6: 30, fi7: 70, fi8: 80 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[9].id, date: dates[2], results: { fi1: 85, fi2: 70, fi3: 75, fi4: 55, fi5: 65, fi6: 45, fi7: 75, fi8: 85 }, notes: {} });
+    // Biology assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[10].id, date: dates[1], results: { b1: 80, b2: 65, b3: 45, b4: 55, b5: 85, b6: 70, b7: 60, b8: 40 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[10].id, date: dates[2], results: { b1: 85, b2: 75, b3: 60, b4: 65, b5: 90, b6: 75, b7: 70, b8: 55 }, notes: {} });
 
     this.save();
   },
