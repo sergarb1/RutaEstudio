@@ -95,7 +95,12 @@
         pomodoroMinutes: 25,
         pomodoroRunning: false,
         pomodoroInterval: null,
-        pomodoroOriginal: 1500
+        pomodoroOriginal: 1500,
+
+        reminderTime: localStorage.getItem('re-reminder-time') || '',
+        reminderEnabled: localStorage.getItem('re-reminder-enabled') === 'true',
+        reminderInterval: null,
+        reminderPermission: Notification.permission
       };
     },
 
@@ -431,6 +436,43 @@
         if (this.autoBackupInterval) { clearInterval(this.autoBackupInterval); this.autoBackupInterval = null; }
       },
 
+      // ==================== RECORDATORIOS ====================
+      requestReminderPermission() {
+        if ('Notification' in window && Notification.permission === 'default') {
+          Notification.requestPermission().then(p => this.reminderPermission = p);
+        }
+      },
+      setReminder() {
+        if (!this.reminderTime) return;
+        localStorage.setItem('re-reminder-time', this.reminderTime);
+        localStorage.setItem('re-reminder-enabled', this.reminderEnabled);
+        this.startReminderCheck();
+        this.showToast('Recordatorio guardado', 'success');
+      },
+      startReminderCheck() {
+        if (this.reminderInterval) clearInterval(this.reminderInterval);
+        if (!this.reminderEnabled || !this.reminderTime) return;
+        this.reminderInterval = setInterval(() => {
+          if (!this.reminderEnabled) return;
+          const now = new Date();
+          const [h, m] = this.reminderTime.split(':').map(Number);
+          if (now.getHours() === h && now.getMinutes() === m && now.getSeconds() < 15) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+              new Notification('Ruta de Estudio', {
+                body: '¡Hora de estudiar! Revisa tu plan de estudio.',
+                icon: 'img/icon.svg'
+              });
+            }
+          }
+        }, 10000);
+      },
+      toggleReminder() {
+        this.reminderEnabled = !this.reminderEnabled;
+        localStorage.setItem('re-reminder-enabled', this.reminderEnabled);
+        if (this.reminderEnabled) this.startReminderCheck();
+        else if (this.reminderInterval) clearInterval(this.reminderInterval);
+      },
+
       // ==================== TOAST ====================
       showToast(message, type, action, actionLabel) {
         if (this.toastTimer) clearTimeout(this.toastTimer);
@@ -519,6 +561,10 @@
       this.store.init();
       document.addEventListener('keydown', this._onKeydown);
       this.startAutoBackup();
+      this.startReminderCheck();
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(p => this.reminderPermission = p);
+      }
       if (!localStorage.getItem('grafo-onboarding-v2')) {
         this.showOnboarding = true;
         this.onboardingStep = 0;
@@ -528,6 +574,7 @@
       document.removeEventListener('keydown', this._onKeydown);
       this.stopAutoBackup();
       this.pausePomodoro();
+      if (this.reminderInterval) clearInterval(this.reminderInterval);
     },
 
     // ----------------------------------------------------------
