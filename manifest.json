@@ -1,0 +1,22 @@
+{
+  "name": "Ruta de Estudio",
+  "short_name": "RutaEstudio",
+  "description": "Conecta conceptos, domina tu ruta. Estudia con prop\u00f3sito.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "scope": ".",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "img/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "lang": "es"
+}
