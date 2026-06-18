@@ -364,6 +364,105 @@ GC.store = Vue.reactive({
         { from: 'b2', to: 'b7', type: 'relacionado' },
         { from: 'b7', to: 'b8', type: 'prerrequisito' }
       ]
+    }, {
+      id: 'ex-dam-12',
+      name: 'DAM — Desarrollo de Aplicaciones Multiplataforma',
+      description: 'Ciclo Formativo de Grado Superior: programaci\u00f3n de apps para escritorio, m\u00f3viles y entornos empresariales',
+      concepts: [
+        { id: 'dam1', name: 'Programaci\u00f3n', description: 'fundamentos de programaci\u00f3n, POO, estructuras de datos, algoritmos, Java como lenguaje principal', weight: 8, tags: ['1\u00ba'] },
+        { id: 'dam2', name: 'Bases de Datos', description: 'modelo E-R, SQL, normalizaci\u00f3n, procedimientos almacenados, SGBD relacionales (MySQL, PostgreSQL)', weight: 7, tags: ['1\u00ba'] },
+        { id: 'dam3', name: 'Sistemas Inform\u00e1ticos', description: 'hardware, SO Windows/Linux, virtualizaci\u00f3n, redes b\u00e1sicas, administraci\u00f3n del sistema', weight: 5, tags: ['1\u00ba'] },
+        { id: 'dam4', name: 'Entornos de Desarrollo', description: 'IDEs, control de versiones (Git), debugging, testing, documentaci\u00f3n, UML', weight: 4, tags: ['1\u00ba'] },
+        { id: 'dam5', name: 'Lenguajes de Marcas', description: 'HTML5, XML, JSON, XPath, XSLT, YAML, validaci\u00f3n con DTD y schema', weight: 4, tags: ['1\u00ba'] },
+        { id: 'dam6', name: 'Acceso a Datos', description: 'JDBC, JPA/Hibernate, MongoDB, ficheros XML/JSON, conexiones, transacciones', weight: 7, tags: ['2\u00ba'] },
+        { id: 'dam7', name: 'Desarrollo de Interfaces', description: 'JavaFX/Swing, MVC, eventos, gr\u00e1ficos, layouts, UX, internacionalizaci\u00f3n', weight: 6, tags: ['2\u00ba'] },
+        { id: 'dam8', name: 'Programaci\u00f3n Multimedia y M\u00f3viles', description: 'Android (Kotlin/Java), actividades, sensores, c\u00e1mara, notificaciones, google maps', weight: 7, tags: ['2\u00ba'] },
+        { id: 'dam9', name: 'Programaci\u00f3n de Servicios y Procesos', description: 'hilos, sockets, servicios REST, procesos, comunicaciones, Java NIO, patrones', weight: 6, tags: ['2\u00ba'] },
+        { id: 'dam10', name: 'Sistemas de Gesti\u00f3n Empresarial', description: 'ERP, CRM, Odoo, personalizaci\u00f3n de software empresarial, an\u00e1lisis de requisitos', weight: 4, tags: ['2\u00ba'] }
+      ],
+      relations: [
+        { from: 'dam1', to: 'dam6', type: 'prerrequisito' },
+        { from: 'dam1', to: 'dam7', type: 'prerrequisito' },
+        { from: 'dam1', to: 'dam9', type: 'prerrequisito' },
+        { from: 'dam2', to: 'dam6', type: 'prerrequisito' },
+        { from: 'dam1', to: 'dam8', type: 'prerrequisito' },
+        { from: 'dam3', to: 'dam10', type: 'relacionado' },
+        { from: 'dam4', to: 'dam7', type: 'relacionado' },
+        { from: 'dam5', to: 'dam6', type: 'relacionado' }
+      ]
+    }, {
+      id: 'ex-daw-13',
+      name: 'DAW — Desarrollo de Aplicaciones Web',
+      description: 'Ciclo Formativo de Grado Superior: desarrollo frontend, backend, despliegue y dise\u00f1o de aplicaciones web',
+      concepts: [
+        { id: 'daw1', name: 'Programaci\u00f3n', description: 'fundamentos, POO, estructuras de datos, algoritmos, Java como lenguaje base', weight: 8, tags: ['1\u00ba'] },
+        { id: 'daw2', name: 'Bases de Datos', description: 'modelo E-R, SQL, normalizaci\u00f3n, procedimientos, MySQL/MariaDB, administraci\u00f3n', weight: 7, tags: ['1\u00ba'] },
+        { id: 'daw3', name: 'Lenguajes de Marcas', description: 'HTML5, CSS3, XML, JSON, XPath, XSLT, SVG, validaci\u00f3n de esquemas', weight: 4, tags: ['1\u00ba'] },
+        { id: 'daw4', name: 'Sistemas Inform\u00e1ticos', description: 'hardware, SO, virtualizaci\u00f3n, redes TCP/IP, administraci\u00f3n servidores Linux/Windows', weight: 5, tags: ['1\u00ba'] },
+        { id: 'daw5', name: 'Entornos de Desarrollo', description: 'IDEs (VSCode, IntelliJ), Git, testing, depuraci\u00f3n, documentaci\u00f3n, UML', weight: 4, tags: ['1\u00ba'] },
+        { id: 'daw6', name: 'Desarrollo Web en Entorno Cliente', description: 'JavaScript, DOM, AJAX, fetch, Vue.js/React, validaci\u00f3n formularios, APIs del navegador', weight: 7, tags: ['2\u00ba'] },
+        { id: 'daw7', name: 'Desarrollo Web en Entorno Servidor', description: 'PHP, Laravel/Symfony, MVC, sesiones, cookies, PHP + SQL, APIs REST', weight: 7, tags: ['2\u00ba'] },
+        { id: 'daw8', name: 'Despliegue de Aplicaciones Web', description: 'Apache/Nginx, Docker, hosting, dominios, certificados SSL, CI/CD, monitorizaci\u00f3n', weight: 6, tags: ['2\u00ba'] },
+        { id: 'daw9', name: 'Dise\u00f1o de Interfaces Web', description: 'UX/UI, Figma, prototipado, accesibilidad (WCAG), responsive design, Tailwind/Bootstrap', weight: 5, tags: ['2\u00ba'] },
+        { id: 'daw10', name: 'Empresa e Iniciativa Emprendedora', description: 'plan de empresa, marketing digital, facturaci\u00f3n, aut\u00f3nomos, propiedad intelectual', weight: 3, tags: ['2\u00ba'] }
+      ],
+      relations: [
+        { from: 'daw1', to: 'daw6', type: 'prerrequisito' },
+        { from: 'daw1', to: 'daw7', type: 'prerrequisito' },
+        { from: 'daw2', to: 'daw7', type: 'prerrequisito' },
+        { from: 'daw3', to: 'daw6', type: 'prerrequisito' },
+        { from: 'daw3', to: 'daw9', type: 'prerrequisito' },
+        { from: 'daw4', to: 'daw8', type: 'prerrequisito' },
+        { from: 'daw6', to: 'daw9', type: 'relacionado' },
+        { from: 'daw7', to: 'daw8', type: 'prerrequisito' }
+      ]
+    }, {
+      id: 'ex-asir-14',
+      name: 'ASIR — Administraci\u00f3n de Sistemas Inform\u00e1ticos en Red',
+      description: 'Ciclo Formativo de Grado Superior: gesti\u00f3n de servidores, redes, seguridad y servicios cloud',
+      concepts: [
+        { id: 'as1', name: 'Fundamentos de Hardware', description: 'arquitectura de ordenadores, componentes, perif\u00e9ricos, ensamblaje, blade servers, racks', weight: 5, tags: ['1\u00ba'] },
+        { id: 'as2', name: 'Sistemas Operativos Monopuesto y en Red', description: 'Windows Server, Linux (Ubuntu, CentOS), particionado, usuarios, permisos, scripting bash', weight: 7, tags: ['1\u00ba'] },
+        { id: 'as3', name: 'Planificaci\u00f3n y Administraci\u00f3n de Redes', description: 'modelo OSI/TCP-IP, direccionamiento IP/VLSM, conmutaci\u00f3n, enrutamiento, VLANs, ACLs', weight: 7, tags: ['1\u00ba'] },
+        { id: 'as4', name: 'Gesti\u00f3n de Bases de Datos', description: 'instalaci\u00f3n y administraci\u00f3n de SGBD (MySQL, PostgreSQL), backups, rendimiento, usuarios', weight: 5, tags: ['1\u00ba'] },
+        { id: 'as5', name: 'Servicios de Red e Internet', description: 'DNS, DHCP, HTTP/Apache, correo (Postfix), FTP, proxy, LDAP, balanceo de carga', weight: 7, tags: ['2\u00ba'] },
+        { id: 'as6', name: 'Implantaci\u00f3n de Aplicaciones Web', description: 'LAMP stack, WordPress, SSL/TLS, virtual hosts, contenedores Docker, orquestaci\u00f3n', weight: 6, tags: ['2\u00ba'] },
+        { id: 'as7', name: 'Seguridad y Alta Disponibilidad', description: 'firewalls (iptables), IDS/IPS, VPN, RAID, copias de seguridad, clustering, disaster recovery', weight: 7, tags: ['2\u00ba'] },
+        { id: 'as8', name: 'Cloud computing y virtualizaci\u00f3n', description: 'VMware, Proxmox, AWS/Azure b\u00e1sico, infraestructura como c\u00f3digo (Terraform), Kubernetes', weight: 6, tags: ['2\u00ba'] }
+      ],
+      relations: [
+        { from: 'as1', to: 'as2', type: 'prerrequisito' },
+        { from: 'as2', to: 'as3', type: 'prerrequisito' },
+        { from: 'as2', to: 'as5', type: 'prerrequisito' },
+        { from: 'as3', to: 'as5', type: 'prerrequisito' },
+        { from: 'as4', to: 'as6', type: 'prerrequisito' },
+        { from: 'as5', to: 'as7', type: 'prerrequisito' },
+        { from: 'as3', to: 'as7', type: 'relacionado' },
+        { from: 'as5', to: 'as8', type: 'prerrequisito' }
+      ]
+    }, {
+      id: 'ex-smr-15',
+      name: 'SMR — Sistemas Microinform\u00e1ticos y Redes',
+      description: 'Ciclo Formativo de Grado Medio: montaje de equipos, redes locales, ofim\u00e1tica y soporte inform\u00e1tico',
+      concepts: [
+        { id: 'sm1', name: 'Montaje y Mantenimiento de Equipos', description: 'componentes internos, ensamblaje, BIOS/UEFI, mantenimiento preventivo, diagn\u00f3stico de aver\u00edas', weight: 6, tags: ['1\u00ba'] },
+        { id: 'sm2', name: 'Sistemas Operativos Monopuesto', description: 'Windows 11, Linux (Ubuntu), instalaci\u00f3n, configuraci\u00f3n, usuarios, escritorio, archivos', weight: 5, tags: ['1\u00ba'] },
+        { id: 'sm3', name: 'Redes Locales', description: 'cableado estructurado, switches, routers, direccionamiento IP b\u00e1sico, configuraci\u00f3n de red', weight: 6, tags: ['1\u00ba'] },
+        { id: 'sm4', name: 'Aplicaciones Ofim\u00e1ticas', description: 'Word, Excel, Access, PowerPoint, Google Workspace, macros, plantillas, formatos', weight: 4, tags: ['1\u00ba'] },
+        { id: 'sm5', name: 'Sistemas Operativos en Red', description: 'Windows Server, Linux Server, dominio, Active Directory, pol\u00edticas de grupo, permisos', weight: 6, tags: ['2\u00ba'] },
+        { id: 'sm6', name: 'Aplicaciones Web', description: 'instalaci\u00f3n de CMS (WordPress), HTML/CSS b\u00e1sico, hosting, FTP, tiendas online', weight: 4, tags: ['2\u00ba'] },
+        { id: 'sm7', name: 'Seguridad Inform\u00e1tica', description: 'antivirus, cortafuegos, contrase\u00f1as, cifrado, copias de seguridad, phishing, protecci\u00f3n de datos', weight: 5, tags: ['2\u00ba'] },
+        { id: 'sm8', name: 'Servicios en Red', description: 'DHCP, DNS, web, correo, impresi\u00f3n en red, protocolos TCP/IP b\u00e1sicos, monitorizaci\u00f3n', weight: 5, tags: ['2\u00ba'] }
+      ],
+      relations: [
+        { from: 'sm1', to: 'sm2', type: 'prerrequisito' },
+        { from: 'sm2', to: 'sm5', type: 'prerrequisito' },
+        { from: 'sm3', to: 'sm5', type: 'prerrequisito' },
+        { from: 'sm3', to: 'sm8', type: 'prerrequisito' },
+        { from: 'sm2', to: 'sm4', type: 'relacionado' },
+        { from: 'sm5', to: 'sm6', type: 'prerrequisito' },
+        { from: 'sm3', to: 'sm7', type: 'relacionado' }
+      ]
     }];
 
     this.crossRelations = [
@@ -380,7 +479,14 @@ GC.store = Vue.reactive({
       { from: 'ma2', to: 'fi1', type: 'prerrequisito' },
       { from: 'q5', to: 'b3', type: 'relacionado' },
       { from: 'q1', to: 'fi5', type: 'relacionado' },
-      { from: 'b4', to: 'f7', type: 'relacionado' }
+      { from: 'b4', to: 'f7', type: 'relacionado' },
+      { from: 'dam1', to: 'daw1', type: 'relacionado' },
+      { from: 'dam5', to: 'daw3', type: 'relacionado' },
+      { from: 'dam6', to: 'daw6', type: 'profundiza' },
+      { from: 'as2', to: 'dam3', type: 'relacionado' },
+      { from: 'sm3', to: 'as3', type: 'relacionado' },
+      { from: 'dam1', to: 'c5', type: 'relacionado' },
+      { from: 'daw7', to: 'w5', type: 'profundiza' }
     ];
 
     this.assessments = [];
@@ -420,6 +526,16 @@ GC.store = Vue.reactive({
     // Biology assessment
     this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[10].id, date: dates[1], results: { b1: 80, b2: 65, b3: 45, b4: 55, b5: 85, b6: 70, b7: 60, b8: 40 }, notes: {} });
     this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[10].id, date: dates[2], results: { b1: 85, b2: 75, b3: 60, b4: 65, b5: 90, b6: 75, b7: 70, b8: 55 }, notes: {} });
+    // DAM assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[11].id, date: dates[1], results: { dam1: 75, dam2: 60, dam3: 80, dam4: 85, dam5: 90, dam6: 40, dam7: 35, dam8: 25, dam9: 30, dam10: 50 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[11].id, date: dates[2], results: { dam1: 85, dam2: 70, dam3: 85, dam4: 90, dam5: 95, dam6: 55, dam7: 50, dam8: 40, dam9: 45, dam10: 60 }, notes: {} });
+    // DAW assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[12].id, date: dates[1], results: { daw1: 80, daw2: 65, daw3: 90, daw4: 70, daw5: 85, daw6: 55, daw7: 40, daw8: 35, daw9: 75, daw10: 60 }, notes: {} });
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[12].id, date: dates[2], results: { daw1: 85, daw2: 75, daw3: 95, daw4: 80, daw5: 90, daw6: 65, daw7: 55, daw8: 50, daw9: 80, daw10: 65 }, notes: {} });
+    // ASIR assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[13].id, date: dates[2], results: { as1: 80, as2: 70, as3: 55, as4: 65, as5: 40, as6: 50, as7: 35, as8: 30 }, notes: {} });
+    // SMR assessment
+    this.assessments.push({ id: crypto.randomUUID(), subjectId: subjects_[14].id, date: dates[2], results: { sm1: 85, sm2: 75, sm3: 60, sm4: 90, sm5: 50, sm6: 70, sm7: 55, sm8: 45 }, notes: {} });
 
     this.save();
   },
