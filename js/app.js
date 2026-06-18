@@ -100,7 +100,8 @@
         reminderTime: localStorage.getItem('re-reminder-time') || '',
         reminderEnabled: localStorage.getItem('re-reminder-enabled') === 'true',
         reminderInterval: null,
-        reminderPermission: Notification.permission
+        reminderPermission: Notification.permission,
+        lang: GC.lang
       };
     },
 
@@ -253,6 +254,10 @@
       },
       applyDark() {
         document.documentElement.classList.toggle('dark', this.dark);
+      },
+      setLang(lang) {
+        GC.setLang(lang);
+        this.lang = lang;
       },
 
       // ==================== GRAFO VISUAL ====================
