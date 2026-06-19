@@ -6,6 +6,23 @@ GC.store = Vue.reactive({
   assessments: [],
   crossRelations: [],
   customRelationTypes: [],
+  userProfile: {
+    xp: 0,
+    totalXP: 0,
+    totalStudyMinutes: 0,
+    totalPomodoros: 0,
+    totalFlashcards: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    lastActiveDate: null,
+    dailyProgress: 0,
+    dailyGoal: 5,
+    dailyStreak: 0,
+    bestDailyStreak: 0,
+    lastDailyDate: null,
+    unlockedAchievements: [],
+    achievementTimestamps: {}
+  },
   _history: [],
   _historyIndex: -1,
   _isRestoring: false,
@@ -21,7 +38,8 @@ GC.store = Vue.reactive({
       subjects: JSON.parse(JSON.stringify(this.subjects)),
       assessments: JSON.parse(JSON.stringify(this.assessments)),
       crossRelations: JSON.parse(JSON.stringify(this.crossRelations)),
-      customRelationTypes: JSON.parse(JSON.stringify(this.customRelationTypes))
+      customRelationTypes: JSON.parse(JSON.stringify(this.customRelationTypes)),
+      userProfile: JSON.parse(JSON.stringify(this.userProfile))
     });
     if (this._history.length > MAX_HISTORY) this._history.shift();
     this._historyIndex = this._history.length - 1;
@@ -47,8 +65,21 @@ GC.store = Vue.reactive({
     this.assessments = s.assessments;
     this.crossRelations = s.crossRelations;
     this.customRelationTypes = s.customRelationTypes || [];
+    this.userProfile = s.userProfile || this._defaultProfile();
     this._saveOnly();
     this._isRestoring = false;
+  },
+
+  _defaultProfile() {
+    return {
+      xp: 0, totalXP: 0, totalStudyMinutes: 0, totalPomodoros: 0, totalFlashcards: 0,
+      currentStreak: 0, bestStreak: 0, lastActiveDate: null,
+      dailyProgress: 0, dailyGoal: 5, dailyStreak: 0, bestDailyStreak: 0,
+      lastDailyDate: null, unlocked: [], achievementTimestamps: {},
+      dailyHistory: {}, subjects: 0, concepts: 0, relations: 0, assessments: 0,
+      flashcardSessions: 0, pomodoros: 0, customTypes: 0, subjectsAssessed: 0,
+      perfectSessions: 0
+    };
   },
 
   init() {
@@ -59,6 +90,7 @@ GC.store = Vue.reactive({
         this.assessments = d.assessments || [];
         this.crossRelations = d.crossRelations || [];
         this.customRelationTypes = d.customRelationTypes || [];
+        this.userProfile = d.userProfile ? { ...this._defaultProfile(), ...d.userProfile } : this._defaultProfile();
       }
       this._pushHistory();
     } catch (e) {
@@ -71,7 +103,8 @@ GC.store = Vue.reactive({
       subjects: this.subjects,
       assessments: this.assessments,
       crossRelations: this.crossRelations,
-      customRelationTypes: this.customRelationTypes
+      customRelationTypes: this.customRelationTypes,
+      userProfile: this.userProfile
     }));
   },
 
@@ -820,7 +853,8 @@ GC.store = Vue.reactive({
       subjects: this.subjects,
       assessments: this.assessments,
       crossRelations: this.crossRelations,
-      customRelationTypes: this.customRelationTypes
+      customRelationTypes: this.customRelationTypes,
+      userProfile: this.userProfile
     }, null, 2);
   },
 
@@ -832,6 +866,7 @@ GC.store = Vue.reactive({
       this.assessments = d.assessments || [];
       this.crossRelations = d.crossRelations || [];
       this.customRelationTypes = d.customRelationTypes || [];
+      this.userProfile = d.userProfile ? { ...this._defaultProfile(), ...d.userProfile } : this._defaultProfile();
       this.save();
       return true;
     } catch (e) {

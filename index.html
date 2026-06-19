@@ -76,6 +76,37 @@
         </div>
       </header>
 
+      <!-- Gamification Bar -->
+      <div class="flex items-center gap-3 mb-6 p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <span class="text-lg" v-text="levelIcon"></span>
+          <span class="font-bold text-sm" v-text="levelTitle"></span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 mb-1">
+            <span>Nv. {{ userLevel }}</span>
+            <span v-text="nextLevelXP + ' XP'"></span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+            <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out" :style="{ width: levelProgress + '%' }"></div>
+          </div>
+        </div>
+        <button @click="showAchievements = !showAchievements"
+                class="relative flex-shrink-0 text-xs bg-amber-100 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2 font-medium hover:bg-amber-200 dark:hover:bg-amber-800/60 transition">
+          🏆
+          <span v-if="unlockedAchievements" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" v-text="unlockedAchievements"></span>
+        </button>
+        <div class="flex items-center gap-1.5 flex-shrink-0 text-xs bg-green-50 dark:bg-green-900/20 rounded-xl px-3 py-1.5 border border-green-200 dark:border-green-800/40">
+          <span>🔥</span>
+          <div class="flex flex-col">
+            <span class="font-semibold text-green-700 dark:text-green-300" v-text="dailyProgress + '/' + dailyGoal"></span>
+            <div class="w-16 bg-green-200 dark:bg-green-800 rounded-full h-1.5 mt-0.5">
+              <div class="h-full rounded-full bg-green-500 transition-all duration-300" :style="{ width: Math.min(100, dailyProgress/dailyGoal*100) + '%' }"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ===== SUBJECTS VIEW ===== -->
       <div v-if="view === 'subjects'" class="fade-enter-active">
         <subject-list
@@ -1323,6 +1354,38 @@
     </div>
   </Transition>
 
+  <!-- Achievements Modal -->
+  <Transition name="modal">
+    <div v-if="showAchievements" class="fixed inset-0 z-[55] flex items-center justify-center bg-black/40 dark:bg-black/60" @click.self="showAchievements = false">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-700 mx-4 max-h-[80vh] flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-lg">🏆 Logros</h3>
+          <button @click="showAchievements = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl leading-none">&times;</button>
+        </div>
+        <div class="flex items-center gap-3 mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800/40">
+          <span class="text-2xl" v-text="levelIcon"></span>
+          <div>
+            <p class="font-bold text-sm" v-text="'Nivel ' + userLevel + ': ' + levelTitle"></p>
+            <p class="text-xs text-slate-500 dark:text-slate-400" v-text="userXP + ' XP total'"></p>
+          </div>
+        </div>
+        <div class="flex-1 overflow-y-auto space-y-2">
+          <div v-for="ach in achievementsList" :key="ach.id"
+               class="flex items-center gap-3 p-3 rounded-xl border transition"
+               :class="ach.unlocked ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/40' : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 opacity-60'">
+            <span class="text-2xl" v-text="ach.icon"></span>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm" v-text="ach.name"></p>
+              <p class="text-xs text-slate-400 dark:text-slate-500" v-text="ach.desc"></p>
+            </div>
+            <span v-if="ach.unlocked" class="text-green-600 text-sm font-bold">✓</span>
+            <span v-else class="text-xs text-slate-400" v-text="ach.progress || ''"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
+
   <!-- Bootloader: loads scripts in order with CDN + local fallback -->
   <script>
     (function() {
@@ -1342,6 +1405,7 @@
         { src: 'js/templates.js' },
         { src: 'js/editor.js' },
         { src: 'js/study.js' },
+        { src: 'js/gamification.js' },
         { src: 'js/app.js' }
       ];
 

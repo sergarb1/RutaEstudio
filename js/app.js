@@ -108,7 +108,8 @@
         customTypeDash: false,
         customTypeWidth: 2,
         customTypeArrow: 'to',
-        customTypeEditId: null
+        customTypeEditId: null,
+        showAchievements: false
       };
     },
 
@@ -244,7 +245,7 @@
         return result;
       }
 
-    }, GC.studyModule?.computed || {}),
+    }, GC.studyModule?.computed || {}, GC.gamificationModule?.computed || {}),
 
     // ----------------------------------------------------------
     // MÉTODOS (núcleo + módulos study + editor)
@@ -364,6 +365,12 @@
         this.lastAssessment = a;
         this.tab = 'results';
         setTimeout(() => this.renderHeatGraph(), 200);
+        this.store.userProfile.assessments = (this.store.userProfile.assessments || 0) + 1;
+        // Track subjects assessed
+        const assessedSubjects = new Set(this.store.assessments.map(x => x.subjectId));
+        this.store.userProfile.subjectsAssessed = assessedSubjects.size;
+        this.awardXP(50, 'Evaluaci\u00f3n');
+        this.trackDailyAction();
         const aid = a.id;
         this.showToast('Evaluaci\u00f3n guardada', 'success', () => {
           this.store.deleteAssessment(aid);
@@ -531,7 +538,7 @@
         return Object.keys(map).map(k => ({ key: k, items: map[k] }));
       }
 
-    }, GC.studyModule?.methods || {}, GC.editorModule?.methods || {}),
+    }, GC.studyModule?.methods || {}, GC.editorModule?.methods || {}, GC.gamificationModule?.methods || {}),
 
     // ----------------------------------------------------------
     // OBSERVADORES (watch)
@@ -584,6 +591,7 @@
         this.showOnboarding = true;
         this.onboardingStep = 0;
       }
+      this.$nextTick(() => this.checkAchievements());
     },
     beforeUnmount() {
       document.removeEventListener('keydown', this._onKeydown);

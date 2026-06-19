@@ -122,6 +122,18 @@
         }
         this.studyFlip = false;
       }
+      // Award XP when session completes
+      if (this.studyIndex >= this.studySession.length && this.studyTotalCards > 0) {
+        const xp = Math.min(50, 5 * this.studyTotalCards);
+        this.store.userProfile.totalFlashcards = (this.store.userProfile.totalFlashcards || 0) + this.studyTotalCards;
+        this.store.save();
+        this.store.userProfile.flashcardSessions = (this.store.userProfile.flashcardSessions || 0) + 1;
+        if (this.studyWrong === 0) {
+          this.store.userProfile.perfectSessions = (this.store.userProfile.perfectSessions || 0) + 1;
+        }
+        this.awardXP(xp, 'Flashcards');
+        this.trackDailyAction();
+      }
     },
     resetStudy() {
       this.startStudy();
@@ -137,6 +149,10 @@
           this.pomodoroSeconds--;
         } else {
           this.pausePomodoro();
+          this.store.userProfile.pomodoros = (this.store.userProfile.pomodoros || 0) + 1;
+          this.store.save();
+          this.awardXP(30, 'Pomodoro');
+          this.trackDailyAction();
           this.showToast('\u26A0\uFE0F \u00A1Tiempo completado! T\u00F3mate un descanso', 'info');
         }
       }, 1000);

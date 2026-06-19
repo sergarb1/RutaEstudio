@@ -40,6 +40,9 @@
         this.store.updateSubject(this.currentSubject.id, this.editName.trim(), this.editDesc.trim());
       } else {
         this.store.addSubject(this.editName.trim(), this.editDesc.trim());
+        this.store.userProfile.subjects = (this.store.userProfile.subjects || 0) + 1;
+        this.awardXP(20, 'Nueva asignatura');
+        this.trackDailyAction();
       }
       this.modal = '';
     },
@@ -90,12 +93,16 @@
       if (dup) {
         if (!confirm('Ya existe un concepto llamado "' + dup.name + '". \u00bfCrear duplicado de todas formas?')) return;
       }
+      const isNew = !this.editConceptId;
       if (this.editConceptId) {
         this.store.updateConcept(this.currentSubject.id, this.editConceptId, data);
         this.showToast('Concepto actualizado', 'success');
       } else {
         this.store.addConcept(this.currentSubject.id, data.name, data.description, data.weight, tags);
         this.showToast('Concepto a\u00f1adido', 'success');
+        this.store.userProfile.concepts = (this.store.userProfile.concepts || 0) + 1;
+        this.awardXP(10, 'Nuevo concepto');
+        this.trackDailyAction();
       }
       this.modal = '';
     },
@@ -160,6 +167,9 @@
       this.relFormFrom = '';
       this.relFormTo = '';
       this.showRelationForm = false;
+      this.store.userProfile.relations = (this.store.userProfile.relations || 0) + 1;
+      this.awardXP(5, 'Nueva relaci\u00f3n');
+      this.trackDailyAction();
     },
     deleteRelation(i) {
       this.store.removeRelation(this.currentSubject.id, i);
@@ -369,6 +379,9 @@
       );
       this.customTypeName = '';
       this.showToast('Tipo de relación creado', 'success');
+      this.store.userProfile.customTypes = (this.store.userProfile.customTypes || 0) + 1;
+      this.awardXP(15, 'Tipo de relaci\u00f3n');
+      this.trackDailyAction();
     },
 
     editCustomType(type) {
