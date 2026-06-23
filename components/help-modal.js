@@ -89,7 +89,7 @@ Formato exacto que debe seguir el JSON:
       {
         "id": "c1",
         "name": "Nombre del concepto",
-        "description": "Descripci\u00f3n con **bold**, *italic* o `c\u00f3digo` si procede",
+        "description": "Descripci\u00f3n con **bold**, *italic* o \`c\u00f3digo\` si procede",
         "weight": 5,
         "tags": ["etiqueta1", "etiqueta2"],
         "resources": []

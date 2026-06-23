@@ -258,8 +258,6 @@ GC.store = Vue.reactive({
         { from: 'h8', to: 'h10', type: 'prerrequisito' },
         { from: 'h9', to: 'h8', type: 'relacionado' }
       ]
-    }];
-
     }, {
       id: 'ex-mat2-6',
       name: 'Matem\u00e1ticas II (2\u00ba Bach)',
