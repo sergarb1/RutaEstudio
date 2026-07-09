@@ -151,22 +151,16 @@ RutaEstudio/
 
 ---
 
-## Session Summary (18 Jun 2026)
+## Session Summary (9 Jul 2026)
 
 ### Goal
-Implement custom relation types with full CRUD, JSON schema documentation for LLM generation, and update docs.
+Fix Vue compiler error #55 (SVGs en templates), PWA manifest errors (blob URLs rechazados), y limpiar warnings de consola.
 
 ### Completed
-- **Custom relation types**: new `customRelationTypes[]` in store with `add/update/remove/getRelationTypeInfo/allRelationTypes` methods; persisted in localStorage, undo/redo, JSON export/import
-- **Dynamic graph rendering**: all 3 graph renders (`render`, `renderHeat`, `renderGlobal`) use `GC.store.getRelationTypeInfo()` instead of hardcoded colors/dashes/arrows — custom types render automatically with their color, width, dash, and arrow direction
-- **Management UI**: modal with color picker, width selector, dash toggle, arrow direction (→/—/←/↔), live preview, edit/delete existing types
-- **Full integration**: custom types appear in relation form selects, graph filter, graph legend, graph type selector buttons, badge styling (inline style for custom, Tailwind classes for built-in)
-- **Cross-relation support**: global-graph component updated with dynamic type select and badge styling for custom types
-- **JSON export/import**: `exportData`/`importData` include `customRelationTypes`; `exportSubjectJSON` includes only used custom types; `importSubjectJSON` imports custom types on import
-- **FORMAT.md**: fully updated with `customRelationTypes`, `tags`, `resources`, `nodePositions` documentation
-- **README.md**: updated features list, AI section with generation prompt for LLMs
-- **AGENTS.md**: data model, key functions, pro features, relation types table, session summary updated
-- **Help modal AI section**: comprehensive prompt for LLMs to generate importable JSON, complete schema reference
+- **subject-list.js**: reemplazado `v-html="'${S.xxx}'"` por `v-html="icon('xxx')"` con método `icon(name)` en runtime. Los SVGs con dobles comillas rompían el parser de Vue (error #55). Eliminada `const S = GC.SVG;`
+- **manifest.json**: cambiado icono SVG por PNG estáticos (`icon-192.png`, `icon-512.png`). El SVG no era compatible con PWA en Chrome.
+- **index.html**: eliminado script dinámico de generación de iconos (Canvas→blob URLs→manifest blob). Las URLs blob son rechazadas por Chrome para `start_url` e `icons[].src`. Añadido `<meta name="mobile-web-app-capable">` (deprecado apple-*).
+- **ai-generator.js**: reemplazado emoji robot 🤖 por SVG inline de sparkles.
 
 ### Current State
 | Feature | Status |
@@ -180,14 +174,11 @@ Implement custom relation types with full CRUD, JSON schema documentation for LL
 | Session stats | ✅ Stable |
 | Progress chart | ✅ Stable |
 | Custom relation types | ✅ Stable |
-| JSON format docs | ✅ Updated |
-| LLM generation guide | ✅ Added |
 
 ### PWA / Instalable
-- **Manifest**: `manifest.json` → iconos PNG generados dinámicamente desde `img/icon.svg` via Canvas (`toBlob` + `URL.createObjectURL`)
+- **Manifest**: `manifest.json` → iconos PNG estáticos (`icon-192.png`, `icon-512.png`)
 - **Service Worker**: `sw.js` — cache-first para assets locales, network-first para CDN, offline navigation → `index.html`
 - **Install prompt**: `beforeinstallprompt` capturado en `window.deferredPrompt`; botón "Instalar" en header cuando `canInstall === true`
-- **Generación de iconos**: script inline en `index.html` que renderiza SVG a Canvas en 192×192 y 512×512 PNG, actualiza manifest dinámicamente
 
 ## Current Module Structure
 | Module | File | Responsibility |
