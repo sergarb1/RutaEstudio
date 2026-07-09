@@ -9,14 +9,14 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-bold">Mis asignaturas</h2>
           <div class="flex gap-2">
-            <button @click="$emit('aiGenerator')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Generar con IA">
-              <span v-html="'${S.sparkles}'" class="w-3.5 h-3.5 text-amber-500 shrink-0"></span> IA
+            <button @click="$emit('aiGenerator')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Copiar prompts para ChatGPT, Claude o Gemini">
+              <span v-html="'${S.sparkles}'" class="w-3.5 h-3.5 text-amber-500 shrink-0"></span> Prompts
             </button>
             <button @click="$emit('help')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Ayuda">
               <span v-html="'${S.questionMarkCircle}'" class="w-3.5 h-3.5 text-slate-400 shrink-0"></span> Ayuda
             </button>
             <button @click="$emit('add')" class="flex items-center gap-1 bg-indigo-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition">
-              <span v-html="'${S.plus}'" class="w-4 h-4 shrink-0"></span> Nueva
+              <span v-html="'${S.plus}'" class="w-4 h-4 shrink-0"></span> Nueva asignatura
             </button>
           </div>
         </div>
@@ -36,7 +36,7 @@
               <span v-html="'${S.arrowUpTray}'" class="w-4 h-4 shrink-0 text-slate-400"></span> Importar datos
             </button>
             <button @click="$emit('aiGenerator')" class="flex items-center gap-1.5 bg-amber-500 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-amber-600 transition text-sm">
-              <span v-html="'${S.sparkles}'" class="w-4 h-4 shrink-0"></span> Generar con IA
+              <span v-html="'${S.sparkles}'" class="w-4 h-4 shrink-0"></span> Prompts IA
             </button>
           </div>
 

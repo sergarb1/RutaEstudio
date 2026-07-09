@@ -10,8 +10,8 @@
           <div class="flex items-center gap-2 mb-4">
             <span class="text-2xl">\uD83E\uDD16</span>
             <div>
-              <h2 class="text-lg font-bold">Generar con IA</h2>
-              <p class="text-xs text-slate-400 dark:text-slate-500">Crea asignaturas, conceptos y relaciones usando asistentes de IA</p>
+              <h2 class="text-lg font-bold">Asistente IA</h2>
+              <p class="text-xs text-slate-400 dark:text-slate-500">Copia prompts para ChatGPT, Claude o Gemini y luego importa el JSON generado</p>
             </div>
           </div>
 
