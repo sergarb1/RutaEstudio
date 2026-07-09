@@ -1,7 +1,7 @@
 {
-  "name": "Ruta de Estudio",
+  "name": "RutaEstudio",
   "short_name": "RutaEstudio",
-  "description": "Conecta conceptos, domina tu ruta. Estudia con prop\u00f3sito.",
+  "description": "Tu camino hacia el aprobado",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",

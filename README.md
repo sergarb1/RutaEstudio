@@ -1,7 +1,7 @@
-# Ruta de Estudio 🧠
+# RutaEstudio 🧠
 
-> Conecta conceptos, domina tu ruta. Estudia con propósito.
-> Connect concepts, master your path. Study with purpose.
+> Tu camino hacia el aprobado.
+> Your path to success.
 
 <p align="center">
   <a href="https://sergarb1.github.io/RutaEstudio/">🌐 sergarb1.github.io/RutaEstudio</a>

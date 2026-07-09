@@ -8,8 +8,8 @@
 
   const translations = {
     // App
-    'app.name':             { es: 'Ruta de Estudio', en: 'Study Path', va: 'Ruta d\'Estudi' },
-    'app.subtitle':         { es: 'Te guiamos en tu estudio', en: 'We guide your study', va: 'Et guiem en el teu estudi' },
+    'app.name':             { es: 'RutaEstudio', en: 'RutaEstudio', va: 'RutaEstudio' },
+    'app.subtitle':         { es: 'Tu camino hacia el aprobado', en: 'Your path to success', va: 'El teu camí cap a l\'aprovat' },
     'app.tagline':          { es: 'Conecta conceptos, domina tu ruta. Estudia con prop\u00f3sito.', en: 'Connect concepts, master your path. Study with purpose.', va: 'Connecta conceptes, domina la teua ruta. Est\u00fadia amb prop\u00f2sit.' },
     'app.empty.title':      { es: 'Tu ruta de estudio est\u00e1 vac\u00eda', en: 'Your study path is empty', va: 'La teua ruta d\'estudi est\u00e0 buida' },
     'app.empty.desc':       { es: 'A\u00f1ade asignaturas, conceptos y relaciones para empezar.', en: 'Add subjects, concepts and relations to start.', va: 'Afig assignatures, conceptes i relacions per a comen\u00e7ar.' },

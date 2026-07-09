@@ -1,7 +1,7 @@
-# Ruta de Estudio — AGENTS.md
+# RutaEstudio — AGENTS.md
 
 ## Project
-Interactive knowledge graph for any subject. Define concepts and their relationships, assess student mastery, get AI-powered study plans (BFS/DFS offline). 100% gratis, RGPD, datos locales.
+Interactive knowledge graph for any subject. Define concepts and their relationships, assess student mastery, get AI-powered study plans (BFS/DFS offline). 100% gratis, RGPD, datos locales. Tu camino hacia el aprobado.
 
 ## Language
 Multi-language: ES (default), EN, VA. Managed via `js/i18n.js` — use `GC.t('key')` in templates.

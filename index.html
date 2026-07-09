@@ -7,9 +7,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="img/icon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="img/icon.svg" />
-  <title>Ruta de Estudio — Te guiamos en tu estudio</title>
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" href="favicon.svg" sizes="any" type="image/svg+xml" />
+  <link rel="icon" href="favicon-96x96.png" sizes="96x96" type="image/png" />
+  <link rel="apple-touch-icon" href="favicon-96x96.png" />
+  <meta name="apple-mobile-web-app-title" content="RutaEstudio" />
+  <title>RutaEstudio — Tu camino hacia el aprobado</title>
 
   <!-- Tailwind CSS config first, then CDN + fallback local -->
   <script>
@@ -49,11 +52,10 @@
       <!-- Header -->
       <header class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-2xl font-black tracking-tight">
-            <svg class="inline-block w-6 h-6 text-indigo-600 dark:text-indigo-400 -mt-0.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-            {{ GC.t('app.name') }}
-          </h1>
-          <p class="text-sm text-slate-500 dark:text-slate-400">{{ GC.t('app.subtitle') }}</p>
+          <a href="/" class="flex items-center gap-3">
+            <img src="logo.png" alt="RutaEstudio" class="h-9 md:h-12 w-auto" />
+            <span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-medium leading-tight max-w-28 hidden sm:block">{{ GC.t('app.subtitle') }}</span>
+          </a>
         </div>
         <div class="flex items-center gap-1.5">
           <!-- Dark mode -->
@@ -972,7 +974,7 @@
             Licencias libres
           </span>
         </div>
-        <p class="text-slate-400 dark:text-slate-500">© {{ new Date().getFullYear() }} <a href="https://github.com/sergarb1" class="text-indigo-600 dark:text-indigo-400 hover:underline">sergarb1</a> · Ruta de Estudio</p>
+        <p class="text-slate-400 dark:text-slate-500">© {{ new Date().getFullYear() }} <a href="https://github.com/sergarb1" class="text-indigo-600 dark:text-indigo-400 hover:underline">sergarb1</a> · RutaEstudio</p>
       </footer>
     </div>
 
@@ -1394,7 +1396,7 @@
         <!-- Step 0: Welcome -->
         <div v-if="onboardingStep === 0" class="text-center space-y-3">
           <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          <h3 class="text-xl font-bold">Bienvenido a Ruta de Estudio</h3>
+          <h3 class="text-xl font-bold">Bienvenido a RutaEstudio</h3>
           <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
             Conecta conceptos, domina tu ruta. Estudia con propósito.
           </p>
@@ -1578,7 +1580,7 @@
         var link = document.querySelector('link[rel="manifest"]');
         if (!link) return;
         var m = {
-          name: 'Ruta de Estudio',
+          name: 'RutaEstudio',
           short_name: 'RutaEstudio',
           description: 'Conecta conceptos, domina tu ruta. Estudia con prop\u00f3sito.',
           start_url: 'index.html',

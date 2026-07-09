@@ -76,7 +76,7 @@ Bas\u00e1ndote en estos datos:
 
               <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-4 mb-3 border border-indigo-200 dark:border-indigo-800/40">
                 <p class="font-medium mb-2 text-indigo-700 dark:text-indigo-300">\u26A1 Prompt para GENERAR una asignatura nueva con IA:</p>
-                <pre class="text-xs bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto whitespace-pre-wrap">Genera un archivo JSON para la app Ruta de Estudio con una asignatura sobre [tema].
+                <pre class="text-xs bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto whitespace-pre-wrap">Genera un archivo JSON para la app RutaEstudio con una asignatura sobre [tema].
 
 Formato exacto que debe seguir el JSON:
 
@@ -164,7 +164,7 @@ Devuelve solo el JSON v\u00e1lido, sin explicaciones.</pre>
           <!-- About -->
           <div v-if="activeTab === 'about'" class="space-y-4 text-sm">
             <section>
-              <h3 class="font-bold text-base mb-2">\uD83E\uDDE0 Acerca de Ruta de Estudio</h3>
+              <h3 class="font-bold text-base mb-2"><img src="logo.png" alt="RutaEstudio" class="h-6 inline-block -mt-0.5" /></h3>
               <p class="text-slate-500 dark:text-slate-400 text-xs italic mb-2">Conecta conceptos, domina tu ruta. Estudia con prop\u00f3sito.</p>
               <p class="text-slate-600 dark:text-slate-300">Aplicaci\u00f3n web 100% offline para crear grafos de conocimiento, evaluar dominio de conceptos y generar planes de estudio personalizados usando BFS/DFS. Incluye temporizador Pomodoro para sesiones de estudio enfocadas.</p>
             </section>
