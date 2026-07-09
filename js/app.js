@@ -109,7 +109,8 @@
         customTypeWidth: 2,
         customTypeArrow: 'to',
         customTypeEditId: null,
-        showAchievements: false
+        showAchievements: false,
+        canInstall: false
       };
     },
 
@@ -265,6 +266,15 @@
       },
       applyDark() {
         document.documentElement.classList.toggle('dark', this.dark);
+      },
+      installApp() {
+        const prompt = window.deferredPrompt;
+        if (!prompt) return;
+        prompt.prompt();
+        prompt.userChoice.then(() => {
+          window.deferredPrompt = null;
+          this.canInstall = false;
+        });
       },
       setLang(lang) {
         GC.setLang(lang);
@@ -596,6 +606,14 @@
         this.onboardingStep = 0;
       }
       this.$nextTick(() => this.checkAchievements());
+      // Check PWA installability
+      this.canInstall = !!window.deferredPrompt;
+      window.addEventListener('beforeinstallprompt', () => {
+        this.canInstall = !!window.deferredPrompt;
+      });
+      window.addEventListener('appinstalled', () => {
+        this.canInstall = false;
+      });
     },
     beforeUnmount() {
       document.removeEventListener('keydown', this._onKeydown);

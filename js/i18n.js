@@ -31,6 +31,7 @@
     'btn.cancel':           { es: 'Cancelar', en: 'Cancel', va: 'Cancel\u00b7lar' },
     'btn.close':            { es: 'Cerrar', en: 'Close', va: 'Tancar' },
     'btn.delete':           { es: 'Eliminar', en: 'Delete', va: 'Eliminar' },
+    'btn.install':          { es: 'Instalar', en: 'Install', va: 'Instal·lar' },
     'btn.edit':             { es: 'Editar', en: 'Edit', va: 'Editar' },
     'btn.back':             { es: 'Volver', en: 'Back', va: 'Tornar' },
 

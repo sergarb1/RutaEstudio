@@ -1,5 +1,4 @@
-const CACHE = 'ruta-estudio-v1';
-const FALLBACK = '/fallback/';
+const CACHE = 'ruta-estudio-v2';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -33,15 +32,41 @@ self.addEventListener('install', e => {
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(clients.claim());
+  e.waitUntil((async () => {
+    // Clean old caches
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
+    await clients.claim();
+  })());
 });
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+
+  // CDN requests: network-first, fallback to cache
+  if (url.hostname.includes('unpkg.com') || url.hostname.includes('cdn.')) {
+    e.respondWith((async () => {
+      try {
+        const res = await fetch(e.request);
+        if (res.ok) {
+          const cache = await caches.open(CACHE);
+          cache.put(e.request, res.clone());
+        }
+        return res;
+      } catch {
+        const cached = await caches.match(e.request);
+        return cached || new Response('', { status: 200 });
+      }
+    })());
+    return;
+  }
+
+  // App assets: cache-first, network fallback
   e.respondWith((async () => {
+    const cached = await caches.match(e.request);
+    if (cached) return cached;
     try {
-      const cached = await caches.match(e.request);
-      if (cached) return cached;
       const res = await fetch(e.request);
       if (res.ok && res.type === 'basic') {
         const cache = await caches.open(CACHE);
@@ -49,9 +74,11 @@ self.addEventListener('fetch', e => {
       }
       return res;
     } catch {
-      const cached = await caches.match(e.request);
-      if (cached) return cached;
-      return new Response('Offline', { status: 503 });
+      // Offline: return index.html for navigation requests
+      if (e.request.mode === 'navigate') {
+        return caches.match('index.html');
+      }
+      return new Response('', { status: 200 });
     }
   })());
 });

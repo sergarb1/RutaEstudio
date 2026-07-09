@@ -183,7 +183,13 @@ Implement custom relation types with full CRUD, JSON schema documentation for LL
 | JSON format docs | ✅ Updated |
 | LLM generation guide | ✅ Added |
 
-### Current Module Structure
+### PWA / Instalable
+- **Manifest**: `manifest.json` → iconos PNG generados dinámicamente desde `img/icon.svg` via Canvas (`toBlob` + `URL.createObjectURL`)
+- **Service Worker**: `sw.js` — cache-first para assets locales, network-first para CDN, offline navigation → `index.html`
+- **Install prompt**: `beforeinstallprompt` capturado en `window.deferredPrompt`; botón "Instalar" en header cuando `canInstall === true`
+- **Generación de iconos**: script inline en `index.html` que renderiza SVG a Canvas en 192×192 y 512×512 PNG, actualiza manifest dinámicamente
+
+## Current Module Structure
 | Module | File | Responsibility |
 |--------|------|---------------|
 | Core | `js/app.js` | Vue data, computed, lifecycle, graph, evaluation, assessment, navigation, keyboard, toast, backup, search |
