@@ -37,7 +37,7 @@
 
     // Subjects
     'subject.my':           { es: 'Mis asignaturas', en: 'My subjects', va: 'Les meues assignatures' },
-    'subject.new':          { es: 'Nueva asignatura', en: 'New subject', va: 'Nova assignatura' },
+    'subject.new':          { es: 'Nueva', en: 'New', va: 'Nova' },
     'subject.add':          { es: '+ Nueva', en: '+ New', va: '+ Nova' },
     'subject.import':       { es: 'Importar asignatura', en: 'Import subject', va: 'Importar assignatura' },
     'subject.export':       { es: 'Exportar asignatura', en: 'Export subject', va: 'Exportar assignatura' },
