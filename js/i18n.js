@@ -32,6 +32,7 @@
     'btn.close':            { es: 'Cerrar', en: 'Close', va: 'Tancar' },
     'btn.delete':           { es: 'Eliminar', en: 'Delete', va: 'Eliminar' },
     'btn.edit':             { es: 'Editar', en: 'Edit', va: 'Editar' },
+    'btn.more':             { es: 'Más', en: 'More', va: 'Més' },
     'btn.back':             { es: 'Volver', en: 'Back', va: 'Tornar' },
 
     // Subjects

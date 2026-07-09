@@ -109,7 +109,8 @@
         customTypeWidth: 2,
         customTypeArrow: 'to',
         customTypeEditId: null,
-        showAchievements: false
+        showAchievements: false,
+        showMoreMenu: false
       };
     },
 
