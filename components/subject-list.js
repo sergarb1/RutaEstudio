@@ -14,7 +14,7 @@
               <span v-html="icon('questionMarkCircle')" class="w-3.5 h-3.5 text-slate-400 shrink-0"></span> Ayuda
             </button>
             <button @click="$emit('add')" class="flex items-center gap-1 bg-indigo-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition">
-              <span v-html="icon('plus')" class="w-4 h-4 shrink-0"></span> Nueva
+              <span v-html="icon('plus')" class="w-4 h-4 shrink-0"></span> Nueva asignatura
             </button>
           </div>
         </div>

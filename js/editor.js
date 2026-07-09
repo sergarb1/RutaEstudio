@@ -22,7 +22,7 @@
 
     addSubject() {
       this.modal = 'subject';
-      this.modalTitle = 'Nueva';
+      this.modalTitle = 'Nueva asignatura';
       this.editName = '';
       this.editDesc = '';
       this.templateTab = 'manual';
@@ -41,7 +41,7 @@
       } else {
         this.store.addSubject(this.editName.trim(), this.editDesc.trim());
         this.store.userProfile.subjects = (this.store.userProfile.subjects || 0) + 1;
-        this.awardXP(20, 'Nueva');
+        this.awardXP(20, 'Nueva asignatura');
         this.trackDailyAction();
       }
       this.modal = '';
