@@ -1,5 +1,27 @@
 GC.graph = {
 
+  _isDark() {
+    return document.documentElement.classList.contains('dark');
+  },
+
+  _arrow(val) {
+    if (val === 'none' || !val) return undefined;
+    if (val === 'both') return { to: true, from: true };
+    if (val === 'to') return 'to';
+    if (val === 'from') return 'from';
+    return val;
+  },
+
+  _nodeColors(dark) {
+    return dark
+      ? { bg: '#1e293b', border: '#818cf8', hiliteBg: '#334155', hiliteBorder: '#a5b4fc' }
+      : { bg: '#e0e7ff', border: '#6366f1', hiliteBg: '#c7d2fe', hiliteBorder: '#4f46e5' };
+  },
+
+  _edgeFont(dark) {
+    return { size: 10, color: dark ? '#94a3b8' : '#64748b' };
+  },
+
   render(containerId, concepts, relations, options) {
     const container = document.getElementById(containerId);
     if (!container || !concepts.length) return null;
@@ -9,6 +31,8 @@ GC.graph = {
     delete opts.positions;
     const onDragEnd = opts.onDragEnd;
     delete opts.onDragEnd;
+    const dark = this._isDark();
+    const nc = this._nodeColors(dark);
 
     const nodeSize = (c) => 20 + (c.weight || 5) * 3;
 
@@ -19,8 +43,8 @@ GC.graph = {
         label: c.name + (c.weight ? '\n[peso: ' + c.weight + ']' : ''),
         shape: 'ellipse',
         size: nodeSize(c),
-        color: c.color || { background: '#e0e7ff', border: '#6366f1', highlight: { background: '#c7d2fe', border: '#4f46e5' } },
-        font: { family: 'Inter', size: 14 },
+        color: c.color || { background: nc.bg, border: nc.border, highlight: { background: nc.hiliteBg, border: nc.hiliteBorder } },
+        font: { family: 'Inter', size: 14, color: dark ? '#e2e8f0' : '#1e293b' },
         title: c.description || c.name
       };
       if (pos) { n.x = pos.x; n.y = pos.y; n.fixed = true; }
@@ -34,8 +58,8 @@ GC.graph = {
         color: { color: info.color, highlight: info.color },
         dashes: info.dash || false,
         width: info.width || 2,
-        arrows: info.arrow === 'none' ? undefined : info.arrow === 'to' ? 'to' : info.arrow,
-        font: { size: 10, color: '#64748b' }
+        arrows: this._arrow(info.arrow),
+        font: this._edgeFont(dark)
       };
     });
 
@@ -48,8 +72,10 @@ GC.graph = {
         solver: 'forceAtlas2Based',
         forceAtlas2Based: { gravitationalConstant: -40, centralGravity: 0.005, springLength: 150, springConstant: 0.02 }
       },
-      interaction: { hover: true, tooltipDelay: 200, dragView: true, zoomView: true },
-      edges: { smooth: true }
+      interaction: { hover: true, tooltipDelay: 200, dragView: true, zoomView: true, navigationButtons: true },
+      edges: { smooth: true },
+      groups: undefined,
+      autoResize: true
     };
 
     const merged = this._mergeOptions(defaults, opts);
@@ -77,6 +103,8 @@ GC.graph = {
     const container = document.getElementById(containerId);
     if (!container || !concepts.length) return null;
 
+    const dark = this._isDark();
+
     const nodes = concepts.map(c => {
       const score = results[c.id] || 0;
       return {
@@ -88,7 +116,7 @@ GC.graph = {
           border: GC.heatColor(score),
           highlight: { background: GC.heatBg(score), border: GC.heatColor(score) }
         },
-        font: { size: 13, face: 'Inter' },
+        font: { size: 13, face: 'Inter', color: dark ? '#e2e8f0' : '#1e293b' },
         title: c.name + ': ' + score + '% - ' + GC.heatLabel(score)
       };
     });
@@ -97,10 +125,11 @@ GC.graph = {
       const info = GC.store.getRelationTypeInfo(r.type);
       return {
         from: r.from, to: r.to, label: info.name,
-        color: { color: '#94a3b8' },
-        font: { size: 9 },
-        dashes: Array.isArray(info.dash) || (info.dash === true),
-        arrows: info.arrow === 'none' ? undefined : info.arrow === 'to' ? 'to' : info.arrow
+        color: { color: dark ? '#475569' : '#94a3b8' },
+        font: { size: 9, color: dark ? '#94a3b8' : '#64748b' },
+        dashes: info.dash || false,
+        width: info.width || 2,
+        arrows: this._arrow(info.arrow)
       };
     });
 
@@ -108,7 +137,8 @@ GC.graph = {
     const options = {
       layout: { hierarchical: { enabled: false } },
       physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 140 } },
-      interaction: { hover: true, tooltipDelay: 200 }
+      interaction: { hover: true, tooltipDelay: 200, navigationButtons: true },
+      autoResize: true
     };
 
     const network = new vis.Network(container, data, options);
@@ -127,6 +157,7 @@ GC.graph = {
     const container = document.getElementById(containerId);
     if (!container) return null;
 
+    const dark = this._isDark();
     const allConcepts = GC.allConcepts(subjects);
     if (!allConcepts.length) return null;
 
@@ -146,7 +177,7 @@ GC.graph = {
           border: subjectMap[c.subjectId]?.color || '#4f46e5'
         }
       },
-      font: { family: 'Inter', size: 13 },
+      font: { family: 'Inter', size: 13, color: dark ? '#e2e8f0' : '#1e293b' },
       title: c.name + ' (' + c.subjectName + ')\n' + (c.description || '')
     }));
 
@@ -159,8 +190,8 @@ GC.graph = {
         color: { color: info.color },
         dashes: info.dash || false,
         width: info.width || 2,
-        arrows: info.arrow === 'none' ? undefined : info.arrow === 'to' ? 'to' : info.arrow,
-        font: { size: 9, color: '#64748b' }
+        arrows: this._arrow(info.arrow),
+        font: { size: 9, color: dark ? '#94a3b8' : '#64748b' }
       };
     });
 
@@ -168,8 +199,9 @@ GC.graph = {
     const options = {
       layout: { hierarchical: { enabled: false } },
       physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.003, springLength: 180, springConstant: 0.01 } },
-      interaction: { hover: true, tooltipDelay: 200 },
-      edges: { smooth: true }
+      interaction: { hover: true, tooltipDelay: 200, navigationButtons: true },
+      edges: { smooth: true },
+      autoResize: true
     };
 
     const network = new vis.Network(container, data, options);

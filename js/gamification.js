@@ -39,7 +39,7 @@
     'Novato', 'Aprendiz', 'Estudiante', 'Conocedor', 'Experto',
     'Maestro', 'Sabio', 'Genio', 'Erudito', 'Leyenda'
   ];
-  const LEVEL_ICONS = ['🌱', '🌿', '📘', '📗', '📕', '🌟', '⭐', '🔥', '💎', '👑'];
+  const LEVEL_ICONS = GC.levelDots;
 
   function getLevelInfo(xp) {
     const level = getLevel(xp);

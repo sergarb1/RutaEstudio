@@ -94,43 +94,41 @@
                   :aria-label="GC.t('btn.redo')">
             <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 15l6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3"/></svg>
           </button>
-          <!-- More dropdown -->
-          <div class="relative">
-            <button @click="showMoreMenu = !showMoreMenu"
-                    class="min-w-[36px] min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                    :title="GC.t('btn.more')"
-                    :aria-label="GC.t('btn.more')">
-              <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-            </button>
-            <div v-if="showMoreMenu" class="slide-down absolute right-0 top-full mt-1 z-50 w-44 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg py-1">
-              <button @click="exportData(); showMoreMenu=false" class="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition text-left">
-                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-                {{ GC.t('btn.export') }}
-              </button>
-              <button @click="exportTemplate(); showMoreMenu=false" class="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition text-left">
-                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
-                {{ GC.t('btn.template') }}
-              </button>
-              <button @click="importData(); showMoreMenu=false" class="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition text-left">
-                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
-                {{ GC.t('btn.import') }}
-              </button>
-              <div class="border-t border-slate-100 dark:border-slate-700 my-1"></div>
-              <button @click="modal='reminder'; showMoreMenu=false" class="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition text-left">
-                <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
-                {{ GC.t('btn.reminder') }}
-              </button>
-            </div>
-            <!-- Backdrop to close menu -->
-            <div v-if="showMoreMenu" @click="showMoreMenu=false" class="fixed inset-0 z-40"></div>
-          </div>
+          <!-- Reminder -->
+          <button @click="modal='reminder'"
+                  class="min-w-[36px] min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  :title="GC.t('btn.reminder')"
+                  :aria-label="GC.t('btn.reminder')">
+            <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+          </button>
+          <!-- Import -->
+          <button @click="importData()"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  :title="GC.t('btn.import')">
+            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+            {{ GC.t('btn.import') }}
+          </button>
+          <!-- Export -->
+          <button @click="exportData()"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  :title="GC.t('btn.export')">
+            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            {{ GC.t('btn.export') }}
+          </button>
+          <!-- Template -->
+          <button @click="exportTemplate()"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  :title="GC.t('btn.template')">
+            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+            {{ GC.t('btn.template') }}
+          </button>
         </div>
       </header>
 
       <!-- Gamification Bar -->
       <div class="flex items-center gap-3 mb-6 p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
         <div class="flex items-center gap-2 flex-shrink-0">
-          <span class="text-lg" v-text="levelIcon"></span>
+          <span v-html="levelIcon"></span>
           <span class="font-bold text-sm" v-text="levelTitle"></span>
         </div>
         <div class="flex-1 min-w-0">
@@ -143,12 +141,12 @@
           </div>
         </div>
         <button @click="showAchievements = !showAchievements"
-                class="relative flex-shrink-0 text-xs bg-amber-100 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2 font-medium hover:bg-amber-200 dark:hover:bg-amber-800/60 transition">
-          🏆
+                class="relative flex-shrink-0 flex items-center gap-1 text-xs bg-amber-100 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2 font-medium hover:bg-amber-200 dark:hover:bg-amber-800/60 transition">
+          <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0 0 16.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.023 6.023 0 0 1-2.77.896m0 0a6.022 6.022 0 0 1-2.77-.896"/></svg>
           <span v-if="unlockedAchievements" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" v-text="unlockedAchievements"></span>
         </button>
         <div class="flex items-center gap-1.5 flex-shrink-0 text-xs bg-green-50 dark:bg-green-900/20 rounded-xl px-3 py-1.5 border border-green-200 dark:border-green-800/40">
-          <span>🔥</span>
+          <svg class="w-3.5 h-3.5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/></svg>
           <div class="flex flex-col">
             <span class="font-semibold text-green-700 dark:text-green-300" v-text="dailyProgress + '/' + dailyGoal"></span>
             <div class="w-16 bg-green-200 dark:bg-green-800 rounded-full h-1.5 mt-0.5">
@@ -285,22 +283,22 @@
               <button @click="addConcept()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition flex-shrink-0">{{ GC.t('concept.add') }}</button>
               <button @click="toggleBulkTag()"
                       :class="bulkTagMode ? 'bg-amber-500 text-white' : 'bg-white dark:bg-slate-800 border dark:border-slate-600'"
-                      class="text-xs border rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition">🏷️ {{ GC.t('concept.bulk') }}</button>
+                       class="text-xs border rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition"><svg class="w-3 h-3 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg> {{ GC.t('concept.bulk') }}</button>
               <button @click="exportConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Exportar CSV">CSV</button>
-              <button @click="importConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Importar CSV">📥 CSV</button>
+              <button @click="importConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Importar CSV"><svg class="w-3 h-3 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg> CSV</button>
             </div>
           </div>
 
           <!-- Bulk tag bar -->
           <div v-if="bulkTagMode" class="flex items-center gap-2 mb-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40">
-            <span class="text-xs text-amber-700 dark:text-amber-300 font-medium">🏷️ Marca los conceptos y asigna etiqueta:</span>
+            <span class="text-xs text-amber-700 dark:text-amber-300 font-medium flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg> Marca los conceptos y asigna etiqueta:</span>
             <input v-model="bulkTagValue" placeholder="Nombre de etiqueta" class="flex-1 border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-2 py-1.5 text-xs" />
             <button @click="applyBulkTag()" class="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-700 transition">Aplicar</button>
             <button @click="toggleBulkTag()" class="text-xs text-slate-400 hover:underline">Cancelar</button>
           </div>
 
           <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-12 text-center">
-            <span class="text-3xl block mb-2">🧠</span>
+            <svg class="w-8 h-8 mx-auto mb-3 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
             Aún no hay conceptos. ¡Añade el primero o usa el asistente IA!
           </p>
           <p v-if="currentSubject.concepts.length > 0 && filteredConcepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-4 text-center">Ningún concepto coincide con "{{ conceptSearch }}"</p>
@@ -455,9 +453,10 @@
             <div v-for="c in conceptTree" :key="c.id" class="text-sm">
               <div class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
                    @click="openInspector(c.id)">
-                <span class="text-slate-400 dark:text-slate-500 w-5 flex-shrink-0" v-text="c.depth === 0 ? '🌱' : '└─'"></span>
+                <svg v-if="c.depth === 0" class="w-3.5 h-3.5 shrink-0 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                <span v-if="c.depth > 0" class="text-slate-400 w-4 flex-shrink-0">└─</span>
                 <span class="font-medium" v-text="c.name"></span>
-                <span v-if="c.blockers.length" class="text-xs text-red-400" v-text="'⚠️ ' + c.blockers.length + ' blockers'"></span>
+                <span v-if="c.blockers.length" class="text-xs text-red-400 flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg> <span v-text="c.blockers.length + ' blockers'"></span></span>
                 <span v-if="c.score != null" class="text-xs ml-auto" :style="'color:'+GC.heatColor(c.score)" v-text="Math.round(c.score) + '%'"></span>
               </div>
               <div v-for="child in c.children" :key="child.id" class="ml-5">
@@ -512,7 +511,7 @@
             </div>
             <div class="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-4">
               <span v-text="'Evaluados: ' + Object.keys(assessScores).length + ' / ' + currentSubject.concepts.length"></span>
-              <span v-if="Object.keys(assessScores).length < currentSubject.concepts.length" class="text-amber-500">⚠️</span>
+              <svg v-if="Object.keys(assessScores).length < currentSubject.concepts.length" class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
             </div>
             <div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700">
               <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wide mb-1">Concepto <span v-text="assessIndex+1"></span></p>
@@ -558,7 +557,7 @@
         <div v-if="tab === 'results'" class="tab-fade-in space-y-4">
           <div v-if="!lastAssessment"
                class="text-center py-12 text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-            <p class="text-4xl mb-3">📊</p>
+            <svg class="w-10 h-10 mx-auto mb-3 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
             <p class="font-medium">Aún no hay evaluaciones</p>
             <p class="text-sm mt-1">Haz una evaluación en la pestaña "Evaluar"</p>
           </div>
@@ -592,7 +591,7 @@
             <div v-if="subjectAssessmentsList.length >= 2"
                  class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 mb-4">
               <div class="flex items-center justify-between mb-3">
-                <h3 class="font-bold">📈 {{ GC.t('results.evolution') }}</h3>
+                <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg> {{ GC.t('results.evolution') }}</h3>
                 <span class="text-xs text-slate-400 dark:text-slate-500" v-text="subjectAssessmentsList.length + ' evaluaciones'"></span>
               </div>
               <div class="progress-chart" v-html="progressChartSVG()"></div>
@@ -613,14 +612,14 @@
             <!-- Activity chart -->
             <div v-if="subjectAssessmentsList.length >= 2"
                  class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 mb-4">
-              <h3 class="font-bold text-sm mb-2">📊 Actividad por semana</h3>
+              <h3 class="font-bold text-sm mb-2 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg> Actividad por semana</h3>
               <div v-html="activityBarsSVG()"></div>
             </div>
 
             <!-- Prediction chart -->
             <div v-if="subjectAssessmentsList.length >= 2"
                  class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 mb-4">
-              <h3 class="font-bold text-sm mb-2">📈 Predicción de puntuaciones (regresión lineal)</h3>
+              <h3 class="font-bold text-sm mb-2 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg> Predicción de puntuaciones (regresión lineal)</h3>
               <p class="text-xs text-slate-400 mb-3">Cambio estimado en la próxima evaluación por concepto</p>
               <div v-html="predictionChartSVG()"></div>
             </div>
@@ -628,10 +627,10 @@
             <!-- Streak calendar -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
               <div class="flex items-center justify-between mb-3">
-                <h3 class="font-bold">🔥 Racha de estudio</h3>
+                <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 012 12 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg> Racha de estudio</h3>
                 <div class="flex items-center gap-3 text-xs">
-                  <span class="text-green-600 dark:text-green-400 font-medium" v-text="'🔥 ' + streak.current + ' días'"></span>
-                  <span class="text-amber-500 font-medium" v-text="'🏆 Récord: ' + streak.best"></span>
+                  <span class="text-green-600 dark:text-green-400 font-medium flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 012 12 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg> <span v-text="streak.current + ' días'"></span></span>
+                  <span class="text-amber-500 font-medium flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0016.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.023 6.023 0 01-2.77.896m0 0a6.022 6.022 0 01-2.77-.896"/></svg> Récord: <span v-text="streak.best"></span></span>
                 </div>
               </div>
               <div class="flex flex-wrap gap-1.5">
@@ -646,9 +645,9 @@
             <!-- Study plan -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
               <div class="flex items-center justify-between mb-3">
-                <h3 class="font-bold">📋 Plan de estudio</h3>
+                <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg> Plan de estudio</h3>
                 <div class="flex items-center gap-2">
-                  <button @click="exportStudyPlanText()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium">📄 Exportar</button>
+                  <button @click="exportStudyPlanText()" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg> Exportar</button>
                   <div class="flex gap-1 text-xs bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
                   <button @click="planAlgorithm='bfs'"
                           :class="planAlgorithm==='bfs'?'bg-white dark:bg-slate-600 shadow-sm':'hover:bg-slate-50 dark:hover:bg-slate-600'"
@@ -658,14 +657,14 @@
                           class="px-3 py-1.5 rounded font-medium transition">DFS</button>
                   <button @click="planAlgorithm='desbloqueador'"
                           :class="planAlgorithm==='desbloqueador'?'bg-amber-500 text-white shadow-sm':'hover:bg-slate-50 dark:hover:bg-slate-600'"
-                          class="px-3 py-1.5 rounded font-medium transition">🔥 Desbloqueador</button>
+                           class="px-3 py-1.5 rounded font-medium transition"><svg class="w-3.5 h-3.5 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 012 12 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg> Desbloqueador</button>
                 </div>
               </div>
               <p v-if="studyPlan().repasar.length === 0 && studyPlan().reforzar.length === 0"
-                 class="text-sm text-green-600 dark:text-green-400 font-medium">¡Todo dominado! Sigue así 🎉</p>
+                 class="text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> ¡Todo dominado! Sigue así</p>
 
               <div v-if="studyPlan().repasar.length > 0" class="mb-4">
-                <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center gap-1 mb-2">🔴 Repasar (dominio &lt; 40%)</p>
+                <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center gap-1 mb-2"><svg class="w-3 h-3" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg> Repasar (dominio &lt; 40%)</p>
                 <div class="space-y-2">
                   <div v-for="item in studyPlan().repasar" :key="item.id"
                        class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/40 rounded-xl p-3">
@@ -676,7 +675,7 @@
                 </div>
               </div>
               <div v-if="studyPlan().reforzar.length > 0" class="mb-4">
-                <p class="text-sm font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 mb-2">🟡 Reforzar (dominio 40-70%)</p>
+                <p class="text-sm font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 mb-2"><svg class="w-3 h-3" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg> Reforzar (dominio 40-70%)</p>
                 <div class="space-y-2">
                   <div v-for="item in studyPlan().reforzar" :key="item.id"
                        class="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 rounded-xl p-3">
@@ -687,7 +686,7 @@
                 </div>
               </div>
               <div v-if="studyPlan().avanzar.length > 0">
-                <p class="text-sm font-bold text-green-600 dark:text-green-400 flex items-center gap-1 mb-2">🟢 Listo para avanzar (dominio &gt; 70%)</p>
+                <p class="text-sm font-bold text-green-600 dark:text-green-400 flex items-center gap-1 mb-2"><svg class="w-3 h-3" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg> Listo para avanzar (dominio &gt; 70%)</p>
                 <div class="space-y-2">
                   <div v-for="item in studyPlan().avanzar" :key="item.id"
                        class="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800/40 rounded-xl p-3">
@@ -701,11 +700,11 @@
 
             <!-- Roadmap -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-              <h3 class="font-bold mb-3">🛤️ Roadmap de estudio</h3>
+              <h3 class="font-bold mb-3 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg> Roadmap de estudio</h3>
               <div v-if="!lastAssessment" class="text-sm text-slate-400 py-4 text-center">Evalúa conceptos para ver tu roadmap.</div>
               <div v-if="lastAssessment">
                 <div v-if="roadmap.ahora.length" class="mb-3">
-                  <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1.5 flex items-center gap-1">🔴 Ahora (prioritarios)</p>
+                  <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1.5 flex items-center gap-1"><svg class="w-2.5 h-2.5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg> Ahora (prioritarios)</p>
                   <div class="space-y-1">
                     <div v-for="r in roadmap.ahora" :key="r.id"
                          @click="openInspector(r.id)"
@@ -717,7 +716,7 @@
                   </div>
                 </div>
                 <div v-if="roadmap.siguiente.length" class="mb-3">
-                  <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1.5 flex items-center gap-1">🟡 Siguiente (preparados)</p>
+                  <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1.5 flex items-center gap-1"><svg class="w-2.5 h-2.5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg> Siguiente (preparados)</p>
                   <div class="space-y-1">
                     <div v-for="r in roadmap.siguiente" :key="r.id"
                          @click="openInspector(r.id)"
@@ -729,7 +728,7 @@
                   </div>
                 </div>
                 <div v-if="roadmap.pronto.length">
-                  <p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1">⚪ Pronto (avanzados / bloqueados)</p>
+                  <p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1"><svg class="w-2.5 h-2.5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg> Pronto (avanzados / bloqueados)</p>
                   <div class="space-y-1">
                     <div v-for="r in roadmap.pronto" :key="r.id"
                          @click="openInspector(r.id)"
@@ -745,7 +744,7 @@
 
             <!-- Heat graph -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-              <h3 class="font-bold mb-3">🎨 Mapa de calor</h3>
+              <h3 class="font-bold mb-3 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z"/></svg> Mapa de calor</h3>
               <div v-if="heatGraphLoading" class="flex items-center justify-center py-12 text-sm text-slate-400">
                 <span class="inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mr-2"></span>
                 {{ GC.t('misc.loading') }}
@@ -758,7 +757,7 @@
         <!-- Study flashcards tab -->
         <div v-if="tab === 'study'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold">🎴 Modo estudio</h3>
+            <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/></svg> Modo estudio</h3>
             <div class="flex items-center gap-2 text-xs">
               <select v-model="studyFilter" class="border dark:border-slate-600 rounded-lg px-2 py-1.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
                 <option value="all">Todos los conceptos</option>
@@ -779,7 +778,7 @@
             <div class="w-full max-w-md mb-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                  <span class="text-lg" v-text="pomodoroRunning ? '⏱️' : '⏲️'"></span>
+                  <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   <span class="text-lg font-bold tabular-nums" v-text="pomodoroDisplay"></span>
                 </div>
                 <div class="flex items-center gap-1">
@@ -832,10 +831,12 @@
               <!-- Confidence buttons -->
               <div class="flex gap-3 max-w-md mx-auto">
                 <button @click="studyAnswer(false)" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
-                  ❌ No lo sé
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  No lo sé
                 </button>
                 <button @click="studyAnswer(true)" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
-                  ✅ Lo sé
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Lo sé
                 </button>
               </div>
               <p class="text-xs text-slate-400 text-center mt-3">Las tarjetas que falles volverán a aparecer</p>
@@ -843,7 +844,7 @@
 
             <!-- Session complete -->
             <div v-if="studyIndex >= studyCards.length && studyCards.length > 0" class="text-center py-8">
-              <p class="text-5xl mb-3">🎉</p>
+              <svg class="w-12 h-12 mx-auto mb-3 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <p class="text-lg font-bold text-green-600 dark:text-green-400">¡Sesión completada!</p>
               <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto my-4">
                 <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-3">
@@ -871,9 +872,9 @@
             <h3 class="font-bold">Historial de evaluaciones</h3>
             <button v-if="subjectAssessmentsList.length >= 2 && !compareA && !compareB"
                     @click="compareA = subjectAssessmentsList[subjectAssessmentsList.length-1]; compareB = subjectAssessmentsList[subjectAssessmentsList.length-2]"
-                    class="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition font-medium">📊 Comparar últimas 2</button>
+                    class="flex items-center gap-1 text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition font-medium"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg> Comparar últimas 2</button>
             <button v-if="compareA || compareB" @click="compareA=null; compareB=null"
-                    class="text-xs text-slate-400 dark:text-slate-500 hover:underline">✕ Cerrar comparación</button>
+                    class="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 hover:underline"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cerrar comparación</button>
           </div>
 
           <!-- Comparison results -->
@@ -986,7 +987,7 @@
                     class="flex-1 px-3 py-1.5 rounded transition">Desde cero</button>
             <button @click="templateTab='template'"
                     :class="templateTab==='template'?'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100':'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'"
-                    class="flex-1 px-3 py-1.5 rounded transition">📋 Desde plantilla</button>
+                    class="flex-1 px-3 py-1.5 rounded transition"><svg class="w-3.5 h-3.5 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg> Desde plantilla</button>
           </div>
 
           <!-- Manual form -->
@@ -1007,7 +1008,8 @@
             <input v-model="templateSearch" placeholder="Buscar plantilla..." class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm" />
             <div v-for="group in filteredTemplates" :key="group.key" class="space-y-2">
               <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide flex items-center gap-1">
-                <span v-text="group.emoji || '📚'"></span>
+                <svg v-if="!group.emoji" class="w-3.5 h-3.5 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                <span v-if="group.emoji" v-text="group.emoji"></span>
                 <span v-text="group.label"></span>
                 <span class="font-normal text-slate-300 dark:text-slate-600" v-text="group.subjects.length + ' módulos'"></span>
               </p>
@@ -1084,7 +1086,7 @@
             <div v-for="item in group.items" :key="item.concept.id"
                  @click="goToConcept(item.subjectId, item.concept.id)"
                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition text-sm">
-              <span class="text-base">🧠</span>
+              <svg class="w-5 h-5 shrink-0 text-indigo-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
               <div class="flex-1 min-w-0">
                 <p class="font-medium truncate" v-text="item.concept.name"></p>
                 <p class="text-xs text-slate-400 truncate" v-text="item.concept.description || '—'"></p>
@@ -1294,7 +1296,7 @@
       <!-- Tab: Walkthrough -->
       <div v-show="inspectorTab==='walkthrough'" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
         <div v-if="inspector?.isIsolated" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-3 text-amber-700 dark:text-amber-300 text-xs">
-          ⚠️ Este concepto está aislado: no tiene relaciones con otros conceptos.
+          <svg class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg> Este concepto está aislado: no tiene relaciones con otros conceptos.
         </div>
         <div v-if="inspector?.recommendation" class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
           <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Recomendación</p>
@@ -1342,7 +1344,7 @@
         <div v-if="inspectorConcept && currentSubject">
           <div v-for="r in (currentSubject.concepts.find(c=>c.id===inspectorConcept)?.resources || [])" :key="r.id"
                class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-lg px-3 py-2 border border-slate-200 dark:border-slate-700 mb-2">
-            <span class="text-xs text-slate-400 w-5" v-text="r.type==='link'?'🔗':'📝'"></span>
+            <span class="w-4 h-4 shrink-0 text-slate-400"><svg v-if="r.type==='link'" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg><svg v-else class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></span>
             <div class="flex-1 min-w-0">
               <a :href="r.url" target="_blank" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline truncate block" v-text="r.title"></a>
             </div>
@@ -1461,7 +1463,7 @@
                   class="bg-indigo-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-indigo-700 transition">Siguiente →</button>
           <button v-if="onboardingStep === onboardingSteps.length - 1"
                   @click="closeOnboarding()"
-                  class="bg-green-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-green-700 transition">🚀 ¡Empezar!</button>
+                  class="flex items-center gap-1.5 bg-green-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-green-700 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg> ¡Empezar!</button>
         </div>
 
         <button @click="closeOnboarding()" class="text-xs text-slate-400 dark:text-slate-500 mt-3 w-full text-center hover:underline">Saltar tutorial</button>
@@ -1496,7 +1498,7 @@
               <p class="font-semibold text-sm" v-text="ach.name"></p>
               <p class="text-xs text-slate-400 dark:text-slate-500" v-text="ach.desc"></p>
             </div>
-            <span v-if="ach.unlocked" class="text-green-600 text-sm font-bold">✓</span>
+            <svg v-if="ach.unlocked" class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
             <span v-else class="text-xs text-slate-400" v-text="ach.progress || ''"></span>
           </div>
         </div>

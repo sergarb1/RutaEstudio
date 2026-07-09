@@ -109,8 +109,7 @@
         customTypeWidth: 2,
         customTypeArrow: 'to',
         customTypeEditId: null,
-        showAchievements: false,
-        showMoreMenu: false
+        showAchievements: false
       };
     },
 
@@ -567,6 +566,10 @@
       },
       graphRelFilter() {
         if (this.tab === 'graph') this.renderGraph();
+      },
+      dark() {
+        if (this.tab === 'graph') setTimeout(() => this.renderGraph(), 100);
+        if (this.tab === 'results') setTimeout(() => this.renderHeatGraph(), 200);
       },
       graphWeightMin() {
         if (this.tab === 'graph') this.renderGraph();
