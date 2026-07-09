@@ -150,7 +150,7 @@
     emits: ['back'],
     data() {
       return {
-        activeTab: 'import',
+        activeTab: 'prompts',
         tabs: [
           { id: 'prompts', label: '\uD83D\uDCDD Prompts' },
           { id: 'import', label: '\u2B07 Importar JSON' },
