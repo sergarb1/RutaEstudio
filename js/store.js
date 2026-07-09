@@ -1,4 +1,5 @@
-const STORAGE_KEY = 'grafo-conocimiento';
+const STORAGE_KEY = 'RutaEstudio';
+const LEGACY_KEY = 'grafo-conocimiento';
 const MAX_HISTORY = 50;
 
 GC.store = Vue.reactive({
@@ -84,7 +85,13 @@ GC.store = Vue.reactive({
 
   init() {
     try {
-      const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      // Migrate legacy storage key
+      let raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        raw = localStorage.getItem(LEGACY_KEY);
+        if (raw) localStorage.setItem(STORAGE_KEY, raw);
+      }
+      const d = JSON.parse(raw || 'null');
       if (d) {
         this.subjects = d.subjects || [];
         this.assessments = d.assessments || [];
