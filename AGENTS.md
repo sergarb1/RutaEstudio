@@ -116,7 +116,7 @@ customRelationTypes = [{ id, name, color, dash, width, arrow }]
 
 ## Files
 ```
-grafo-conocimiento/
+RutaEstudio/
 ├── index.html                # Entry point
 ├── README.md                 # Docs + AI guide
 ├── manual.html               # Manual completo de usuario
@@ -146,8 +146,8 @@ grafo-conocimiento/
 ```
 
 ## GitHub
-- Repo: github.com/sergarb1/grafo-conocimiento
-- Pages: https://sergarb1.github.io/grafo-conocimiento
+- Repo: github.com/sergarb1/RutaEstudio
+- Pages: https://sergarb1.github.io/RutaEstudio
 
 ---
 

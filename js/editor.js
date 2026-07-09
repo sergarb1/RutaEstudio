@@ -230,7 +230,7 @@
       const blob = new Blob([json], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'grafo-conocimiento.json';
+      a.download = 'RutaEstudio.json';
       a.click();
     },
     exportSubjectJSON() {
@@ -256,7 +256,7 @@
       const blob = new Blob([json], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'plantilla-grafo-conocimiento.json';
+      a.download = 'plantilla-RutaEstudio.json';
       a.click();
     },
     exportConceptsCSV() {

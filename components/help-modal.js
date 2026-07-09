@@ -188,8 +188,8 @@ Devuelve solo el JSON v\u00e1lido, sin explicaciones.</pre>
             <section class="pt-3 border-t border-slate-200 dark:border-slate-700">
               <h3 class="font-bold text-base mb-2">\uD83D\uDD17 Enlaces</h3>
               <ul class="list-disc ml-5 space-y-1 text-slate-600 dark:text-slate-300">
-                <li><a href="https://github.com/sergarb1/grafo-conocimiento" class="text-indigo-600 dark:text-indigo-400 hover:underline" target="_blank">GitHub</a></li>
-                <li><a href="https://sergarb1.github.io/grafo-conocimiento" class="text-indigo-600 dark:text-indigo-400 hover:underline" target="_blank">GitHub Pages</a></li>
+                <li><a href="https://github.com/sergarb1/RutaEstudio" class="text-indigo-600 dark:text-indigo-400 hover:underline" target="_blank">GitHub</a></li>
+                <li><a href="https://sergarb1.github.io/RutaEstudio" class="text-indigo-600 dark:text-indigo-400 hover:underline" target="_blank">GitHub Pages</a></li>
               </ul>
             </section>
           </div>

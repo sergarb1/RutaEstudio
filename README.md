@@ -4,7 +4,7 @@
 > Connect concepts, master your path. Study with purpose.
 
 <p align="center">
-  <a href="https://sergarb1.github.io/grafo-conocimiento/">🌐 sergarb1.github.io/grafo-conocimiento</a>
+  <a href="https://sergarb1.github.io/RutaEstudio/">🌐 sergarb1.github.io/RutaEstudio</a>
 </p>
 
 ---
@@ -49,7 +49,7 @@
 4. Evalúa tu dominio / Assess your mastery
 5. Revisa el plan de estudio generado / Review your generated study plan
 
-O directamente en / Or directly at: **[sergarb1.github.io/grafo-conocimiento](https://sergarb1.github.io/grafo-conocimiento/)**
+O directamente en / Or directly at: **[sergarb1.github.io/RutaEstudio](https://sergarb1.github.io/RutaEstudio/)**
 
 ---
 
@@ -196,9 +196,9 @@ See [`FORMAT.md`](./FORMAT.md) for the full JSON format specification.
 
 ## 🔗 Enlaces / Links
 
-- [GitHub](https://github.com/sergarb1/grafo-conocimiento)
-- [GitHub Pages](https://sergarb1.github.io/grafo-conocimiento)
-- [Reportar issue](https://github.com/sergarb1/grafo-conocimiento/issues)
+- [GitHub](https://github.com/sergarb1/RutaEstudio)
+- [GitHub Pages](https://sergarb1.github.io/RutaEstudio)
+- [Reportar issue](https://github.com/sergarb1/RutaEstudio/issues)
 
 ---
 
