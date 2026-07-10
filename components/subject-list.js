@@ -74,7 +74,7 @@
           </div>
 
           <div class="flex flex-wrap gap-2 mt-4">
-            <button @click="$emit('exportTemplate')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
+            <button @click="$emit('templateInfo')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
               <span v-html="icon('documentText')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Plantilla
             </button>
             <button @click="$emit('import')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
