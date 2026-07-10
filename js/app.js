@@ -150,6 +150,7 @@
       },
       compareDiff() {
         return [];
+      },
       globalResults() {
         if (!this.globalSearch.trim()) return [];
         const q = this.globalSearch.toLowerCase();
