@@ -585,7 +585,7 @@
           <div class="space-y-3">
             <div v-for="a in subjectAssessmentsList" :key="a.id"
                  class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 transition"
-                 :class="{'ring-2 ring-indigo-400': a.id === compareA?.id || a.id === compareB?.id}">
+                 :class="{'ring-2 ring-indigo-400': false}">
               <div class="flex items-start gap-3">
                 <div class="flex-1 min-w-0">
                   <div @click="viewAssessment(a)" class="cursor-pointer">

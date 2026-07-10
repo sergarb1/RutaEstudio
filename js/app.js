@@ -75,6 +75,7 @@
         templateSearch: '',
 
         showOnboarding: false,
+        onboardingStep: 0,
 
         reminderTime: localStorage.getItem('re-reminder-time') || '',
         reminderEnabled: localStorage.getItem('re-reminder-enabled') === 'true',

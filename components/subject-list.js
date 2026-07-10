@@ -73,16 +73,6 @@
             </button>
           </div>
 
-          <div v-if="subjects.length >= 1" class="mt-4">
-            <button @click="$emit('suggestions')" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-center hover:border-amber-300 dark:hover:border-amber-500 transition cursor-pointer">
-              <div class="flex items-center justify-center gap-2">
-                <span class="w-5 h-5 text-amber-500 shrink-0 inline-flex items-center justify-center" v-html="icon('lightbulb')"></span>
-                <span class="font-bold text-amber-600 dark:text-amber-400">Sugerencias y an\u00e1lisis</span>
-              </div>
-              <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Recomendaciones basadas en tus evaluaciones</p>
-            </button>
-          </div>
-
           <div class="flex flex-wrap gap-2 mt-4">
             <button @click="$emit('exportTemplate')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
               <span v-html="icon('documentText')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Plantilla
@@ -100,7 +90,7 @@
     props: {
       subjects: Array
     },
-    emits: ['select', 'add', 'help', 'example', 'globalGraph', 'suggestions', 'import', 'exportTemplate', 'importSubject'],
+    emits: ['select', 'add', 'help', 'example', 'globalGraph', 'import', 'exportTemplate', 'importSubject'],
     methods: {
       icon(name) { return (GC.SVG || {})[name] || ''; }
     }
