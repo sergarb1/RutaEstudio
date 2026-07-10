@@ -139,10 +139,14 @@ RutaEstudio/
 │   ├── suggestions-panel.js  # AI suggestions
 │   ├── help-modal.js         # Help + AI guide
 │   └── ai-generator.js       # AI prompt templates + JSON import
-└── fallback/
-    ├── tailwind.min.css       # Offline fallback
-    ├── vue.global.prod.js     # Offline fallback
-    └── vis-network.min.js     # Offline fallback
+├── fallback/
+│   ├── tailwind.min.css       # Offline fallback
+│   ├── vue.global.prod.js     # Offline fallback
+│   └── vis-network.min.js     # Offline fallback
+└── .opencode/
+    └── skills/
+        └── ui-ux-critic/
+            └── SKILL.md       # UI/UX audit checklist (PC + mobile + a11y)
 ```
 
 ## GitHub
@@ -154,31 +158,24 @@ RutaEstudio/
 ## Session Summary (10 Jul 2026)
 
 ### Goal
-Fix bugs (graph buttons no filtran, estudio vacío), crear skill UI/UX critic, ajustes varios.
+UI/UX fixes: landing intro text, SVG icon alignment, responsive icons, README/AGENTS update.
 
 ### Completed
-- **Graph tab**: botones de tipo de relación ahora también filtran el grafo (además del dropdown). Añadido botón "Todas" para limpiar filtro.
-- **ai-generator.js**: default tab cambiado de 'import' a 'prompts' para que al hacer clic en "Prompts" se vean los prompts, no el textarea de import.
-- **Skill UI/UX critic**: creada en `.opencode/skills/ui-ux-critic/SKILL.md` — checklist PC, móvil, accesibilidad, PWA con archivo:línea para cada issue.
+- **Landing intro text**: añadido texto explicativo en landing vacía ("Define conceptos, conéctalos con relaciones... 100% gratis · sin registro · sin internet")
+- **SVG icons**: 34 iconos en `GC.SVG` cambian de `w-5 h-5` fijo a `w-full h-full` (responsive al contenedor padre)
+- **Icon alignment**: 14 spans de iconos en `subject-list.js` con `inline-flex items-center justify-center` para centrado vertical
+- **README.md**: sección "AI Skills" con referencias a skills, estructura actualizada con `.opencode/`, nuevo feature "Checklists UI/UX"
+- **AGENTS.md**: estructura de archivos actualizada con `.opencode/`, session summary renovado
 
 ### Current State
 | Feature | Status |
 |---------|--------|
-| Templates (40 modules) | ✅ Stable |
-| Flashcards / spaced rep | ✅ Stable |
-| Onboarding (6 steps) | ✅ Stable |
-| Study streak calendar | ✅ Stable |
-| Export plan .txt | ✅ Stable |
-| Pomodoro timer | ✅ Stable |
-| Session stats | ✅ Stable |
-| Progress chart | ✅ Stable |
-| Custom relation types | ✅ Stable |
-| Graph filter buttons | ✅ Fixed |
-
-### PWA / Instalable
-- **Manifest**: `manifest.json` → iconos PNG estáticos (`icon-192.png`, `icon-512.png`)
-- **Service Worker**: `sw.js` — cache-first para assets locales, network-first para CDN, offline navigation → `index.html`
-- **Install prompt**: `beforeinstallprompt` capturado en `window.deferredPrompt`; botón "Instalar" en header cuando `canInstall === true`
+| Landing intro text | ✅ Added |
+| SVG icons (responsive) | ✅ Fixed |
+| Icon vertical alignment | ✅ Fixed |
+| Prompts button | ✅ Working |
+| UI/UX skill | ✅ Created |
+| README/AGENTS | ✅ Updated |
 
 ## Current Module Structure
 | Module | File | Responsibility |

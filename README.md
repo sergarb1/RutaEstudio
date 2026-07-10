@@ -39,6 +39,8 @@
 | 🔒 100% local — datos en localStorage | 🔒 100% local — data stays in localStorage |
 | 📖 Licencias libres | 📖 Free licenses |
 
+| ✅ Checklists automáticas UI/UX (PC + móvil + accesibilidad) | ✅ Automated UI/UX checklists (PC + mobile + accessibility) |
+
 ---
 
 ## 🚀 Uso rápido / Quick start
@@ -105,6 +107,10 @@ RutaEstudio/
 │   └── vis-network.min.js    # Offline vis-network fallback
 └── img/
     └── icon.svg              # PWA icon (brain + network + book)
+.opencode/                     # AI configuration & skills
+└── skills/
+    └── ui-ux-critic/
+        └── SKILL.md           # UI/UX review checklist (PC + mobile + a11y)
 ```
 
 ---
@@ -201,6 +207,14 @@ See [`FORMAT.md`](./FORMAT.md) for the full JSON format specification.
 - [Reportar issue](https://github.com/sergarb1/RutaEstudio/issues)
 
 ---
+
+## 🤖 Skills de IA / AI Skills
+
+El proyecto incluye skills para asistentes IA en `.opencode/skills/`:
+
+| Skill | Uso |
+|---|---|
+| `ui-ux-critic` | Audit UI/UX completo: PC, móvil, accesibilidad, PWA. Corre `codegraph explore "ui-ux critic checklist"` para ejecutar. |
 
 ## ⚡ Nota para asistentes IA
 
