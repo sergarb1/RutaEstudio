@@ -151,16 +151,15 @@ RutaEstudio/
 
 ---
 
-## Session Summary (9 Jul 2026)
+## Session Summary (10 Jul 2026)
 
 ### Goal
-Fix Vue compiler error #55 (SVGs en templates), PWA manifest errors (blob URLs rechazados), y limpiar warnings de consola.
+Fix bugs (graph buttons no filtran, estudio vacío), crear skill UI/UX critic, ajustes varios.
 
 ### Completed
-- **subject-list.js**: reemplazado `v-html="'${S.xxx}'"` por `v-html="icon('xxx')"` con método `icon(name)` en runtime. Los SVGs con dobles comillas rompían el parser de Vue (error #55). Eliminada `const S = GC.SVG;`
-- **manifest.json**: cambiado icono SVG por PNG estáticos (`icon-192.png`, `icon-512.png`). El SVG no era compatible con PWA en Chrome.
-- **index.html**: eliminado script dinámico de generación de iconos (Canvas→blob URLs→manifest blob). Las URLs blob son rechazadas por Chrome para `start_url` e `icons[].src`. Añadido `<meta name="mobile-web-app-capable">` (deprecado apple-*).
-- **ai-generator.js**: reemplazado emoji robot 🤖 por SVG inline de sparkles.
+- **Graph tab**: botones de tipo de relación ahora también filtran el grafo (además del dropdown). Añadido botón "Todas" para limpiar filtro.
+- **ai-generator.js**: default tab cambiado de 'import' a 'prompts' para que al hacer clic en "Prompts" se vean los prompts, no el textarea de import.
+- **Skill UI/UX critic**: creada en `.opencode/skills/ui-ux-critic/SKILL.md` — checklist PC, móvil, accesibilidad, PWA con archivo:línea para cada issue.
 
 ### Current State
 | Feature | Status |
@@ -174,6 +173,7 @@ Fix Vue compiler error #55 (SVGs en templates), PWA manifest errors (blob URLs r
 | Session stats | ✅ Stable |
 | Progress chart | ✅ Stable |
 | Custom relation types | ✅ Stable |
+| Graph filter buttons | ✅ Fixed |
 
 ### PWA / Instalable
 - **Manifest**: `manifest.json` → iconos PNG estáticos (`icon-192.png`, `icon-512.png`)
