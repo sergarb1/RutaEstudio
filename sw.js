@@ -25,8 +25,7 @@ self.addEventListener('install', e => {
       'components/subject-list.js',
       'components/global-graph.js',
       'components/suggestions-panel.js',
-      'components/help-modal.js',
-      'components/ai-generator.js'
+      'components/help-modal.js'
     ]);
   })());
 });

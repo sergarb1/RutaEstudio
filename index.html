@@ -153,8 +153,6 @@
           @help="showHelp"
           @example="loadExample"
           @globalGraph="goToGlobalGraph"
-          @suggestions="goToSuggestions"
-          @aiGenerator="goToAIGenerator"
           @import="importData"
           @exportTemplate="exportTemplate"
           @importSubject="importSubjectJSON"
@@ -219,23 +217,12 @@
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-2.04 1.757-1.757a4.5 4.5 0 0 1 6.364 6.364l-4.5 4.5a4.5 4.5 0 0 1-1.242-7.244"/></svg>
             {{ GC.t('tab.graph') }}
           </button>
-          <button @click="tab='deps'"
-                  :class="tab==='deps'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg transition flex-shrink-0">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 21a9.004 9.004 0 0 0 8.168-5.014 9 9 0 0 0-3.554-11.754l-.29.865a3.119 3.119 0 0 1-2.042 1.992 3.12 3.12 0 0 1-2.493-.338l-2.355-1.444a2.422 2.422 0 0 0-3.014.74l-.69.95a3.998 3.998 0 0 0-.495 3.636l.19.477a3.999 3.999 0 0 0 1.455 1.912l.344.258a3.12 3.12 0 0 1 .598 4.118L9 20.25"/></svg>
-            {{ GC.t('tab.deps') }}
-          </button>
+          
           <button @click="tab='assess'"
                   :class="tab==='assess'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
                   class="flex items-center gap-1.5 px-4 py-2 rounded-lg transition flex-shrink-0">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Zm0 0h6.75"/></svg>
             {{ GC.t('tab.assess') }}
-          </button>
-          <button @click="tab='batchAssess'"
-                  :class="tab==='batchAssess'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg transition flex-shrink-0">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Zm0 0h6.75"/></svg>
-            {{ GC.t('tab.batch') }}
           </button>
           <button @click="tab='results'"
                   :class="tab==='results'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
@@ -249,12 +236,7 @@
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
             {{ GC.t('tab.history') }}
           </button>
-          <button @click="tab='study'"
-                  :class="tab==='study'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
-                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg transition flex-shrink-0">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342"/></svg>
-            {{ GC.t('tab.study') }}
-          </button>
+          
         </div>
 
         <div v-if="tab === 'concepts'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
@@ -437,33 +419,8 @@
         </div>
 
         <!-- Dependency Tree tab -->
-        <div v-if="tab === 'deps'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-          <h3 class="font-bold mb-4">Árbol de dependencias</h3>
-          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">{{ GC.t('graph.noConcepts') }}</p>
-          <div v-if="currentSubject.concepts.length > 0" class="space-y-1">
-            <div v-for="c in conceptTree" :key="c.id" class="text-sm">
-              <div class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
-                   @click="openInspector(c.id)">
-                <svg v-if="c.depth === 0" class="w-3.5 h-3.5 shrink-0 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                <span v-if="c.depth > 0" class="text-slate-400 w-4 flex-shrink-0">└─</span>
-                <span class="font-medium" v-text="c.name"></span>
-                <span v-if="c.blockers.length" class="text-xs text-red-400 flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg> <span v-text="c.blockers.length + ' blockers'"></span></span>
-                <span v-if="c.score != null" class="text-xs ml-auto" :style="'color:'+GC.heatColor(c.score)" v-text="Math.round(c.score) + '%'"></span>
-              </div>
-              <div v-for="child in c.children" :key="child.id" class="ml-5">
-                <div class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
-                     @click="openInspector(child.id)">
-                  <span class="text-slate-400 w-4 flex-shrink-0">└─</span>
-                  <span class="font-medium" v-text="child.name"></span>
-                  <span v-if="child.score != null" class="text-xs ml-auto" :style="'color:'+GC.heatColor(child.score)" v-text="Math.round(child.score) + '%'"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Batch Assessment tab -->
-        <div v-if="tab === 'batchAssess'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+        <!-- Assessment tab -->
+         <div v-if="tab === 'assess'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold">Evaluación rápida</h3>
             <button @click="submitAssessment()" class="flex items-center gap-1.5 bg-green-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-green-700 transition">
@@ -485,61 +442,6 @@
                        class="w-28 h-1.5 accent-indigo-600" />
                 <span class="text-xs font-bold w-10 text-center" v-text="(assessScores[c.id] || 0) + '%'"></span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Assessment tab -->
-        <div v-if="tab === 'assess'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">{{ GC.t('graph.noConcepts') }}</p>
-          <div v-if="currentSubject.concepts.length > 0">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold">Autoevaluación</h3>
-              <span class="text-sm text-slate-500 dark:text-slate-400" v-text="(assessIndex+1)+' / '+currentSubject.concepts.length"></span>
-            </div>
-            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2">
-              <div class="bg-indigo-600 h-2 rounded-full transition-all" :style="'width:'+((assessIndex+1)/currentSubject.concepts.length*100)+'%'"></div>
-            </div>
-            <div class="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-4">
-              <span v-text="'Evaluados: ' + Object.keys(assessScores).length + ' / ' + currentSubject.concepts.length"></span>
-              <svg v-if="Object.keys(assessScores).length < currentSubject.concepts.length" class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-            </div>
-            <div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700">
-              <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wide mb-1">Concepto <span v-text="assessIndex+1"></span></p>
-              <p class="text-xl font-bold mb-1" v-text="currentSubject.concepts[assessIndex].name"></p>
-              <p class="text-sm text-slate-500 dark:text-slate-400 mb-4" v-text="currentSubject.concepts[assessIndex].description || 'Sin descripción'"></p>
-              <p class="text-sm font-medium mb-2">¿Cómo valoras tu dominio? <span class="text-xs text-slate-400 font-normal">(tecla 1-5)</span></p>
-              <div class="flex gap-2 mb-4">
-                <button v-for="n in 5" :key="n"
-                        @click="assessScores[currentSubject.concepts[assessIndex].id] = n*20"
-                        :class="assessScores[currentSubject.concepts[assessIndex].id] === n*20 ? 'bg-indigo-600 text-white ring-2 ring-indigo-300 dark:ring-indigo-500' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:border-indigo-300 dark:hover:border-indigo-500'"
-                        class="w-12 h-12 rounded-xl font-bold text-sm transition">
-                  <span v-text="n"></span>
-                </button>
-              </div>
-              <div class="flex justify-between text-xs text-slate-400 dark:text-slate-500 px-1">
-                <span>Nada</span><span>Poco</span><span>Medio</span><span>Bastante</span><span>Total</span>
-              </div>
-              <div class="mt-4">
-                <p class="text-sm font-medium mb-1">Notas (opcional)</p>
-                <input type="text" v-model="assessNotes[currentSubject.concepts[assessIndex].id]"
-                       placeholder="¿Qué te cuesta? ¿Qué has entendido?"
-                       class="w-full border dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm" />
-              </div>
-            </div>
-            <div class="flex justify-between mt-4">
-              <button @click="prevConcept()" :disabled="assessIndex===0"
-                      :class="assessIndex===0?'opacity-30 cursor-not-allowed':''"
-                      class="text-sm font-medium text-indigo-600 dark:text-indigo-400 px-4 py-2 hover:underline transition">← Anterior</button>
-              <button v-if="assessIndex < currentSubject.concepts.length - 1"
-                      @click="nextConcept()"
-                      class="bg-indigo-600 text-white text-sm font-bold px-6 py-2 rounded-xl hover:bg-indigo-700 transition">Siguiente →</button>
-              <button v-if="assessIndex === currentSubject.concepts.length - 1"
-                      @click="submitAssessment()"
-                      class="flex items-center gap-1.5 bg-green-600 text-white text-sm font-bold px-6 py-2 rounded-xl hover:bg-green-700 transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
-              Ver resultados
-            </button>
             </div>
           </div>
         </div>
@@ -615,30 +517,11 @@
               <div v-html="predictionChartSVG()"></div>
             </div>
 
-            <!-- Streak calendar -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-              <div class="flex items-center justify-between mb-3">
-                <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 012 12 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg> Racha de estudio</h3>
-                <div class="flex items-center gap-3 text-xs">
-                  <span class="text-green-600 dark:text-green-400 font-medium flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 012 12 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg> <span v-text="streak.current + ' días'"></span></span>
-                  <span class="text-amber-500 font-medium flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0016.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.023 6.023 0 01-2.77.896m0 0a6.022 6.022 0 01-2.77-.896"/></svg> Récord: <span v-text="streak.best"></span></span>
-                </div>
-              </div>
-              <div class="flex flex-wrap gap-1.5">
-                <div v-for="(day, di) in streak.days" :key="di"
-                     class="w-7 h-7 rounded flex items-center justify-center text-[10px] font-medium transition cursor-default"
-                     :title="day.label"
-                     :class="day.active ? 'bg-green-500 text-white' : day.future ? 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500'"
-                     v-text="day.num"></div>
-              </div>
-            </div>
-
             <!-- Study plan -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
               <div class="flex items-center justify-between mb-3">
                 <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg> Plan de estudio</h3>
                 <div class="flex items-center gap-2">
-                  <button @click="exportStudyPlanText()" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg> Exportar</button>
                   <div class="flex gap-1 text-xs bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
                   <button @click="planAlgorithm='bfs'"
                           :class="planAlgorithm==='bfs'?'bg-white dark:bg-slate-600 shadow-sm':'hover:bg-slate-50 dark:hover:bg-slate-600'"
@@ -688,205 +571,14 @@
                 </div>
               </div>
             </div>
-
-            <!-- Roadmap -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-              <h3 class="font-bold mb-3 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg> Roadmap de estudio</h3>
-              <div v-if="!lastAssessment" class="text-sm text-slate-400 py-4 text-center">Evalúa conceptos para ver tu roadmap.</div>
-              <div v-if="lastAssessment">
-                <div v-if="roadmap.ahora.length" class="mb-3">
-                  <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1.5 flex items-center gap-1"><svg class="w-2.5 h-2.5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg> Ahora (prioritarios)</p>
-                  <div class="space-y-1">
-                    <div v-for="r in roadmap.ahora" :key="r.id"
-                         @click="openInspector(r.id)"
-                         class="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2 border border-red-100 dark:border-red-800/40 cursor-pointer hover:border-red-300 transition text-sm">
-                      <span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span>
-                      <span class="font-medium" v-text="r.name"></span>
-                      <span v-if="r.unlocks > 0" class="text-xs text-red-500 ml-auto" v-text="'desbloquea ' + r.unlocks"></span>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="roadmap.siguiente.length" class="mb-3">
-                  <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1.5 flex items-center gap-1"><svg class="w-2.5 h-2.5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg> Siguiente (preparados)</p>
-                  <div class="space-y-1">
-                    <div v-for="r in roadmap.siguiente" :key="r.id"
-                         @click="openInspector(r.id)"
-                         class="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 border border-amber-100 dark:border-amber-800/40 cursor-pointer hover:border-amber-300 transition text-sm">
-                      <span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
-                      <span class="font-medium" v-text="r.name"></span>
-                      <span class="text-xs text-amber-500 ml-auto" v-if="r.mastery > 0" v-text="r.mastery + '%'"></span>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="roadmap.pronto.length">
-                  <p class="text-xs font-bold text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1"><svg class="w-2.5 h-2.5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg> Pronto (avanzados / bloqueados)</p>
-                  <div class="space-y-1">
-                    <div v-for="r in roadmap.pronto" :key="r.id"
-                         @click="openInspector(r.id)"
-                         class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-100 dark:border-slate-700 cursor-pointer hover:border-slate-300 transition text-sm">
-                      <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span>
-                      <span class="font-medium" v-text="r.name"></span>
-                      <span v-if="r.blockedBy.length" class="text-xs text-slate-400 ml-auto" v-text="'bloqueado por: ' + r.blockedBy.join(', ')"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Heat graph -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-              <h3 class="font-bold mb-3 flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z"/></svg> Mapa de calor</h3>
-              <div v-if="heatGraphLoading" class="flex items-center justify-center py-12 text-sm text-slate-400">
-                <span class="inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mr-2"></span>
-                {{ GC.t('misc.loading') }}
-              </div>
-              <div id="graph-heat-container" class="dark:border dark:border-slate-700" :class="heatGraphLoading ? 'hidden' : ''"></div>
-            </div>
           </div>
         </div>
 
         <!-- Study flashcards tab -->
-        <div v-if="tab === 'study'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/></svg> Modo estudio</h3>
-            <div class="flex items-center gap-2 text-xs">
-              <select v-model="studyFilter" class="border dark:border-slate-600 rounded-lg px-2 py-1.5 bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                <option value="all">Todos los conceptos</option>
-                <option value="weak">Solo débiles (&lt;40%)</option>
-                <option value="mid">En proceso (40-70%)</option>
-                <option value="strong">Dominados (&gt;70%)</option>
-              </select>
-              <span class="text-slate-400" v-text="studyCards.length + ' tarjetas'"></span>
-            </div>
-          </div>
-
-          <p v-if="currentSubject.concepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-12 text-center">
-            Añade conceptos para poder estudiar
-          </p>
-
-          <div v-if="studyCards.length > 0" class="flex flex-col items-center">
-            <!-- Pomodoro timer -->
-            <div class="w-full max-w-md mb-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  <span class="text-lg font-bold tabular-nums" v-text="pomodoroDisplay"></span>
-                </div>
-                <div class="flex items-center gap-1">
-                  <select v-model="pomodoroMinutes" class="text-[10px] border dark:border-slate-600 rounded px-1.5 py-1 bg-transparent focus:outline-none">
-                    <option :value="15">15 min</option>
-                    <option :value="25">25 min</option>
-                    <option :value="45">45 min</option>
-                  </select>
-                  <button v-if="!pomodoroRunning" @click="startPomodoro()" class="text-xs bg-green-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-green-700 transition font-medium">Iniciar</button>
-                  <button v-if="pomodoroRunning" @click="pausePomodoro()" class="text-xs bg-amber-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-amber-600 transition font-medium">Pausar</button>
-                  <button @click="resetPomodoro()" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-1.5 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-medium">Reiniciar</button>
-                </div>
-              </div>
-              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mt-2">
-                <div class="bg-green-500 h-1.5 rounded-full transition-all" :style="'width:'+(pomodoroProgress*100)+'%'"></div>
-              </div>
-            </div>
-
-            <!-- Progress bar -->
-            <div class="w-full max-w-md mb-4">
-              <div class="flex justify-between text-xs text-slate-400 mb-1">
-                <span v-text="'Completadas: ' + studyDone + ' / ' + studyCards.length"></span>
-                <span v-text="Math.round(studyDone / studyCards.length * 100) + '%'"></span>
-              </div>
-              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                <div class="bg-green-500 h-2 rounded-full transition-all" :style="'width:'+(studyDone/studyCards.length*100)+'%'"></div>
-              </div>
-            </div>
-
-            <!-- Flashcard -->
-            <div v-if="studyIndex < studyCards.length" class="w-full max-w-md">
-              <div class="flashcard-container mb-6 cursor-pointer" @click="studyFlip = !studyFlip">
-                <div class="flashcard-inner" :class="{ 'flipped': studyFlip }">
-                  <div class="flashcard-front bg-indigo-50 dark:bg-indigo-900/30 border-2 border-indigo-200 dark:border-indigo-700 rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
-                    <span class="text-xs text-indigo-400 dark:text-indigo-300 font-medium mb-2" v-text="'Concepto ' + (studyIndex + 1)"></span>
-                    <p class="text-xl font-bold mb-2" v-text="studyCards[studyIndex].name"></p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500">Toca para ver la descripción</p>
-                    <div v-if="studyCards[studyIndex].tags?.length" class="flex gap-1 mt-3 flex-wrap justify-center">
-                      <span v-for="t in studyCards[studyIndex].tags" :key="t" class="text-[10px] bg-indigo-200 dark:bg-indigo-800/60 text-indigo-700 dark:text-indigo-300 rounded px-1.5 py-0.5 font-medium" v-text="t"></span>
-                    </div>
-                  </div>
-                  <div class="flashcard-back bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-600 rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[250px]">
-                    <span class="text-xs text-slate-400 font-medium mb-2">Descripción</span>
-                    <p class="text-base leading-relaxed" v-html="GC.md(studyCards[studyIndex].description) || '<span class=text-slate-300>—</span>'"></p>
-                    <p class="text-xs text-slate-400 mt-3" v-text="'Peso: ' + studyCards[studyIndex].weight + '/10'"></p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Confidence buttons -->
-              <div class="flex gap-3 max-w-md mx-auto">
-                <button @click="studyAnswer(false)" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  No lo sé
-                </button>
-                <button @click="studyAnswer(true)" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  Lo sé
-                </button>
-              </div>
-              <p class="text-xs text-slate-400 text-center mt-3">Las tarjetas que falles volverán a aparecer</p>
-            </div>
-
-            <!-- Session complete -->
-            <div v-if="studyIndex >= studyCards.length && studyCards.length > 0" class="text-center py-8">
-              <svg class="w-12 h-12 mx-auto mb-3 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <p class="text-lg font-bold text-green-600 dark:text-green-400">¡Sesión completada!</p>
-              <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto my-4">
-                <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-3">
-                  <p class="text-xl font-black text-green-600 dark:text-green-400" v-text="studyDone"></p>
-                  <p class="text-xs text-green-500">Correctas</p>
-                </div>
-                <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-3">
-                  <p class="text-xl font-black text-red-600 dark:text-red-400" v-text="studyWrong"></p>
-                  <p class="text-xs text-red-500">Fallos</p>
-                </div>
-                <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-3">
-                  <p class="text-xl font-black text-indigo-600 dark:text-indigo-400" v-text="studyTotalCards"></p>
-                  <p class="text-xs text-indigo-500">Repasados</p>
-                </div>
-              </div>
-              <p class="text-xs text-slate-400 dark:text-slate-500" v-text="'Precisión: ' + (studyTotalCards > 0 ? Math.round(studyDone / (studyDone + studyWrong) * 100) : 0) + '%'"></p>
-              <button @click="resetStudy()" class="mt-4 bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl hover:bg-indigo-700 transition text-sm">Repetir sesión</button>
-            </div>
-          </div>
-        </div>
-
         <!-- History tab -->
         <div v-if="tab === 'history'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold">Historial de evaluaciones</h3>
-            <button v-if="subjectAssessmentsList.length >= 2 && !compareA && !compareB"
-                    @click="compareA = subjectAssessmentsList[subjectAssessmentsList.length-1]; compareB = subjectAssessmentsList[subjectAssessmentsList.length-2]"
-                    class="flex items-center gap-1 text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition font-medium"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg> Comparar últimas 2</button>
-            <button v-if="compareA || compareB" @click="compareA=null; compareB=null"
-                    class="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 hover:underline"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cerrar comparación</button>
-          </div>
-
-          <!-- Comparison results -->
-          <div v-if="compareA && compareB" class="mb-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3">
-              Comparando <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="new Date(compareA.date).toLocaleDateString()"></span>
-              vs <span class="font-medium text-indigo-600 dark:text-indigo-400" v-text="new Date(compareB.date).toLocaleDateString()"></span>
-            </p>
-            <div class="space-y-1.5 max-h-64 overflow-y-auto">
-              <div v-for="item in compareDiff" :key="item.id"
-                   class="flex items-center gap-2 text-sm py-1.5 px-2 rounded hover:bg-white dark:hover:bg-slate-800 cursor-pointer"
-                   @click="openInspector(item.id)">
-                <span class="flex-1 font-medium truncate" v-text="item.name"></span>
-                <span class="text-xs text-slate-400 w-10 text-right" v-text="item.before + '%'"></span>
-                <span class="text-xs font-bold w-4 text-center">&rarr;</span>
-                <span class="text-xs text-slate-400 w-10 text-right" v-text="item.after + '%'"></span>
-                <span v-if="item.diff > 0" class="text-xs text-green-600 dark:text-green-400 font-bold w-12 text-right">+{{ item.diff }}% ↑</span>
-                <span v-else-if="item.diff < 0" class="text-xs text-red-600 dark:text-red-400 font-bold w-12 text-right">{{ item.diff }}% ↓</span>
-                <span v-else class="text-xs text-slate-300 dark:text-slate-600 w-12 text-right">—</span>
-              </div>
-            </div>
           </div>
 
           <p v-if="subjectAssessmentsList.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">Aún no hay evaluaciones para esta asignatura</p>
@@ -895,11 +587,6 @@
                  class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 transition"
                  :class="{'ring-2 ring-indigo-400': a.id === compareA?.id || a.id === compareB?.id}">
               <div class="flex items-start gap-3">
-                <input v-if="subjectAssessmentsList.length >= 2" type="checkbox"
-                       :checked="a.id === compareA?.id || a.id === compareB?.id"
-                       :disabled="compareA && compareB && a.id !== compareA?.id && a.id !== compareB?.id"
-                        @change="compareA === null ? compareA = a : compareB === null ? compareB = a : (compareA = a, compareB = null)"
-                       class="mt-1 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500" />
                 <div class="flex-1 min-w-0">
                   <div @click="viewAssessment(a)" class="cursor-pointer">
                     <div class="flex items-center justify-between mb-2">
@@ -923,21 +610,6 @@
       <!-- ===== GLOBAL GRAPH VIEW ===== -->
       <div v-if="view === 'globalGraph'" class="fade-enter-active">
         <global-graph :subjects="subjects" :store="store" @back="view='subjects'" />
-      </div>
-
-      <!-- ===== SUGGESTIONS VIEW ===== -->
-      <div v-if="view === 'suggestions'" class="fade-enter-active">
-        <suggestions-panel
-          :subjects="subjects"
-          :assessments="assessments"
-          :suggestions="suggestions"
-          @back="view='subjects'"
-        />
-      </div>
-
-      <!-- ===== AI GENERATOR VIEW ===== -->
-      <div v-if="view === 'aiGenerator'" class="fade-enter-active">
-        <ai-generator :store="store" @back="view='subjects'" />
       </div>
 
       <!-- Footer -->
@@ -1383,7 +1055,7 @@
             Conecta conceptos, domina tu ruta. Estudia con propósito.
           </p>
           <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-            Organiza tus asignaturas como un grafo interactivo. Define conceptos, conéctalos con relaciones, evalúa tu dominio y obtén un plan de estudio personalizado con Pomodoro incluido.
+            Organiza tus asignaturas como un grafo interactivo. Define conceptos, conéctalos con relaciones, evalúa tu dominio y obtén un plan de estudio personalizado.
           </p>
           <p class="text-xs text-slate-400 dark:text-slate-500">Todo funciona 100% offline. Tus datos se guardan en el navegador.</p>
         </div>
@@ -1524,9 +1196,7 @@
         { src: 'js/study-plan.js' },
         { src: 'components/subject-list.js' },
         { src: 'components/global-graph.js' },
-        { src: 'components/suggestions-panel.js' },
         { src: 'components/help-modal.js' },
-        { src: 'components/ai-generator.js' },
         { src: 'js/templates.js' },
         { src: 'js/editor.js' },
         { src: 'js/study.js' },

@@ -7,9 +7,6 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-bold">Mis asignaturas</h2>
           <div class="flex gap-2">
-            <button @click="$emit('aiGenerator')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Copiar prompts para ChatGPT, Claude o Gemini">
-              <span v-html="icon('sparkles')" class="w-3.5 h-3.5 text-amber-500 shrink-0 inline-flex items-center justify-center"></span> Prompts
-            </button>
             <button @click="$emit('help')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Ayuda">
               <span v-html="icon('questionMarkCircle')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Ayuda
             </button>
@@ -19,17 +16,18 @@
           </div>
         </div>
 
-        <div v-if="subjects.length === 0" class="text-center py-12 text-slate-400 dark:text-slate-500">
-          <div class="flex justify-center mb-3">
-            <span class="w-12 h-12 text-indigo-400 inline-flex items-center justify-center" v-html="icon('academicCap')"></span>
+        <div v-if="subjects.length === 0" class="text-center py-16 text-slate-400 dark:text-slate-500">
+          <div class="flex justify-center mb-4">
+            <span class="w-16 h-16 text-indigo-400 inline-flex items-center justify-center" v-html="icon('academicCap')"></span>
           </div>
-          <p class="text-lg font-medium text-slate-600 dark:text-slate-300">Tu ruta de estudio est\u00e1 vac\u00eda</p>
-          <p class="text-sm mt-1 max-w-md mx-auto">Crea tu primera asignatura, a\u00f1ade conceptos y con\u00e9ctalos con relaciones.</p>
-          <p class="text-xs text-slate-400 dark:text-slate-500 mt-3 max-w-md mx-auto leading-relaxed">
-            Define conceptos, con\u00e9ctalos con relaciones,<br class="hidden sm:inline" />
-            eval\u00faa tu dominio y recibe un plan de estudio personalizado.
-            <span class="block mt-1 text-[10px] text-slate-400/60">100% gratis \u00b7 sin registro \u00b7 sin internet</span>
-          </p>
+          <p class="text-xl font-bold text-slate-700 dark:text-slate-200">Tu ruta de estudio está vacía</p>
+          <p class="text-base mt-2 max-w-lg mx-auto text-slate-500 dark:text-slate-400">Empieza creando tu primera asignatura, añade conceptos y conéctalos con relaciones.</p>
+          <div class="mt-4 mx-auto max-w-lg bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-5 border border-indigo-100 dark:border-indigo-800/40">
+            <p class="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed font-medium">
+              Define conceptos, conéctalos con relaciones, evalúa tu dominio y recibe un plan de estudio personalizado.
+            </p>
+            <p class="text-xs text-indigo-500/60 dark:text-indigo-400/60 mt-2 font-medium">100% gratis · sin registro · sin internet</p>
+          </div>
 
           <div class="flex flex-wrap justify-center gap-3 mt-6">
             <button @click="$emit('add')" class="flex items-center gap-1.5 bg-indigo-600 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition text-sm">
@@ -37,9 +35,6 @@
             </button>
             <button @click="$emit('import')" class="flex items-center gap-1.5 bg-white dark:bg-slate-800 border dark:border-slate-600 font-bold px-5 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm">
               <span v-html="icon('arrowUpTray')" class="w-4 h-4 shrink-0 text-slate-400 inline-flex items-center justify-center"></span> Importar datos
-            </button>
-            <button @click="$emit('aiGenerator')" class="flex items-center gap-1.5 bg-amber-500 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-amber-600 transition text-sm">
-              <span v-html="icon('sparkles')" class="w-4 h-4 shrink-0 inline-flex items-center justify-center"></span> Prompts IA
             </button>
           </div>
 
@@ -105,7 +100,7 @@
     props: {
       subjects: Array
     },
-    emits: ['select', 'add', 'help', 'example', 'globalGraph', 'suggestions', 'aiGenerator', 'import', 'exportTemplate', 'importSubject'],
+    emits: ['select', 'add', 'help', 'example', 'globalGraph', 'suggestions', 'import', 'exportTemplate', 'importSubject'],
     methods: {
       icon(name) { return (GC.SVG || {})[name] || ''; }
     }

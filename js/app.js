@@ -37,19 +37,13 @@
         network: null,
         heatNetwork: null,
         graphLoading: false,
-        heatGraphLoading: false,
-        graphRelFilter: '',
         graphWeightMin: 1,
         showLegend: false,
         focusMode: false,
 
-        assessIndex: 0,
         assessScores: {},
-        assessNotes: {},
         lastAssessment: null,
         planAlgorithm: 'bfs',
-        compareA: null,
-        compareB: null,
 
         inspectorConcept: null,
         inspectorTab: 'walkthrough',
@@ -80,22 +74,7 @@
         templateTab: 'manual',
         templateSearch: '',
 
-        studyFilter: 'all',
-        studySession: [],
-        studyIndex: 0,
-        studyFlip: false,
-        studyDone: 0,
-        studyWrong: 0,
-        studyTotalCards: 0,
-
         showOnboarding: false,
-        onboardingStep: 0,
-
-        pomodoroSeconds: 1500,
-        pomodoroMinutes: 25,
-        pomodoroRunning: false,
-        pomodoroInterval: null,
-        pomodoroOriginal: 1500,
 
         reminderTime: localStorage.getItem('re-reminder-time') || '',
         reminderEnabled: localStorage.getItem('re-reminder-enabled') === 'true',
@@ -165,43 +144,12 @@
         return this.store.allTags(this.currentSubject.id);
       },
 
-      suggestions() {
-        return this.store.getSuggestions();
-      },
       inspector() {
         if (!this.inspectorConcept || !this.currentSubject) return null;
         return GC.walkthrough(this.currentSubject, this.inspectorConcept, this.lastAssessment?.results);
       },
-      roadmap() {
-        if (!this.currentSubject) return { ahora: [], siguiente: [], pronto: [] };
-        return GC.roadmap(this.currentSubject, this.lastAssessment?.results);
-      },
       compareDiff() {
-        if (!this.compareA || !this.compareB || !this.currentSubject) return [];
-        const rA = this.compareA.results, rB = this.compareB.results;
-        return this.currentSubject.concepts.map(c => {
-          const a = rA[c.id] || 0, b = rB[c.id] || 0;
-          return { id: c.id, name: c.name, before: a, after: b, diff: b - a };
-        }).sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
-      },
-      conceptTree() {
-        if (!this.currentSubject) return [];
-        const rootIds = new Set(this.currentSubject.concepts.map(c => c.id));
-        this.currentSubject.relations.filter(r => r.type === 'prerrequisito').forEach(r => rootIds.delete(r.to));
-        const score = this.lastAssessment?.results || {};
-        const build = (id, depth) => {
-          const c = this.currentSubject.concepts.find(x => x.id === id);
-          if (!c) return null;
-          const children = this.currentSubject.relations
-            .filter(r => r.from === id && r.type === 'prerrequisito')
-            .map(r => build(r.to, depth + 1))
-            .filter(Boolean);
-          const blockers = this.currentSubject.relations.filter(r => r.to === id && r.type === 'prerrequisito').map(r => r.from);
-          return { id: c.id, name: c.name, depth, children, score: score[id] || null, blockers };
-        };
-        return [...rootIds].map(id => build(id, 0)).filter(Boolean);
-      },
-
+        return [];
       globalResults() {
         if (!this.globalSearch.trim()) return [];
         const q = this.globalSearch.toLowerCase();
@@ -326,72 +274,31 @@
           }
         });
       },
-      renderHeatGraph() {
-        GC.graph.destroy(this.heatNetwork);
-        if (!this.currentSubject || !this.lastAssessment) return;
-        this.heatGraphLoading = true;
-        this.$nextTick(() => {
-          this.heatNetwork = GC.graph.renderHeat(
-            'graph-heat-container',
-            this.currentSubject.concepts,
-            this.currentSubject.relations,
-            this.lastAssessment.results,
-            (id) => this.openInspector(id)
-          );
-          if (this.heatNetwork) {
-            this.heatNetwork.once('stabilizationIterationsDone', () => {
-              this.heatGraphLoading = false;
-            });
-          } else {
-            this.heatGraphLoading = false;
-          }
-        });
-      },
-
       // ==================== EVALUACIÓN ====================
       startAssessment() {
-        this.assessIndex = 0;
-        this.assessScores = {};
-        this.assessNotes = {};
-        this.tab = 'assess';
-      },
-      startBatchAssessment() {
         this.assessScores = this.lastAssessment ? { ...this.lastAssessment.results } : {};
-        this.assessNotes = {};
-        this.tab = 'batchAssess';
-      },
-      nextConcept() {
-        if (this.assessIndex < this.currentSubject.concepts.length - 1) this.assessIndex++;
-      },
-      prevConcept() {
-        if (this.assessIndex > 0) this.assessIndex--;
+        this.tab = 'assess';
       },
       submitAssessment() {
         const scores = {};
         this.currentSubject.concepts.forEach(c => {
           scores[c.id] = this.assessScores[c.id] || 0;
         });
-        const a = this.store.submitAssessment(this.currentSubject.id, scores, this.assessNotes);
+        const a = this.store.submitAssessment(this.currentSubject.id, scores, {});
         this.lastAssessment = a;
         this.tab = 'results';
-        setTimeout(() => this.renderHeatGraph(), 200);
         this.store.userProfile.assessments = (this.store.userProfile.assessments || 0) + 1;
-        // Track subjects assessed
         const assessedSubjects = new Set(this.store.assessments.map(x => x.subjectId));
         this.store.userProfile.subjectsAssessed = assessedSubjects.size;
-        this.awardXP(50, 'Evaluaci\u00f3n');
-        this.trackDailyAction();
         const aid = a.id;
         this.showToast('Evaluaci\u00f3n guardada', 'success', () => {
           this.store.deleteAssessment(aid);
           this.lastAssessment = this.store.lastAssessment(this.currentSubject.id);
-          if (this.tab === 'results') this.$nextTick(() => this.renderHeatGraph());
         }, '\u21A9 Deshacer');
       },
       viewAssessment(a) {
         this.lastAssessment = a;
         this.tab = 'results';
-        setTimeout(() => this.renderHeatGraph(), 200);
       },
       deleteAssessment(id) {
         const a = this.subjectAssessmentsList.find(x => x.id === id);
@@ -521,14 +428,8 @@
         this.view = 'globalGraph';
         this.destroyGraph();
       },
-      goToSuggestions() {
-        this.view = 'suggestions';
-      },
       showHelp() {
         this.modal = 'help';
-      },
-      goToAIGenerator() {
-        this.view = 'aiGenerator';
       },
       toggleFocusMode() {
         this.focusMode = !this.focusMode;
@@ -558,17 +459,8 @@
         if (val === 'graph') {
           setTimeout(() => this.renderGraph(), 100);
         }
-        if (val === 'results') {
-          setTimeout(() => this.renderHeatGraph(), 200);
-        }
-        if (val === 'batchAssess') {
-          this.startBatchAssessment();
-        }
-        if (val === 'study') {
-          this.$nextTick(() => this.startStudy());
-        }
-        if (val !== 'study') {
-          this.pausePomodoro();
+        if (val === 'assess') {
+          this.startAssessment();
         }
       },
       currentSubject() {
@@ -579,14 +471,10 @@
       },
       dark() {
         if (this.tab === 'graph') setTimeout(() => this.renderGraph(), 100);
-        if (this.tab === 'results') setTimeout(() => this.renderHeatGraph(), 200);
       },
       graphWeightMin() {
         if (this.tab === 'graph') this.renderGraph();
       },
-      studyFilter() {
-        if (this.tab === 'study') this.$nextTick(() => this.startStudy());
-      }
     },
 
     // ----------------------------------------------------------
@@ -618,7 +506,6 @@
     beforeUnmount() {
       document.removeEventListener('keydown', this._onKeydown);
       this.stopAutoBackup();
-      this.pausePomodoro();
       if (this.reminderInterval) clearInterval(this.reminderInterval);
     },
 
@@ -653,28 +540,12 @@
         }
         this.$nextTick(() => {
           if (this.tab === 'graph') this.renderGraph();
-          if (this.tab === 'results') this.renderHeatGraph();
         });
         return;
       }
       if (e.key === 'Escape' && this.modal) {
         this.modal = '';
         return;
-      }
-      if (this.view === 'subject' && this.tab === 'assess' && this.currentSubject?.concepts.length) {
-        if (e.key === 'ArrowRight' && this.assessIndex < this.currentSubject.concepts.length - 1) {
-          e.preventDefault();
-          this.nextConcept();
-        }
-        if (e.key === 'ArrowLeft' && this.assessIndex > 0) {
-          e.preventDefault();
-          this.prevConcept();
-        }
-        for (let n = 1; n <= 5; n++) {
-          if (e.key === String(n)) {
-            this.assessScores[this.currentSubject.concepts[this.assessIndex].id] = n * 20;
-          }
-        }
       }
     }
   });
