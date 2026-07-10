@@ -203,6 +203,32 @@
     // ----------------------------------------------------------
     methods: Object.assign({
 
+      // ==================== HELPERS VISUALES ====================
+      tagColor(tag) {
+        const colors = [
+          { bg: '#e0f2fe', fg: '#0369a1' },
+          { bg: '#fae8ff', fg: '#a21caf' },
+          { bg: '#d1fae5', fg: '#047857' },
+          { bg: '#fef3c7', fg: '#b45309' },
+          { bg: '#e0e7ff', fg: '#4338ca' },
+          { bg: '#fce7f3', fg: '#be185d' },
+          { bg: '#ccfbf1', fg: '#0d9488' },
+          { bg: '#ffedd5', fg: '#c2410c' },
+          { bg: '#ede9fe', fg: '#6d28d9' },
+          { bg: '#dbeafe', fg: '#1d4ed8' }
+        ];
+        let hash = 0;
+        for (let i = 0; i < tag.length; i++) hash = ((hash << 5) - hash) + tag.charCodeAt(i);
+        const idx = Math.abs(hash) % colors.length;
+        const c = colors[idx];
+        return { bg: c.bg, fg: c.fg };
+      },
+      weightLevel(w) {
+        if (w <= 3) return 'low';
+        if (w <= 6) return 'mid';
+        return 'high';
+      },
+
       // ==================== TEMA OSCURO ====================
       initDark() {
         this.dark = localStorage.getItem('grafo-dark') === 'true'
@@ -487,10 +513,7 @@
       this.store.init();
       document.addEventListener('keydown', this._onKeydown);
       this.startAutoBackup();
-      this.startReminderCheck();
-      if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission().then(p => this.reminderPermission = p);
-      }
+      if (this.reminderEnabled) this.startReminderCheck();
       if (!localStorage.getItem('grafo-onboarding-v2')) {
         this.showOnboarding = true;
         this.onboardingStep = 0;

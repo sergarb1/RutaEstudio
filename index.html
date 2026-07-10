@@ -273,19 +273,18 @@
           </p>
           <p v-if="currentSubject.concepts.length > 0 && filteredConcepts.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-4 text-center">Ningún concepto coincide con "{{ conceptSearch }}"</p>
 
-          <div class="space-y-2">
+          <div class="space-y-1">
             <div v-for="c in filteredConcepts" :key="c.id"
                  draggable="true"
                  @dragstart="dragStart(c, $event)"
                  @dragover.prevent="dragOver(c, $event)"
                  @drop.prevent="dropConcept(c)"
                  @dragend="dragEnd()"
-                 class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700"
+                 class="concept-row flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700"
                  :class="{'opacity-40 border-dashed border-indigo-400': dragId === c.id}">
               <input v-if="bulkTagMode" type="checkbox" v-model="bulkChecked[c.id]" class="rounded border-slate-300 dark:border-slate-600 text-indigo-600" />
-              <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 w-6 cursor-grab active:cursor-grabbing" v-text="currentSubject.concepts.indexOf(c)+1"></span>
+              <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 w-6 cursor-grab active:cursor-grabbing shrink-0" v-text="currentSubject.concepts.indexOf(c)+1"></span>
               <div class="flex-1 min-w-0">
-                <!-- Inline editing -->
                 <template v-if="inlineEditId === c.id">
                   <input v-model="inlineEditName" @keyup.enter="saveInlineEdit()" @keyup.escape="cancelInlineEdit()"
                          class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded px-2 py-1 text-sm mb-1 font-medium" />
@@ -300,17 +299,17 @@
                   <p class="font-medium text-sm" @dblclick="startInlineEdit(c.id)" v-text="c.name"></p>
                   <p class="text-xs text-slate-400 dark:text-slate-500 truncate" @dblclick="startInlineEdit(c.id)" v-html="GC.md(c.description) || '<span class=text-slate-300>—</span>'"></p>
                 </template>
-                <div v-if="c.tags?.length && inlineEditId !== c.id" class="flex gap-1 mt-1">
+                <div v-if="c.tags?.length && inlineEditId !== c.id" class="flex flex-wrap gap-1.5 mt-1.5">
                   <span v-for="t in c.tags" :key="t"
-                        class="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded px-1.5 py-0.5 font-medium" v-text="t"></span>
+                        class="tag-badge" :style="{ backgroundColor: tagColor(t).bg, color: tagColor(t).fg }" v-text="t"></span>
                 </div>
               </div>
-              <span class="text-xs bg-slate-200 dark:bg-slate-700 rounded px-2 py-0.5 font-medium" v-text="'Peso: '+c.weight"></span>
-              <button @click="openInspector(c.id)"              class="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline p-1" title="Inspector de concepto">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-            </button>
-              <button @click="editConcept(c.id)" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline">✏️</button>
-              <button @click="deleteConcept(c.id)" class="text-xs text-red-500 dark:text-red-400 font-medium hover:underline">✕</button>
+              <span class="weight-badge" :class="'weight-' + weightLevel(c.weight)" v-text="c.weight"></span>
+              <button @click="openInspector(c.id)" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition p-1" title="Inspector">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+              </button>
+              <button @click="editConcept(c.id)" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition p-1 text-sm">✏️</button>
+              <button @click="deleteConcept(c.id)" class="text-red-400 hover:text-red-600 dark:hover:text-red-300 transition p-1 text-sm">✕</button>
             </div>
           </div>
 

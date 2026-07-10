@@ -50,7 +50,7 @@
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div v-for="s in subjects" :key="s.id"
                  @click="$emit('select', s)"
-                 class="subject-card bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 transition">
+                 class="subject-card card-hover bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 cursor-pointer">
               <div class="flex items-center gap-2 mb-1">
                 <span class="shrink-0 w-4 h-4 text-indigo-400 inline-flex items-center justify-center" v-html="icon('bookOpen')"></span>
                 <h3 class="font-bold text-lg" v-text="s.name"></h3>

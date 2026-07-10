@@ -124,6 +124,61 @@ h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
   transition: width 0.5s ease-out;
 }
 
+/* Concept row hover & alt background */
+.concept-row {
+  transition: all 0.15s ease;
+}
+.concept-row:hover {
+  background: var(--color-accent-light) !important;
+}
+.concept-row:nth-child(even) {
+  background: rgba(0,0,0,0.015);
+}
+.dark .concept-row:nth-child(even) {
+  background: rgba(255,255,255,0.025);
+}
+
+/* Weight badges — color by value */
+.weight-badge {
+  font-size: 0.6875rem;
+  border-radius: 999px;
+  padding: 0.125rem 0.625rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.weight-low {
+  background: #dcfce7; color: #15803d;
+}
+.dark .weight-low {
+  background: rgba(21,128,61,0.2); color: #86efac;
+}
+.weight-mid {
+  background: #fef3c7; color: #b45309;
+}
+.dark .weight-mid {
+  background: rgba(180,83,9,0.2); color: #fcd34d;
+}
+.weight-high {
+  background: #fee2e2; color: #b91c1c;
+}
+.dark .weight-high {
+  background: rgba(185,28,28,0.2); color: #fca5a5;
+}
+
+/* Multi-color tags */
+.tag-badge {
+  font-size: 0.625rem;
+  border-radius: 999px;
+  padding: 0.125rem 0.5rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.tag-badge:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
 /* ===== NUEVAS MEJORAS ===== */
 
 /* Keyboard focus indicator (como TablaPeriodica) */

@@ -127,16 +127,16 @@ GC.store = Vue.reactive({
       description: 'Curso completo de programación con Python 3: desde cero hasta orientación a objetos y librerías estándar',
       concepts: [
         { id: 'c1', name: 'Variables y tipos', description: '**int**, **float**, **str**, **bool**, asignación dinámica, type(), conversiones básicas', weight: 3, tags: ['básico'], resources: [{ id: 'r1', type: 'link', title: 'W3Schools Python', url: 'https://www.w3schools.com/python/python_variables.asp' }] },
-        { id: 'c2', name: 'Estructuras de control', description: '`if` / `elif` / `else`, operadores de comparación y lógicos, cortocircuito', weight: 4, tags: ['básico'] },
+        { id: 'c2', name: 'Estructuras de control', description: '`if` / `elif` / `else`, operadores de comparación y lógicos, cortocircuito', weight: 4, tags: ['básico'], resources: [{ id: 'r2', type: 'link', title: 'Real Python — Conditional Statements', url: 'https://realpython.com/python-conditional-statements/' }] },
         { id: 'c3', name: 'Bucles', description: '`for` con `range()`, `while`, `break`, `continue`, `else` en bucles', weight: 5, tags: ['básico'] },
-        { id: 'c4', name: 'Listas y tuplas', description: 'listas, indexing, slicing, `append()`/`pop()`, **list comprehensions**, tuplas inmutables', weight: 5, tags: ['estructuras'] },
+        { id: 'c4', name: 'Listas y tuplas', description: 'listas, indexing, slicing, `append()`/`pop()`, **list comprehensions**, tuplas inmutables', weight: 5, tags: ['estructuras'], resources: [{ id: 'r3', type: 'link', title: 'W3Schools — Python Lists', url: 'https://www.w3schools.com/python/python_lists.asp' }] },
         { id: 'c5', name: 'Funciones', description: '`def`, `return`, argumentos posicionales y nombrados, valores por defecto, `*args`/`**kwargs`, scope', weight: 6, tags: ['esencial'] },
         { id: 'c6', name: 'Diccionarios y conjuntos', description: '`dict`, `keys()`/`values()`/`items()`, `set`, operaciones de conjunto', weight: 5, tags: ['estructuras'] },
         { id: 'c7', name: 'Cadenas y formato', description: 'métodos de string, f-strings, slicing, `join()`/`split()`, expresiones regulares básicas', weight: 4, tags: ['esencial'] },
         { id: 'c8', name: 'Manejo de errores', description: '`try`/`except`/`else`/`finally`, excepciones comunes, `raise` personalizado', weight: 6, tags: ['intermedio'] },
         { id: 'c9', name: 'Archivos y JSON', description: '`open()`, modos lectura/escritura, `with`, `json.dump()`/`json.load()`', weight: 6, tags: ['intermedio'] },
         { id: 'c10', name: 'Módulos y paquetes', description: '`import`, `from`, `__name__==__main__`, pip, creación de paquetes', weight: 5, tags: ['intermedio'] },
-        { id: 'c11', name: 'POO con Python', description: 'clases, `__init__`, `self`, atributos/métodos, herencia, `super()`, dunder methods', weight: 8, tags: ['avanzado'] },
+        { id: 'c11', name: 'POO con Python', description: 'clases, `__init__`, `self`, atributos/métodos, herencia, `super()`, dunder methods', weight: 8, tags: ['avanzado'], resources: [{ id: 'r4', type: 'link', title: 'Real Python — OOP in Python', url: 'https://realpython.com/python3-object-oriented-programming/' }] },
         { id: 'c12', name: 'Librería estándar', description: '`math`, `random`, `datetime`, `os`, `sys`, `collections`, `itertools`', weight: 4, tags: ['avanzado'] }
       ],
       relations: [
