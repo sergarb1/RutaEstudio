@@ -25,7 +25,7 @@
     'btn.redo':             { es: 'Rehacer', en: 'Redo', va: 'Refer' },
     'btn.help':             { es: 'Ayuda', en: 'Help', va: 'Ajuda' },
     'btn.shortcuts':        { es: 'Atajos', en: 'Shortcuts', va: 'Dreceres' },
-    'btn.reminder':         { es: 'Recordatorio', en: 'Reminder', va: 'Recordatori' },
+
     'btn.add':              { es: 'A\u00f1adir', en: 'Add', va: 'Afegir' },
     'btn.save':             { es: 'Guardar', en: 'Save', va: 'Guardar' },
     'btn.cancel':           { es: 'Cancelar', en: 'Cancel', va: 'Cancel\u00b7lar' },
@@ -140,17 +140,6 @@
     'misc.offline':         { es: '100% offline', en: '100% offline', va: '100% offline' },
     'misc.gdpr':            { es: 'Cumple RGPD — datos siempre locales', en: 'GDPR compliant — data always local', va: 'Compleix RGPD — dades sempre locals' },
     'misc.confirmDelete':   { es: '\u00bfSeguro que quieres eliminar?', en: 'Are you sure you want to delete?', va: 'Segur que vols eliminar?' },
-
-    // Reminder
-    'reminder.title':       { es: 'Recordatorio de estudio', en: 'Study reminder', va: 'Recordatori d\'estudi' },
-    'reminder.desc':        { es: 'Recibe una notificaci\u00f3n cada d\u00eda a la hora que elijas.', en: 'Get a daily notification at your chosen time.', va: 'Rep una notificaci\u00f3 cada dia a l\'hora que trieu.' },
-    'reminder.enabled':     { es: 'Activado', en: 'Enabled', va: 'Activat' },
-    'reminder.time':        { es: 'Hora del recordatorio', en: 'Reminder time', va: 'Hora del recordatori' },
-    'reminder.save':        { es: 'Guardar recordatorio', en: 'Save reminder', va: 'Guardar recordatori' },
-    'reminder.saved':       { es: 'Recordatorio guardado', en: 'Reminder saved', va: 'Recordatori guardat' },
-    'reminder.allow':       { es: 'Necesitas permitir notificaciones', en: 'You need to allow notifications', va: 'Necessites permetre notificacions' },
-    'reminder.blocked':     { es: 'Notificaciones bloqueadas', en: 'Notifications blocked', va: 'Notificacions bloquejades' },
-    'reminder.notif':       { es: '\u00a1Hora de estudiar! Revisa tu plan de estudio.', en: 'Time to study! Check your study plan.', va: 'Hora d\'estudiar! Revisa el teu pla d\'estudi.' },
 
     // Onboarding
     'onboard.welcome':      { es: 'Bienvenido a Ruta de Estudio', en: 'Welcome to Study Path', va: 'Benvingut a Ruta d\'Estudi' },

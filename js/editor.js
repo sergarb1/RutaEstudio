@@ -62,6 +62,42 @@
       this.modal = '';
       GC.toast('Asignatura borrada', 'warning');
     },
+    exportSubjectCard(s) {
+      const assessments = this.store.subjectAssessments(s.id);
+      const usedCustomTypes = (this.store.customRelationTypes || []).filter(t =>
+        s.relations.some(r => r.type === t.id)
+      );
+      const data = {
+        subjects: [JSON.parse(JSON.stringify(s))],
+        assessments,
+        crossRelations: [],
+        customRelationTypes: usedCustomTypes
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = s.name.replace(/\s+/g, '_') + '.json';
+      a.click();
+    },
+    importSubjectCSV(s) {
+      this.currentSubjectId = s.id;
+      this.$nextTick(() => {
+        const inp = document.createElement('input');
+        inp.type = 'file';
+        inp.accept = '.csv';
+        inp.onchange = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            this.store.importConceptsCSV(s.id, ev.target.result);
+            this.showToast('Conceptos importados desde CSV', 'success');
+          };
+          reader.readAsText(file);
+        };
+        inp.click();
+      });
+    },
     deleteSubject() {
       if (!this.currentSubject) return;
       if (confirm('\u00bfBorrar "' + this.currentSubject.name + '"?')) {

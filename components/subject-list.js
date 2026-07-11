@@ -70,11 +70,23 @@
                 <span v-text="s.concepts.length + ' conceptos'"></span>
                 <span v-text="s.relations.length + ' relaciones'"></span>
               </div>
-              <button @click.stop="$emit('deleteSubject', s)"
-                      class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-lg bg-white/80 dark:bg-slate-700/80 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 opacity-0 group-hover:opacity-100 transition border border-slate-200 dark:border-slate-600"
-                      :title="'Borrar ' + s.name">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-              </button>
+              <div class="absolute top-3 right-3 flex gap-1">
+                <button @click.stop="$emit('exportCard', s)"
+                        class="w-7 h-7 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 dark:hover:bg-indigo-800/40 transition border border-indigo-200 dark:border-indigo-800/40"
+                        :title="'Exportar ' + s.name">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                </button>
+                <button @click.stop="$emit('importSubjectCSV', s)"
+                        class="w-7 h-7 flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-800/40 transition border border-emerald-200 dark:border-emerald-800/40"
+                        :title="'Importar CSV a ' + s.name">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+                </button>
+                <button @click.stop="$emit('deleteSubject', s)"
+                        class="w-7 h-7 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/30 text-red-400 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-800/40 transition border border-red-200 dark:border-red-800/40"
+                        :title="'Borrar ' + s.name">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -105,7 +117,7 @@
     props: {
       subjects: Array
     },
-    emits: ['select', 'add', 'help', 'tutorial', 'example', 'globalGraph', 'import', 'exportTemplate', 'importSubject', 'deleteSubject'],
+    emits: ['select', 'add', 'help', 'tutorial', 'example', 'globalGraph', 'import', 'exportTemplate', 'importSubject', 'deleteSubject', 'exportCard', 'importSubjectCSV'],
     methods: {
       icon(name) { return (GC.SVG || {})[name] || ''; }
     }

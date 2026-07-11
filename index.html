@@ -83,13 +83,7 @@
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
             {{ GC.t('btn.install') || 'Instalar' }}
           </button>
-          <!-- Reminder -->
-          <button @click="modal='reminder'"
-                  class="min-w-[36px] min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                  :title="GC.t('btn.reminder')"
-                  :aria-label="GC.t('btn.reminder')">
-            <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
-          </button>
+
           <!-- Import -->
           <button @click="importData()"
                   class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
@@ -160,6 +154,8 @@
           @importSubject="importSubjectJSON"
           @tutorial="showTutorial"
           @deleteSubject="confirmDeleteSubject"
+          @exportCard="exportSubjectCard"
+          @importSubjectCSV="importSubjectCSV"
         />
       </div>
 
@@ -786,46 +782,6 @@
           <div class="flex justify-between"><span>Puntuar evaluación</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">1-5</kbd></div>
           <div class="flex justify-between"><span>Navegar evaluación</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">← →</kbd></div>
           <div class="flex justify-between"><span>Este panel</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">?</kbd></div>
-        </div>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Reminder modal -->
-  <Transition name="modal">
-    <div v-if="modal === 'reminder'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm"
-         role="dialog" aria-modal="true" @click.self="modal=''">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-xl border border-slate-200 dark:border-slate-700">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-lg flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
-            Recordatorio de estudio
-          </h3>
-          <button @click="modal=''" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl">&times;</button>
-        </div>
-        <div class="space-y-4 text-sm">
-          <p class="text-slate-500 dark:text-slate-400">Recibe una notificaci\u00f3n cada d\u00eda a la hora que elijas para recordarte estudiar.</p>
-          <div class="flex items-center gap-3">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" :checked="reminderEnabled" @change="toggleReminder()"
-                     class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500" />
-              <span class="font-medium">Activado</span>
-            </label>
-          </div>
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Hora del recordatorio</label>
-            <input type="time" v-model="reminderTime"
-                   class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
-          </div>
-          <div v-if="reminderPermission === 'default'" class="text-xs text-amber-500">
-            Necesitas permitir notificaciones en tu navegador para recibir recordatorios.
-          </div>
-          <div v-if="reminderPermission === 'denied'" class="text-xs text-red-500">
-            Notificaciones bloqueadas. Act\u00edvalas desde la configuraci\u00f3n del navegador.
-          </div>
-          <button @click="setReminder()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl hover:bg-indigo-700 transition text-sm">
-            Guardar recordatorio
-          </button>
         </div>
       </div>
     </div>
