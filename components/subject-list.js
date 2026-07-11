@@ -45,7 +45,7 @@
           <div class="mt-8 max-w-md mx-auto bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
             <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-3">\u00bfPrimera vez? Prueba con datos de ejemplo:</p>
             <button @click="$emit('example')" class="flex items-center gap-1.5 text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-medium px-4 py-2 rounded-xl hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition mx-auto">
-              <span v-html="icon('rocketLaunch')" class="w-4 h-4 shrink-0 inline-flex items-center justify-center"></span> Cargar ejemplo
+              <span v-html="icon('rocketLaunch')" class="w-4 h-4 shrink-0 inline-flex items-center justify-center"></span> Cargar ejemplos
             </button>
           </div>
         </div>
