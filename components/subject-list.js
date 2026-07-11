@@ -47,6 +47,12 @@
         </div>
 
         <div v-if="subjects.length > 0">
+          <div class="mb-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-5 border border-indigo-100 dark:border-indigo-800/40">
+            <p class="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed font-medium">
+              Define conceptos, conéctalos con relaciones, evalúa tu dominio y recibe un plan de estudio personalizado.
+            </p>
+            <p class="text-xs text-indigo-500/60 dark:text-indigo-400/60 mt-2 font-medium">100% gratis · sin registro · sin internet</p>
+          </div>
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div v-for="s in subjects" :key="s.id"
                  @click="$emit('select', s)"
