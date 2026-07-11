@@ -155,27 +155,38 @@ RutaEstudio/
 
 ---
 
-## Session Summary (10 Jul 2026)
+## Session Summary (11 Jul 2026)
 
 ### Goal
-UI/UX fixes: landing intro text, SVG icon alignment, responsive icons, README/AGENTS update.
+✅ README beautification, mobile responsiveness fixes, graph beautification, study recommendations, card button repositioning.
 
 ### Completed
-- **Landing intro text**: añadido texto explicativo en landing vacía ("Define conceptos, conéctalos con relaciones... 100% gratis · sin registro · sin internet")
-- **SVG icons**: 34 iconos en `GC.SVG` cambian de `w-5 h-5` fijo a `w-full h-full` (responsive al contenedor padre)
-- **Icon alignment**: 14 spans de iconos en `subject-list.js` con `inline-flex items-center justify-center` para centrado vertical
-- **README.md**: sección "AI Skills" con referencias a skills, estructura actualizada con `.opencode/`, nuevo feature "Checklists UI/UX"
-- **AGENTS.md**: estructura de archivos actualizada con `.opencode/`, session summary renovado
+- **README.md rewritten**: visual header with badges (shields.io), Spanish-first with collapsible feature groups (Esencial, Estudio, Productividad, Personalización, Privacidad), quick access table, practical AI prompts section, cleaner structure
+- **Mobile touch targets**: all buttons now have `min-w-[36px]`/`min-h-[36px]` (40px on mobile), card action buttons use responsive sizing (`min-w-[36px] sm:min-w-[28px]`), concept row action buttons enlarged
+- **Header responsive**: import/export/template buttons use `py-2.5 sm:py-2`, icons scale via `w-4 h-4 sm:w-3.5 sm:h-3.5`
+- **Tabs responsive**: added wrapper div, responsive padding/gap, scroll indicator
+- **Concept rows**: reduced gap/padding on mobile (`gap-2 sm:gap-3`, `p-2 sm:p-3`), text truncation
+- **Assessment sliders**: responsive width (`w-20 sm:w-28`), results tab items responsive padding
+- **CSS additions**: `touch-action: manipulation`, `-webkit-tap-highlight-color: transparent`, mobile media queries for graph height, tabs, grids, overflow prevention
+- **Card buttons moved to bottom-right**: `subject-list.js` — from `top-3 right-3` to `bottom-3 right-3`
+- **Study recommendation card**: added in Results tab with gradient header, global progress bar, roadmap groups (ahora/siguiente/pronto) as clickable tags, quick actions
+- **Graph beautification**: `graph-engine.js` — node shapes by weight, shadow effects, improved physics (damping 0.6, stabilization), smoother edges (continuous roundness), Outfit font, hover/select connected edges
+- **GC.toast → this.showToast** fix in editor.js
+- **AGENTS.md**: updated with current session
 
 ### Current State
 | Feature | Status |
 |---------|--------|
-| Landing intro text | ✅ Added |
-| SVG icons (responsive) | ✅ Fixed |
-| Icon vertical alignment | ✅ Fixed |
-| Prompts button | ✅ Working |
-| UI/UX skill | ✅ Created |
-| README/AGENTS | ✅ Updated |
+| README beautified | ✅ Done |
+| Mobile touch targets | ✅ Fixed |
+| Header responsive | ✅ Fixed |
+| Tabs scroll + responsive | ✅ Fixed |
+| Concept rows mobile | ✅ Fixed |
+| Assessment sliders mobile | ✅ Fixed |
+| Card buttons (bottom-right) | ✅ Fixed |
+| Study recommendations | ✅ Added |
+| Graph beautification | ✅ Done |
+| Delete modal (GC.toast) | ✅ Fixed |
 
 ## Current Module Structure
 | Module | File | Responsibility |

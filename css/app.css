@@ -256,3 +256,76 @@ kbd, .kbd {
 .tab-fade-in {
   animation: tabFadeIn 0.2s ease-out;
 }
+
+/* ===== MEJORAS MÓVIL ===== */
+
+/* Scroll fade hint for tabs */
+.tabs-scroll + .tabs-fade {
+  display: none;
+}
+@media (max-width: 640px) {
+  /* Ensure 44px minimum touch targets */
+  .touch-grow {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  /* Card action buttons: keep 36px on mobile with larger hit area */
+  .card-action-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
+  /* Concept rows: adjust padding */
+  .concept-row {
+    padding: 0.5rem !important;
+  }
+  .concept-row .flex-1 {
+    min-width: 0;
+    max-width: 55%;
+  }
+  /* Graph container height on small screens */
+  #graph-container {
+    height: 300px !important;
+  }
+  #graph-heat-container {
+    height: 280px !important;
+  }
+  /* Tabs: tighter gap on mobile */
+  .tabs-scroll {
+    gap: 0.125rem;
+  }
+  .tabs-scroll button {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.75rem;
+  }
+  /* Subject grid: single column on smallest screens */
+  @media (max-width: 400px) {
+    .grid.sm\:grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+  /* Assessment sliders: wider on mobile */
+  input[type="range"] {
+    width: 5rem !important;
+  }
+  /* Recommendation card tags: tighter */
+  .roadmap-tag {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+  /* Prevent horizontal overflow */
+  .max-w-6xl {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  /* Footer: stack items on mobile */
+  footer .flex-wrap {
+    gap: 0.5rem;
+  }
+}
+
+/* Touch manipulation for better mobile scrolling */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}

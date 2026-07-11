@@ -62,7 +62,7 @@
         <div class="flex items-center gap-1.5 flex-wrap justify-end">
           <!-- Dark mode -->
           <button @click="toggleDark()"
-                  class="min-w-[36px] min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  class="min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                   :title="dark ? GC.t('btn.light') : GC.t('btn.dark')"
                   :aria-label="dark ? GC.t('btn.light') : GC.t('btn.dark')">
             <svg v-if="dark" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -70,7 +70,7 @@
           </button>
           <!-- Language -->
           <select @change="setLang($event.target.value)" :value="lang"
-                  class="min-h-[36px] text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 font-medium transition cursor-pointer focus:outline-none">
+                  class="min-h-[40px] sm:min-h-[36px] text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 font-medium transition cursor-pointer focus:outline-none">
             <option value="es">ES</option>
             <option value="en">EN</option>
             <option value="va">VA</option>
@@ -78,7 +78,7 @@
 
           <!-- Install PWA -->
           <button v-if="canInstall" @click="installApp()"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 rounded-xl px-3 py-2 hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition"
                   :title="GC.t('btn.install') || 'Instalar app'">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
             {{ GC.t('btn.install') || 'Instalar' }}
@@ -86,30 +86,30 @@
 
           <!-- Import -->
           <button @click="importData()"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                   :title="GC.t('btn.import')">
-            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+            <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
             {{ GC.t('btn.import') }}
           </button>
           <!-- Export -->
           <button @click="exportData()"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                   :title="GC.t('btn.export')">
-            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
             {{ GC.t('btn.export') }}
           </button>
           <!-- Template -->
           <button @click="modal='templateInfo'"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                   :title="GC.t('btn.template')">
-            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+            <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
             {{ GC.t('btn.template') }}
           </button>
         </div>
       </header>
 
       <!-- Gamification Bar -->
-      <div class="flex items-center gap-3 mb-6 p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+      <div class="flex items-center gap-2 sm:gap-3 mb-6 p-2.5 sm:p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
         <div class="flex items-center gap-2 flex-shrink-0">
           <span v-html="levelIcon"></span>
           <span class="font-bold text-sm" v-text="levelTitle"></span>
@@ -204,7 +204,8 @@
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-1 mb-4 bg-white dark:bg-slate-800 rounded-xl p-1 border border-slate-200 dark:border-slate-700 text-sm font-medium overflow-x-auto tabs-scroll">
+        <div class="relative mb-4">
+          <div class="flex gap-1 bg-white dark:bg-slate-800 rounded-xl p-1 border border-slate-200 dark:border-slate-700 text-sm font-medium overflow-x-auto tabs-scroll">
           <button @click="tab='concepts'"
                   :class="tab==='concepts'?'bg-indigo-600 text-white':'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'"
                   class="flex items-center gap-1.5 px-4 py-2 rounded-lg transition flex-shrink-0">
@@ -238,24 +239,25 @@
           </button>
           
         </div>
+        </div>
 
         <div v-if="tab === 'concepts'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
             <h3 class="font-bold">Conceptos</h3>
             <div class="flex items-center gap-2 flex-wrap">
               <input v-model="conceptSearch" :placeholder="GC.t('concept.search')"
-                     class="border dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs bg-transparent w-36 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                     class="border dark:border-slate-600 rounded-lg px-3 py-2 sm:py-1.5 text-xs bg-transparent w-32 sm:w-36 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
               <select v-if="availableTags.length" v-model="tagFilter"
-                      class="border dark:border-slate-600 rounded-lg px-2 py-1.5 text-xs bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                      class="border dark:border-slate-600 rounded-lg px-2 py-2 sm:py-1.5 text-xs bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
                 <option value="">{{ GC.t('concept.allTags') }}</option>
                 <option v-for="t in availableTags" :key="t" :value="t" v-text="t"></option>
               </select>
-              <button @click="addConcept()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition flex-shrink-0">{{ GC.t('concept.add') }}</button>
+              <button @click="addConcept()" class="min-h-[36px] bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition flex-shrink-0">{{ GC.t('concept.add') }}</button>
               <button @click="toggleBulkTag()"
                       :class="bulkTagMode ? 'bg-amber-500 text-white' : 'bg-white dark:bg-slate-800 border dark:border-slate-600'"
-                       class="text-xs border rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition"><svg class="w-3 h-3 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg> {{ GC.t('concept.bulk') }}</button>
-              <button @click="exportConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Exportar CSV">CSV</button>
-              <button @click="importConceptsCSV()" class="text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Importar CSV"><svg class="w-3 h-3 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg> CSV</button>
+                       class="min-h-[36px] text-xs border rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition"><svg class="w-3 h-3 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg> {{ GC.t('concept.bulk') }}</button>
+              <button @click="exportConceptsCSV()" class="min-h-[36px] text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Exportar CSV">CSV</button>
+              <button @click="importConceptsCSV()" class="min-h-[36px] text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition" title="Importar CSV"><svg class="w-3 h-3 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg> CSV</button>
             </div>
           </div>
 
@@ -280,7 +282,7 @@
                  @dragover.prevent="dragOver(c, $event)"
                  @drop.prevent="dropConcept(c)"
                  @dragend="dragEnd()"
-                 class="concept-row flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700"
+                 class="concept-row flex items-center gap-2 sm:gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl p-2 sm:p-3 border border-slate-100 dark:border-slate-700"
                  :class="{'opacity-40 border-dashed border-indigo-400': dragId === c.id}">
               <input v-if="bulkTagMode" type="checkbox" v-model="bulkChecked[c.id]" class="rounded border-slate-300 dark:border-slate-600 text-indigo-600" />
               <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 w-6 cursor-grab active:cursor-grabbing shrink-0" v-text="currentSubject.concepts.indexOf(c)+1"></span>
@@ -305,11 +307,11 @@
                 </div>
               </div>
               <span class="weight-badge" :class="'weight-' + weightLevel(c.weight)" v-text="c.weight"></span>
-              <button @click="openInspector(c.id)" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition p-1" title="Inspector">
+              <button @click="openInspector(c.id)" class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px] flex items-center justify-center text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20" title="Inspector">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
               </button>
-              <button @click="editConcept(c.id)" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition p-1 text-sm">✏️</button>
-              <button @click="deleteConcept(c.id)" class="text-red-400 hover:text-red-600 dark:hover:text-red-300 transition p-1 text-sm">✕</button>
+              <button @click="editConcept(c.id)" class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px] flex items-center justify-center text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 transition rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20">✏️</button>
+              <button @click="deleteConcept(c.id)" class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px] flex items-center justify-center text-red-400 hover:text-red-600 dark:hover:text-red-300 transition rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">✕</button>
             </div>
           </div>
 
@@ -422,7 +424,7 @@
          <div v-if="tab === 'assess'" class="tab-fade-in bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold">Evaluación rápida</h3>
-            <button @click="submitAssessment()" class="flex items-center gap-1.5 bg-green-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-green-700 transition">
+            <button @click="submitAssessment()" class="flex items-center gap-1.5 bg-green-600 text-white text-sm font-bold px-4 py-2.5 sm:py-2 rounded-xl hover:bg-green-700 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
               Guardar todo
             </button>
@@ -430,17 +432,17 @@
           <p class="text-xs text-slate-400 dark:text-slate-500 mb-4">Ajusta los sliders para puntuar todos los conceptos de una sola vez</p>
           <div class="space-y-3 max-h-[60vh] overflow-y-auto">
             <div v-for="c in currentSubject.concepts" :key="c.id"
-                 class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl px-4 py-3 border border-slate-100 dark:border-slate-700">
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium truncate" v-text="c.name"></p>
-                <p class="text-xs text-slate-400 truncate" v-text="c.description || '—'"></p>
-              </div>
-              <div class="flex items-center gap-3">
-                <input type="range" min="0" max="100" step="5"
-                       v-model.number="assessScores[c.id]"
-                       class="w-28 h-1.5 accent-indigo-600" />
-                <span class="text-xs font-bold w-10 text-center" v-text="(assessScores[c.id] || 0) + '%'"></span>
-              </div>
+                 class="flex items-center gap-2 sm:gap-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl px-3 sm:px-4 py-3 border border-slate-100 dark:border-slate-700">
+               <div class="flex-1 min-w-0">
+                 <p class="text-sm font-medium truncate" v-text="c.name"></p>
+                 <p class="text-xs text-slate-400 truncate" v-text="c.description || '—'"></p>
+               </div>
+               <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                 <input type="range" min="0" max="100" step="5"
+                        v-model.number="assessScores[c.id]"
+                        class="w-20 sm:w-28 h-1.5 accent-indigo-600" />
+                 <span class="text-xs font-bold w-8 sm:w-10 text-center" v-text="(assessScores[c.id] || 0) + '%'"></span>
+               </div>
             </div>
           </div>
         </div>
@@ -475,6 +477,96 @@
                 <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-3">
                   <p class="text-2xl font-black text-green-600 dark:text-green-400" v-text="stats.green"></p>
                   <p class="text-xs text-green-500 dark:text-green-400">Dominado</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Study recommendation + Roadmap -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 mb-4 overflow-hidden">
+              <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-white/90 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+                  <h3 class="font-bold text-white text-lg">Recomendaci\u00f3n de estudio</h3>
+                </div>
+                <p class="text-indigo-100 text-sm mt-1">Basado en tu \u00faltima evaluaci\u00f3n del {{ new Date(lastAssessment.date).toLocaleDateString() }}</p>
+              </div>
+              <div class="p-5 space-y-4">
+                <!-- Summary bar -->
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="font-medium text-slate-700 dark:text-slate-300">Progreso global:</span>
+                  <div class="flex-1 h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full bg-gradient-to-r from-red-500 via-amber-500 to-green-500 transition-all duration-700"
+                         :style="{ width: overallScore + '%' }"></div>
+                  </div>
+                  <span class="font-bold text-lg" :class="overallScore >= 70 ? 'text-green-600' : overallScore >= 40 ? 'text-amber-600' : 'text-red-600'" v-text="overallScore + '%'"></span>
+                </div>
+
+                <!-- Roadmap -->
+                <div>
+                  <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-3">Tu ruta de estudio</p>
+                  <div class="space-y-2">
+                    <div v-if="roadmapGroups.ahora.length">
+                      <p class="text-xs font-bold text-red-600 dark:text-red-400 flex items-center gap-1 mb-1.5">
+                        <svg class="w-3 h-3" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg>
+                        Ahora — prioritarios ({{ roadmapGroups.ahora.length }})
+                      </p>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span v-for="item in roadmapGroups.ahora" :key="item.id"
+                              @click="openInspector(item.id)"
+                              class="roadmap-tag text-xs px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/40 cursor-pointer hover:bg-red-100 dark:hover:bg-red-800/40 transition font-medium">
+                          {{ item.name }}
+                          <span class="opacity-60" v-text="' ' + item.mastery + '%'"></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div v-if="roadmapGroups.siguiente.length">
+                      <p class="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 mb-1.5">
+                        <svg class="w-3 h-3" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg>
+                        Siguiente — preparados ({{ roadmapGroups.siguiente.length }})
+                      </p>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span v-for="item in roadmapGroups.siguiente" :key="item.id"
+                              @click="openInspector(item.id)"
+                              class="text-xs px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-800/40 transition font-medium">
+                          {{ item.name }}
+                          <span class="opacity-60" v-text="' ' + item.mastery + '%'"></span>
+                        </span>
+                      </div>
+                    </div>
+                    <div v-if="roadmapGroups.pronto.length">
+                      <p class="text-xs font-bold text-green-600 dark:text-green-400 flex items-center gap-1 mb-1.5">
+                        <svg class="w-3 h-3" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg>
+                        Pronto — avanzados / bloqueados ({{ roadmapGroups.pronto.length }})
+                      </p>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span v-for="item in roadmapGroups.pronto" :key="item.id"
+                              @click="openInspector(item.id)"
+                              class="text-xs px-2.5 py-1.5 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800/40 cursor-pointer hover:bg-green-100 dark:hover:bg-green-800/40 transition font-medium">
+                          {{ item.name }}
+                          <span class="opacity-60" v-text="' ' + item.mastery + '%'"></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick actions -->
+                <div class="flex flex-wrap gap-2 pt-2">
+                  <button @click="startAssessment()"
+                          class="flex items-center gap-1.5 text-xs min-h-[40px] sm:min-h-[36px] bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition">
+                    <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+                    Nueva evaluaci\u00f3n
+                  </button>
+                  <button @click="exportStudyPlanText()"
+                          class="flex items-center gap-1.5 text-xs min-h-[40px] sm:min-h-[36px] bg-white dark:bg-slate-700 border dark:border-slate-600 font-medium px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition">
+                    <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                    Exportar plan
+                  </button>
+                  <button @click="startStudy()"
+                          class="flex items-center gap-1.5 text-xs min-h-[40px] sm:min-h-[36px] bg-white dark:bg-slate-700 border dark:border-slate-600 font-medium px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition">
+                    <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                    Flashcards
+                  </button>
                 </div>
               </div>
             </div>
@@ -583,7 +675,7 @@
           <p v-if="subjectAssessmentsList.length === 0" class="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">Aún no hay evaluaciones para esta asignatura</p>
           <div class="space-y-3">
             <div v-for="a in subjectAssessmentsList" :key="a.id"
-                 class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 transition"
+                  class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 sm:p-4 border border-slate-100 dark:border-slate-700 transition"
                  :class="{'ring-2 ring-indigo-400': false}">
               <div class="flex items-start gap-3">
                 <div class="flex-1 min-w-0">

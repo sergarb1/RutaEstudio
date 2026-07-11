@@ -14,12 +14,34 @@ GC.graph = {
 
   _nodeColors(dark) {
     return dark
-      ? { bg: '#1e293b', border: '#818cf8', hiliteBg: '#334155', hiliteBorder: '#a5b4fc' }
-      : { bg: '#e0e7ff', border: '#6366f1', hiliteBg: '#c7d2fe', hiliteBorder: '#4f46e5' };
+      ? { bg: '#1e293b', border: '#818cf8', hiliteBg: '#334155', hiliteBorder: '#a5b4fc', shadow: '#818cf833' }
+      : { bg: '#eef2ff', border: '#6366f1', hiliteBg: '#e0e7ff', hiliteBorder: '#4f46e5', shadow: '#6366f140' };
   },
 
   _edgeFont(dark) {
-    return { size: 10, color: dark ? '#94a3b8' : '#64748b' };
+    return { size: 10, color: dark ? '#94a3b8' : '#64748b', strokeWidth: 0, face: 'Inter' };
+  },
+
+  _nodeShape(c) {
+    const w = c.weight || 5;
+    if (w >= 8) return 'star';
+    if (w >= 5) return 'hexagon';
+    if (w >= 3) return 'diamond';
+    return 'ellipse';
+  },
+
+  _nodeSize(c) {
+    return 16 + (c.weight || 5) * 4;
+  },
+
+  _shadow(dark) {
+    return {
+      enabled: true,
+      size: 12,
+      x: 0,
+      y: 3,
+      color: dark ? 'rgba(0,0,0,0.5)' : 'rgba(99,102,241,0.15)'
+    };
   },
 
   render(containerId, concepts, relations, options) {
@@ -34,18 +56,32 @@ GC.graph = {
     const dark = this._isDark();
     const nc = this._nodeColors(dark);
 
-    const nodeSize = (c) => 20 + (c.weight || 5) * 3;
-
     const nodes = concepts.map(c => {
       const pos = positions[c.id];
+      const shape = this._nodeShape(c);
+      const size = this._nodeSize(c);
       const n = {
         id: c.id,
-        label: c.name + (c.weight ? '\n[peso: ' + c.weight + ']' : ''),
-        shape: 'ellipse',
-        size: nodeSize(c),
-        color: c.color || { background: nc.bg, border: nc.border, highlight: { background: nc.hiliteBg, border: nc.hiliteBorder } },
-        font: { family: 'Inter', size: 14, color: dark ? '#e2e8f0' : '#1e293b' },
-        title: c.description || c.name
+        label: c.name,
+        shape,
+        size,
+        color: c.color || {
+          background: nc.bg,
+          border: nc.border,
+          highlight: { background: nc.hiliteBg, border: nc.hiliteBorder }
+        },
+        font: {
+          family: 'Outfit, Inter, sans-serif',
+          size: shape === 'star' ? 15 : shape === 'hexagon' ? 14 : 13,
+          color: dark ? '#e2e8f0' : '#1e293b',
+          strokeWidth: shape === 'star' ? 0 : 0,
+          face: 'Outfit'
+        },
+        title: c.name + (c.description ? '\n' + c.description : '') + (c.weight ? '\nPeso: ' + c.weight : ''),
+        borderWidth: shape === 'star' ? 3 : shape === 'hexagon' ? 2.5 : 2,
+        borderWidthSelected: shape === 'star' ? 4 : 3,
+        shadow: this._shadow(dark),
+        shapeProperties: { borderRadius: 6 }
       };
       if (pos) { n.x = pos.x; n.y = pos.y; n.fixed = true; }
       return n;
@@ -70,10 +106,30 @@ GC.graph = {
       layout: { hierarchical: { enabled: false } },
       physics: hasPositions ? { enabled: false } : {
         solver: 'forceAtlas2Based',
-        forceAtlas2Based: { gravitationalConstant: -40, centralGravity: 0.005, springLength: 150, springConstant: 0.02 }
+        forceAtlas2Based: {
+          gravitationalConstant: -35,
+          centralGravity: 0.004,
+          springLength: 180,
+          springConstant: 0.03,
+          damping: 0.6
+        },
+        stabilization: { iterations: 200 }
       },
-      interaction: { hover: true, tooltipDelay: 200, dragView: true, zoomView: true, navigationButtons: true },
-      edges: { smooth: true },
+      interaction: {
+        hover: true,
+        tooltipDelay: 150,
+        dragView: true,
+        zoomView: true,
+        navigationButtons: true,
+        hoverConnectedEdges: true,
+        selectConnectedEdges: true
+      },
+      edges: {
+        smooth: {
+          type: 'continuous',
+          roundness: 0.4
+        }
+      },
       groups: undefined,
       autoResize: true
     };
@@ -107,17 +163,23 @@ GC.graph = {
 
     const nodes = concepts.map(c => {
       const score = results[c.id] || 0;
+      const w = c.weight || 5;
+      const size = 16 + w * 3;
       return {
         id: c.id,
         label: c.name + '\n' + score + '%',
-        shape: 'ellipse',
+        shape: w >= 8 ? 'star' : w >= 5 ? 'hexagon' : w >= 3 ? 'diamond' : 'ellipse',
+        size,
         color: {
           background: GC.heatBg(score),
           border: GC.heatColor(score),
           highlight: { background: GC.heatBg(score), border: GC.heatColor(score) }
         },
-        font: { size: 13, face: 'Inter', color: dark ? '#e2e8f0' : '#1e293b' },
-        title: c.name + ': ' + score + '% - ' + GC.heatLabel(score)
+        font: { size: 12, face: 'Outfit, Inter, sans-serif', color: dark ? '#e2e8f0' : '#1e293b', strokeWidth: 0 },
+        title: c.name + ': ' + score + '% - ' + GC.heatLabel(score) + (c.weight ? '\nPeso: ' + c.weight : ''),
+        borderWidth: 2.5,
+        borderWidthSelected: 3.5,
+        shadow: this._shadow(dark)
       };
     });
 
@@ -136,8 +198,19 @@ GC.graph = {
     const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     const options = {
       layout: { hierarchical: { enabled: false } },
-      physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 140 } },
-      interaction: { hover: true, tooltipDelay: 200, navigationButtons: true },
+      physics: {
+        solver: 'forceAtlas2Based',
+        forceAtlas2Based: { gravitationalConstant: -25, centralGravity: 0.004, springLength: 160, damping: 0.5 },
+        stabilization: { iterations: 150 }
+      },
+      interaction: {
+        hover: true,
+        tooltipDelay: 150,
+        navigationButtons: true,
+        hoverConnectedEdges: true,
+        selectConnectedEdges: true
+      },
+      edges: { smooth: { type: 'continuous', roundness: 0.4 } },
       autoResize: true
     };
 
@@ -164,22 +237,28 @@ GC.graph = {
     const subjectMap = {};
     subjects.forEach((s, i) => { subjectMap[s.id] = { name: s.name, color: GC.subjectColor(i) }; });
 
-    const nodes = allConcepts.map(c => ({
-      id: c.id,
-      label: c.name,
-      shape: 'ellipse',
-      size: 20 + (c.weight || 5) * 2,
-      color: {
-        background: subjectMap[c.subjectId]?.color + '33' || '#e0e7ff',
-        border: subjectMap[c.subjectId]?.color || '#6366f1',
-        highlight: {
-          background: subjectMap[c.subjectId]?.color + '66' || '#c7d2fe',
-          border: subjectMap[c.subjectId]?.color || '#4f46e5'
-        }
-      },
-      font: { family: 'Inter', size: 13, color: dark ? '#e2e8f0' : '#1e293b' },
-      title: c.name + ' (' + c.subjectName + ')\n' + (c.description || '')
-    }));
+    const nodes = allConcepts.map(c => {
+      const w = c.weight || 5;
+      return {
+        id: c.id,
+        label: c.name,
+        shape: w >= 8 ? 'star' : w >= 5 ? 'hexagon' : w >= 3 ? 'diamond' : 'dot',
+        size: 14 + w * 3,
+        color: {
+          background: subjectMap[c.subjectId]?.color + '33' || '#e0e7ff',
+          border: subjectMap[c.subjectId]?.color || '#6366f1',
+          highlight: {
+            background: subjectMap[c.subjectId]?.color + '66' || '#c7d2fe',
+            border: subjectMap[c.subjectId]?.color || '#4f46e5'
+          }
+        },
+        font: { family: 'Outfit, Inter, sans-serif', size: 12, color: dark ? '#e2e8f0' : '#1e293b', strokeWidth: 0 },
+        title: c.name + ' (' + c.subjectName + ')\n' + (c.description || ''),
+        borderWidth: 2,
+        borderWidthSelected: 3,
+        shadow: this._shadow(dark)
+      };
+    });
 
     const allRels = GC.allRelations(subjects, crossRelations);
 
@@ -198,9 +277,19 @@ GC.graph = {
     const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
     const options = {
       layout: { hierarchical: { enabled: false } },
-      physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.003, springLength: 180, springConstant: 0.01 } },
-      interaction: { hover: true, tooltipDelay: 200, navigationButtons: true },
-      edges: { smooth: true },
+      physics: {
+        solver: 'forceAtlas2Based',
+        forceAtlas2Based: { gravitationalConstant: -40, centralGravity: 0.003, springLength: 200, springConstant: 0.02, damping: 0.5 },
+        stabilization: { iterations: 200 }
+      },
+      interaction: {
+        hover: true,
+        tooltipDelay: 150,
+        navigationButtons: true,
+        hoverConnectedEdges: true,
+        selectConnectedEdges: true
+      },
+      edges: { smooth: { type: 'continuous', roundness: 0.4 } },
       autoResize: true
     };
 

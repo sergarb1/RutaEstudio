@@ -172,6 +172,10 @@
           !this.currentSubject.relations.some(r => r.from === c.id || r.to === c.id)
         ).length;
       },
+      roadmapGroups() {
+        if (!this.currentSubject || !this.lastAssessment) return { ahora: [], siguiente: [], pronto: [] };
+        return GC.roadmap(this.currentSubject, this.lastAssessment.results);
+      },
       allRelationTypes() {
         return GC.store.allRelationTypes();
       },

@@ -60,7 +60,7 @@
       }
       this.deleteTarget = null;
       this.modal = '';
-      GC.toast('Asignatura borrada', 'warning');
+      this.showToast('Asignatura borrada', 'warning');
     },
     exportSubjectCard(s) {
       const assessments = this.store.subjectAssessments(s.id);
