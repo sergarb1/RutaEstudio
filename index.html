@@ -58,7 +58,7 @@
             <span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-medium leading-tight max-w-28 hidden sm:block">{{ GC.t('app.subtitle') }}</span>
           </a>
         </div>
-        <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-1.5 flex-wrap justify-end">
           <!-- Dark mode -->
           <button @click="toggleDark()"
                   class="min-w-[36px] min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
@@ -947,34 +947,202 @@
 
           <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
             <p class="font-bold text-indigo-600 dark:text-indigo-400 mb-2">Personalizar con IA</p>
-            <p class="text-slate-500 dark:text-slate-400 mb-3">Pide a cualquier asistente de IA que genere una asignatura completa. Usa este prompt:</p>
-            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700 mb-3">
-              <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Genera un JSON para la app "RutaEstudio" con una asignatura sobre [tema].
 
-Formato:
+            <!-- Prompt detallado -->
+            <details class="mb-3 group">
+              <summary class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1.5">
+                <svg class="w-4 h-4 transition group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                Prompt detallado para generar una asignatura
+              </summary>
+              <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700 mt-2">
+                <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" (una herramienta de mapas de conocimiento interactivos).
+Quiero una asignatura completa sobre [TEMA].
+
+# Estructura del JSON
 {
-  "subjects": [{
-    "name": "…",
-    "description": "…",
-    "concepts": [
-      { "name": "…", "description": "…", "weight": 5, "tags": ["…"] }
-    ],
-    "relations": [
-      { "from": "…", "to": "…", "type": "prerrequisito" }
-    ]
-  }]
+  "subjects": [
+    {
+      "name": "Nombre de la asignatura",
+      "description": "Descripción breve y motivadora (2-3 frases)",
+      "concepts": [
+        {
+          "name": "Nombre del concepto",
+          "description": "Explicación clara y sencilla del concepto (1-2 frases)",
+          "weight": 5,
+          "tags": ["etiqueta1", "etiqueta2"]
+        }
+      ],
+      "relations": [
+        { "from": "Nombre del concepto origen",
+          "to": "Nombre del concepto destino",
+          "type": "prerrequisito" }
+      ]
+    }
+  ]
 }
 
-Reglas: mínimo 8 conceptos, pesos 1-10, usa tipos "prerrequisito", "pertenece", "relacionado", "profundiza". Devuelve solo JSON válido.</pre>
-            </div>
-            <p class="text-xs text-slate-400 mb-2">También puedes pedirle a la IA que <strong>complete o amplíe</strong> la plantilla que descargaste:</p>
-            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700 mb-2">
-              <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Tengo esta plantilla JSON de RutaEstudio:
-[pega aquí el contenido del JSON]
+# Reglas estrictas
+- Mínimo 10 conceptos, máximo 25
+- weight: número entero del 1 al 10
+  · 1-3: introductorio / de relleno
+  · 4-6: importancia media / núcleo de la asignatura
+  · 7-10: concepto fundamental / avanzado
+- tags: array de etiquetas cortas (máximo 5 por concepto)
+  · Usa etiquetas como "fundamentos", "avanzado", "práctico",
+    "teoría", "ejercicios", "ejemplos", según corresponda
+- En relations, el campo type debe ser uno de:
+  · "prerrequisito" → A debe saberse antes que B (flecha sólida)
+  · "pertenece" → A es subconcepto de B (flecha discontinua)
+  · "relacionado" → A y B están relacionados (línea punteada)
+  · "profundiza" → A profundiza / amplía B (flecha gruesa)
+- Las relaciones deben formar un grafo acíclico (sin ciclos)
+- Cada concepto debe aparecer al menos en una relación (entrante
+  o saliente)
+- Asegúrate de que todos los from/to coinciden exactamente con
+  algún name en concepts
+- No añadas campos extra ni comentarios
+- Devuelve SOLO el JSON, sin markdown ni explicaciones
 
-Amplíala: añade 5 conceptos más con sus relaciones, ajusta los pesos y las etiquetas (tags) para que sea coherente. Mantén el mismo formato.</pre>
-            </div>
-            <p class="text-xs text-slate-400">Después de obtener el JSON, impórtalo con <strong>Importar &gt; Importar datos</strong> desde el menú superior.</p>
+Puedes incluir resources opcionales en los conceptos:
+"resources": [
+  { "type": "video" | "articulo" | "libro" | "ejercicio",
+    "title": "Título del recurso",
+    "url": "https://..." }
+]</pre>
+              </div>
+            </details>
+
+            <!-- Ampliar plantilla -->
+            <details class="mb-3 group">
+              <summary class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1.5">
+                <svg class="w-4 h-4 transition group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                Ampliar una plantilla existente
+              </summary>
+              <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700 mt-2">
+                <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Tengo esta plantilla JSON de RutaEstudio:
+```json
+[pega aquí el contenido del JSON descargado]
+```
+
+Amplíala siguiendo estas pautas:
+1. Añade 5-8 conceptos más que sean coherentes con la asignatura
+2. Conéctalos con relaciones apropiadas a los conceptos existentes
+3. Ajusta los pesos de los nuevos conceptos según su importancia
+4. Añade etiquetas (tags) significativas a todos los conceptos
+5. Mantén el formato exacto del JSON original
+6. Devuelve SOLO el JSON completo (incluyendo los conceptos originales
+   más los nuevos), sin explicaciones</pre>
+              </div>
+            </details>
+
+            <!-- Ejemplos completos -->
+            <details class="mb-3 group" open>
+              <summary class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1.5">
+                <svg class="w-4 h-4 transition group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                Ejemplos completos de prompts
+              </summary>
+              <div class="mt-2 space-y-2">
+                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Matemáticas — Álgebra lineal (2.º Bachillerato)</p>
+                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "Álgebra Lineal" de 2.º de Bachillerato.
+
+Debe incluir 12-15 conceptos con pesos 1-10: matrices, determinantes,
+sistemas de ecuaciones, rango, matriz inversa, combinación lineal,
+dependencia lineal, espacio vectorial, subespacio vectorial, base y
+dimensión, coordenadas, producto escalar, ortogonalidad, aplicaciones
+lineales, núcleo e imagen, diagonalización.
+
+Usa relaciones de prerrequisito (matrices → determinantes → sistemas…),
+pertenece (subespacio → espacio vectorial), y profundiza (diagonalización
+profundiza autovalores). Etiquetas: "fundamentos", "operaciones",
+"teoría", "ejercicios", "selectividad", "avanzado".
+
+Devuelve SOLO el JSON, sin explicaciones.</pre>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Idiomas — Inglés B1 (nivel intermedio)</p>
+                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "Inglés B1 — Intermedio".
+
+Debe incluir 10-14 conceptos: present simple vs continuous, past simple
+vs continuous, present perfect, future forms (will/going to), condicionales
+(tipos 0, 1, 2), voz pasiva, modales básicos (can, must, should, have to),
+comparativos y superlativos, preposiciones de tiempo y lugar, phrasal verbs
+básicos, vocabulario por temas (travel, work, health), writing emails.
+
+Pesos: los tiempos verbales básicos 7-8, los avanzados 5-6, vocabulario 3-4.
+Etiquetas: "grammar", "vocabulary", "writing", "speaking", "listening",
+"practice". Añade al menos 3 resources por concepto con enlaces a
+BBC Learning English, Duolingo, o ejercicios de Cambridge.
+
+Devuelve SOLO el JSON, sin explicaciones.</pre>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Programación — Python desde cero</p>
+                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "Programación en Python desde cero".
+
+Debe incluir 15-18 conceptos: qué es Python, instalación y entorno,
+variables y tipos de datos, operadores, strings y formateo, listas,
+tuplas y diccionarios, condicionales (if/elif/else), bucles (for/while),
+funciones (def, return, args), alcance de variables (scope), módulos y
+paquetes, manejo de excepciones, lectura/escritura de archivos,
+programación orientada a objetos (clases, herencia), list comprehension,
+librería estándar útil (math, datetime, random, os), introducción a pip.
+
+Pesos: fundamentos 8-10, estructuras de datos 6-7, POO y archivos 4-5.
+Etiquetas: "principiante", "sintaxis", "ejercicios", "proyectos",
+"fundamentos", "poo". Usa recursos con enlaces a w3schools, realpython,
+docs.python.org y ejercicios de codingbat.
+
+Devuelve SOLO el JSON, sin explicaciones.</pre>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">FP Informática — Bases de datos (MySQL)</p>
+                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con el módulo "Bases de Datos" (1.º FP Informática).
+
+Debe incluir 12-15 conceptos: modelo entidad-relación, diagramas E-R,
+tablas, claves primarias y foráneas, normalización (1FN, 2FN, 3FN),
+SQL DDL (CREATE, ALTER, DROP), SQL DML (SELECT, INSERT, UPDATE, DELETE),
+consultas con JOIN, funciones agregadas (COUNT, SUM, AVG, GROUP BY),
+subconsultas, vistas, índices, usuarios y permisos, copias de seguridad.
+
+Pesos: E-R y tablas 9-10, SQL básico 8, normalización 7, JOIN 6,
+subconsultas 5, vistas/índices 4. Etiquetas: "teoría", "sql", "diseño",
+"prácticas", "examen". Añade resources con enlaces a mysql.com, w3schools
+SQL y ejercicios de mode.com/sql-tutorial.
+
+Devuelve SOLO el JSON, sin explicaciones.</pre>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Personalizado — tu propio prompt</p>
+                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Copia y pega este esqueleto, rellena los corchetes y pídeselo a la IA:
+
+Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "[NOMBRE]" de [NIVEL O CURSO].
+
+Debe incluir [NÚMERO] conceptos sobre: [lista de conceptos separada
+por comas].
+
+Pesos: [criterios de peso, ej. "fundamentos 8-10, intermedios 5-7,
+avanzados 3-4"].
+Etiquetas: [lista de etiquetas].
+Relaciones: usa los tipos "prerrequisito", "pertenece", "relacionado"
+y "profundiza" según corresponda.
+
+Devuelve SOLO el JSON, sin explicaciones.</pre>
+                </div>
+              </div>
+            </details>
+
+            <p class="text-xs text-slate-400 mt-2">Después de obtener el JSON, impórtalo con <strong>Importar &gt; Importar datos</strong> desde el menú superior.</p>
           </div>
         </div>
       </div>
