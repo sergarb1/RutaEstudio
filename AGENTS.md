@@ -173,6 +173,7 @@ RutaEstudio/
 - **Graph beautification**: `graph-engine.js` — node shapes by weight, shadow effects, improved physics (damping 0.6, stabilization), smoother edges (continuous roundness), Outfit font, hover/select connected edges
 - **GC.toast → this.showToast** fix in editor.js
 - **AGENTS.md**: updated with current session
+- **"Cargar ejemplo" → "Cargar ejemplos"**: text fix in subject-list.js
 
 ### Current State
 | Feature | Status |
@@ -187,6 +188,34 @@ RutaEstudio/
 | Study recommendations | ✅ Added |
 | Graph beautification | ✅ Done |
 | Delete modal (GC.toast) | ✅ Fixed |
+
+## 🧩 UI/UX Patterns extraídos (reutilizables en otras apps)
+
+| Pattern | Cómo se implementa en RutaEstudio | Clave |
+|---------|-----------------------------------|-------|
+| **Bottom-right card actions** | Botones de acción en `absolute bottom-3 right-3` con `pb-12` en la card | No ocultan contenido, siempre visibles, no interfieren con el click principal |
+| **Mobile-first touch targets** | `min-w-[36px] min-h-[36px]` con `sm:` override a 28px | Dedo cabe en mobile, no ocupa de más en desktop |
+| **Header responsive** | `flex-wrap` en header y botonera + iconos que escalan (`w-4 h-4 sm:w-3.5`) | Nunca se desborda, los iconos se agrandan en touch |
+| **Tabs con scroll** | `overflow-x-auto` + `tabs-scroll` (scrollbar none) + wrapper div | No rompen layout en mobile, el scroll es natural |
+| **Accordion features en README** | `<details><summary>` agrupando por categorías | Escaneable, colapsable, no abruma |
+| **Badges en README** | `shields.io` con colores de estado (demo, PWA, offline, license) | Comunicación visual instantánea |
+| **Gradient header en cards** | `bg-gradient-to-r from-indigo-600 to-purple-600` en cards de recomendación | Jerarquía visual clara, atrae la mirada |
+| **Roadmap como tags clickeables** | Grupos "ahora/siguiente/pronto" como `<span>` con colores semánticos + click → inspector | Acción directa sin fricción |
+| **Node shapes por peso** | `_nodeShape()`: estrella (≥8), hexágono (5-7), diamante (3-4), elipse (<3) | Comunicación visual sin texto |
+| **Gradiente en barra de progreso** | `from-red-500 via-amber-500 to-green-500` según rango de score | Lectura inmediata del estado |
+| **Toast con deshacer** | `showToast()` con `action` callback para undo de última acción | Seguridad psicológica, el usuario se atreve a hacer |
+| **Auto-save + undo/redo** | 50 snapshots en store.js + Ctrl+Z/Ctrl+Shift+Z | El usuario nunca pierde trabajo |
+| **Focus mode en grafo** | `focusMode` toggle oculta header, tabs, agranda contenedor | Modo "no distracciones" bajo demanda |
+| **Inspector slide-over** | Panel lateral con tabs (walkthrough, recursos) que se superpone | No pierde contexto, información sin navegar |
+| **Bulk actions con checkbox** | Checkbox en cada fila + barra de acción común | Acciones en lote sin modal complejo |
+| **Edición inline** | `@dblclick` en nombre/desc cambia a `<input>` in-place | Edición rápida sin modales |
+| **Evaluación masiva con sliders** | Slider + porcentaje por cada concepto, todos visibles a la vez | Feedback inmediato, puntuación rápida |
+| **Quick actions contextuales** | Botones "Nueva eval", "Exportar plan", "Flashcards" dentro de la card de recomendación | Acción relevante en el momento justo |
+| **Onboarding paso a paso** | 6 pasos con indicador de progreso, skip al final | Primera experiencia guiada sin obligar |
+| **Gamification bar siempre visible** | XP, nivel, racha diaria en barra superior | Motivación constante, progresso visible |
+| **Auto-backup silencioso** | Cada 5 minutos descarga JSON sin preguntar | Seguridad sin fricción |
+| **CDN + fallback local** | Cada script tiene `src` CDN y `fallback` local | Resiliencia total offline |
+| **PWA installable** | `manifest.json` + `sw.js` + `beforeinstallprompt` + botón install | App nativa sin app store |
 
 ## Current Module Structure
 | Module | File | Responsibility |
