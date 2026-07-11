@@ -1355,8 +1355,7 @@ Devuelve SOLO el JSON, sin explicaciones.</pre>
   </Transition>
 
   <!-- Onboarding overlay -->
-  <Transition name="modal">
-    <div v-if="showOnboarding" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm">
+  <div v-if="showOnboardingComputed" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm">
       <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-700 mx-4">
         <!-- Step indicator -->
         <div class="flex gap-1 mb-6">
@@ -1450,11 +1449,10 @@ Devuelve SOLO el JSON, sin explicaciones.</pre>
         <button @click="closeOnboarding()" class="text-xs text-slate-400 dark:text-slate-500 mt-3 w-full text-center hover:underline">Saltar tutorial</button>
       </div>
     </div>
-  </Transition>
+
 
   <!-- Achievements Modal -->
-  <Transition name="modal">
-    <div v-if="showAchievements" class="fixed inset-0 z-[55] flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm" @click.self="showAchievements = false">
+  <div v-if="showAchievementsComputed" class="fixed inset-0 z-[55] flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm" @click.self="showAchievements = false">
       <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-700 mx-4 max-h-[80vh] flex flex-col">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-bold text-lg flex items-center gap-2">
@@ -1485,7 +1483,6 @@ Devuelve SOLO el JSON, sin explicaciones.</pre>
         </div>
       </div>
     </div>
-  </Transition>
 
   <!-- Install Prompt -->
   <script>

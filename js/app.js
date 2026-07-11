@@ -110,6 +110,9 @@
         return this.store.subjectAssessments(this.currentSubject.id);
       },
 
+      showOnboardingComputed() { return this.showOnboarding; },
+      showAchievementsComputed() { return this.showAchievements; },
+
       stats() {
         const r = this.lastAssessment;
         if (!r) return { red: 0, yellow: 0, green: 0 };

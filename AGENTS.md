@@ -6,6 +6,12 @@ Interactive knowledge graph for any subject. Define concepts and their relations
 ## Language
 Multi-language: ES (default), EN, VA. Managed via `js/i18n.js` — use `GC.t('key')` in templates.
 
+## Dev Server
+```bash
+python3 -m http.server 8080
+```
+Navigate to `http://localhost:8080` for Chrome MCP debugging.
+
 ## Data Model
 
 ## Stack
