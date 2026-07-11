@@ -46,6 +46,22 @@
       }
       this.modal = '';
     },
+    confirmDeleteSubject(s) {
+      this.deleteTarget = s;
+      this.modal = 'confirmDelete';
+    },
+    executeDeleteSubject() {
+      if (!this.deleteTarget) return;
+      this.store.deleteSubject(this.deleteTarget.id);
+      if (this.currentSubjectId === this.deleteTarget.id) {
+        this.currentSubjectId = null;
+        this.view = 'subjects';
+        this.destroyGraph();
+      }
+      this.deleteTarget = null;
+      this.modal = '';
+      GC.toast('Asignatura borrada', 'warning');
+    },
     deleteSubject() {
       if (!this.currentSubject) return;
       if (confirm('\u00bfBorrar "' + this.currentSubject.name + '"?')) {

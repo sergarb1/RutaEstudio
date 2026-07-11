@@ -90,7 +90,8 @@
         customTypeArrow: 'to',
         customTypeEditId: null,
         showAchievements: false,
-        canInstall: false
+        canInstall: false,
+        deleteTarget: null
       };
     },
 

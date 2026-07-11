@@ -172,6 +172,10 @@
       this.showOnboarding = false;
       localStorage.setItem('grafo-onboarding-v2', '1');
     },
+    showTutorial() {
+      this.onboardingStep = 0;
+      this.showOnboarding = true;
+    },
 
     // ==================== PLAN DE ESTUDIO ====================
     studyPlan() {
