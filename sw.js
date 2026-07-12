@@ -1,11 +1,10 @@
-const CACHE = 'ruta-estudio-v2';
+const CACHE = 'ruta-estudio-v4';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll([
-      'index.html',
+    const urls = [
       'manifest.json',
       'img/icon.svg',
       'css/app.css',
@@ -26,13 +25,15 @@ self.addEventListener('install', e => {
       'components/global-graph.js',
       'components/suggestions-panel.js',
       'components/help-modal.js'
-    ]);
+    ];
+    await Promise.allSettled(urls.map(url =>
+      cache.add(url).catch(() => {})
+    ));
   })());
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
-    // Clean old caches
     const keys = await caches.keys();
     await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
     await clients.claim();
@@ -61,7 +62,24 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // App assets: cache-first, network fallback
+  // Navigation (HTML): network-first — always get latest after deployment
+  if (e.request.mode === 'navigate') {
+    e.respondWith((async () => {
+      try {
+        const res = await fetch(e.request);
+        if (res.ok && res.type === 'basic') {
+          const cache = await caches.open(CACHE);
+          cache.put(e.request, res.clone());
+        }
+        return res;
+      } catch {
+        return caches.match(e.request) || caches.match('index.html');
+      }
+    })());
+    return;
+  }
+
+  // App assets (JS, CSS, etc.): cache-first, network fallback
   e.respondWith((async () => {
     const cached = await caches.match(e.request);
     if (cached) return cached;
@@ -73,10 +91,6 @@ self.addEventListener('fetch', e => {
       }
       return res;
     } catch {
-      // Offline: return index.html for navigation requests
-      if (e.request.mode === 'navigate') {
-        return caches.match('index.html');
-      }
       return new Response('', { status: 200 });
     }
   })());
