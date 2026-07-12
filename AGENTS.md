@@ -223,6 +223,234 @@ The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of
 | Editor | `js/editor.js` | Subject/concept/relation CRUD, templates, import/export, inline edit, drag-drop, bulk tag, custom relation types management |
 | Study | `js/study.js` | Flashcards, pomodoro, streak calendar, study plan export, progress chart, onboarding |
 
+---
+
+## 🔧 Debugging Tips (Vue 3 CDN + Tailwind CDN)
+
+### Compiled Render Function
+```javascript
+// Dump the compiled render function
+app._component.render.toString()
+// Dump the raw template (innerHTML at mount time)
+app._component.template
+// Compare lengths to detect compilation drops
+```
+
+### Detect Dropped Children (Vue 3 in-DOM compiler bug)
+If content at the **end of a container** doesn't render even with `v-if="true"`:
+```javascript
+// Count rendered children vs template children
+var ac = document.querySelector('#app-content');
+console.log('Rendered children:', ac.children.length);
+console.log('Template children count:', 
+  app._component.template.split('<div ').length - 1);
+```
+**Fix**: Move the content **outside** the long container as a Fragment sibling.
+
+### Force Re-render
+```javascript
+app._container._vnode.component.update()
+```
+
+### Check Reactive State
+```javascript
+var p = app.__vue_app__._container._vnode.component.proxy;
+console.log(p.showOnboarding, p.showOnboardingComputed);
+```
+
+### Service Worker Debugging
+```javascript
+// Unregister all SWs (dev only)
+navigator.serviceWorker.getRegistrations().then(r => r.map(r => r.unregister()))
+// Check if SW is serving stale cache
+navigator.serviceWorker.controller?.scriptURL
+```
+
+### Cache-Busting Reload
+```
+http://localhost:8080/index.html?cb=<random>
+```
+Use `ignoreCache: true` in `navigate_page` AND unregister SW.
+
+### Common Issues
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| Content at end of `#app-content` doesn't render | Compiler drops tail children | Move to Fragment sibling |
+| `v-if` renders `<!---->` despite value `true` | Same as above | Same as above |
+| Changes in HTML not reflected | SW cache or browser cache | Unregister SW + query param |
+| `v-show` element not in DOM | Same compiler drop bug | Move outside long container |
+| Global CSS not loading | CDN blocked offline | Check `fallback/` dir |
+
+---
+
+## 🎨 Visual Style Guide (reusable in any app)
+
+### Color System
+```
+Primary:   indigo-600 (#4f46e5) → hover indigo-700
+           dark: indigo-400 (#818cf8)
+Success:   green-500 (#22c55e) / green-600 (#16a34a)
+Warning:   amber-500 (#eab308) / amber-600 (#d97706)
+Danger:    red-500 (#ef4444) / red-600 (#dc2626)
+Neutral:   slate-50 → slate-900 scale
+Accent:    purple-600 (#9333ea) — gradient partner with indigo
+```
+
+### Component Patterns
+```html
+<!-- Card base — white + border + rounded-2xl + p-5 -->
+<div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
+
+<!-- Gradient header inside card -->
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4 rounded-t-2xl -mx-5 -mt-5 mb-4">
+
+<!-- Button primary -->
+<button class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition">
+
+<!-- Button secondary -->
+<button class="bg-white dark:bg-slate-700 border dark:border-slate-600 font-medium px-4 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition">
+
+<!-- Touch target (mobile-first) -->
+<button class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px]">
+
+<!-- Inline edit trigger -->
+<div @dblclick="editMode=true" class="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 rounded px-1 -mx-1">
+
+<!-- Progress bar gradient -->
+<div class="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+  <div class="h-full rounded-full bg-gradient-to-r from-red-500 via-amber-500 to-green-500" style="width: 65%">
+
+<!-- Tag/chip clickeable -->
+<span class="text-xs px-2.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40 cursor-pointer hover:bg-indigo-100 transition font-medium">
+
+<!-- Slide-over panel (inspector) -->
+<div class="fixed inset-y-0 right-0 w-80 z-50 bg-white dark:bg-slate-800 shadow-2xl border-l border-slate-200 dark:border-slate-700 transform transition" :class="inspectorOpen ? 'translate-x-0' : 'translate-x-full'">
+
+<!-- Toast notification -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70]" v-show="showToast">
+  <div class="bg-slate-800 dark:bg-slate-700 text-white px-5 py-3 rounded-xl shadow-2xl text-sm flex items-center gap-3">
+```
+
+### Typography
+```css
+/* Font stack */
+font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+
+/* Sizes */
+text-xs (0.75rem)  — labels, metadata
+text-sm (0.875rem) — body, buttons
+text-base (1rem)   — default
+text-lg (1.125rem) — card titles
+text-xl (1.25rem)  — section headers
+font-bold          — emphasis
+font-medium        — buttons, active states
+```
+
+### Spacing Scale
+```css
+p-2 (8px)    — compact cards
+p-3 (12px)   — standard padding
+p-4 (16px)   — cards, modals
+p-5 (20px)   — spacious cards
+p-6 (24px)   — modals
+gap-1.5 (6px) — button groups
+gap-2 (8px)   — standard gap
+gap-3 (12px)  — section spacing
+```
+
+### Dark Mode
+```html
+<!-- Apply to all containers: -->
+class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100"
+class="border-slate-200 dark:border-slate-700"
+class="text-slate-500 dark:text-slate-400"
+class="bg-indigo-50 dark:bg-indigo-900/20"
+class="hover:bg-slate-50 dark:hover:bg-slate-700"
+```
+
+### Responsive Breakpoints
+```
+<xs> (320px)  — hide text, show icons only
+sm  (640px)   — tablet, reduce touch targets to 28px
+md  (768px)   — two-column grids
+lg  (1024px)  — three-column grids
+```
+
+---
+
+## 🧠 App-Making Tips (RutaEstudio lessons)
+
+### No-Build-Steak Stack
+```html
+<!-- CDN + local fallback pattern — every script -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script>if (!window.Vue) document.write('<script src="fallback/vue.global.prod.js"><\/script>')</script>
+```
+
+### localStorage as Database
+```javascript
+// Store
+localStorage.setItem('key', JSON.stringify(data));
+// Read with migration
+var raw = localStorage.getItem('key');
+var data = raw ? JSON.parse(raw) : defaultValue;
+// Auto-backup every 5 min
+setInterval(() => {
+  var blob = new Blob([JSON.stringify(allData)], {type: 'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'RutaEstudio-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}, 300000);
+```
+
+### Vue 3 CDN Gotchas
+- **In-DOM template compilation** uses `innerHTML` of mount target, not SFC
+- **Multiple root elements** are wrapped in Fragment (works in Vue 3)
+- **Long children arrays** can have tail elements dropped (Vue ≤3.5.39 bug)
+- **Hyphenated directives** (`v-on:click`, `:aria-label`) work but use kebab-case in HTML
+- **Computed properties** must return a value synchronously (no async)
+
+### PWA in 3 Steps
+```javascript
+// 1. manifest.json (minimal)
+{ "name": "App", "short_name": "App", "start_url": ".", "display": "standalone" }
+
+// 2. sw.js (cache-first for assets)
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+self.addEventListener('fetch', e => e.respondWith(
+  caches.match(e.request).then(r => r || fetch(e.request))
+));
+
+// 3. Register + install button
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+// Install prompt
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; });
+```
+
+### Vis-Network Graph in CDN
+```javascript
+// Create a network with dynamic node shapes
+function _nodeShape(weight) {
+  if (weight >= 8) return 'star';
+  if (weight >= 5) return 'hexagon';
+  if (weight >= 3) return 'diamond';
+  return 'ellipse';
+}
+var nodes = new vis.DataSet(concepts.map(c => ({
+  id: c.id, label: c.name, shape: _nodeShape(c.weight),
+  size: 15 + c.weight * 2, font: { size: 11 }
+})));
+var edges = new vis.DataSet(relations.map(r => ({
+  from: r.from, to: r.to, arrows: 'to', smooth: { type: 'continuous' }
+})));
+var network = new vis.Network(container, { nodes, edges }, {
+  physics: { solver: 'forceAtlas2Based', damping: 0.6 },
+  edges: { smooth: { type: 'continuous' } }
+});
+```
+
 
 <!-- headroom:rtk-instructions -->
 # RTK (Rust Token Killer) - Token-Optimized Commands
