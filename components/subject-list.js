@@ -4,18 +4,21 @@
   GC.components['subject-list'] = {
     template: `
       <div>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-bold">Mis asignaturas</h2>
-          <div class="flex gap-2">
-            <button @click="$emit('help')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Ayuda">
-              <span v-html="icon('questionMarkCircle')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Ayuda
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h2 class="text-lg font-bold shrink-0">Mis asignaturas</h2>
+          <div class="flex gap-1.5 flex-wrap">
+            <button @click="$emit('help')" class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px] flex items-center justify-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition" title="Ayuda">
+              <span v-html="icon('questionMarkCircle')" class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span>
+              <span class="hidden xs:inline">Ayuda</span>
             </button>
-            <button @click="$emit('tutorial')" class="flex items-center gap-1 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/40 rounded-lg px-3 py-2 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 font-medium transition" title="Primeros pasos">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
-              Primeros pasos
+            <button @click="$emit('tutorial')" class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px] flex items-center justify-center gap-1 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/40 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 font-medium transition" title="Primeros pasos">
+              <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+              <span class="hidden xs:inline">Primeros pasos</span>
             </button>
-            <button @click="$emit('add')" class="flex items-center gap-1 bg-indigo-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition">
-              <span v-html="icon('plus')" class="w-4 h-4 shrink-0 inline-flex items-center justify-center"></span> Nueva asignatura
+            <button @click="$emit('add')" class="min-w-[36px] min-h-[36px] sm:min-w-[28px] sm:min-h-[28px] flex items-center justify-center gap-1 bg-indigo-600 text-white text-xs sm:text-sm font-bold px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl hover:bg-indigo-700 transition">
+              <span v-html="icon('plus')" class="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0 inline-flex items-center justify-center"></span>
+              <span class="hidden xs:inline">Nueva</span>
+              <span class="hidden sm:inline"> asignatura</span>
             </button>
           </div>
         </div>

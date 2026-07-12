@@ -161,39 +161,32 @@ RutaEstudio/
 
 ---
 
-## Session Summary (11 Jul 2026)
+## Session Summary (12 Jul 2026)
 
 ### Goal
-✅ README beautification, mobile responsiveness fixes, graph beautification, study recommendations, card button repositioning.
+🐛 Fix onboarding overlay not rendering (Vue 3 in-DOM compiler bug), improve subject-list header mobile layout, merge recommendation card into personalized study plan card.
+
+### Root Cause — Vue 3 in-DOM compiler drops last children of `#app-content`
+The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of the `#app-content` div during template-to-render-function compilation. The footer, overlays (onboarding + achievements), and any content after the main tab content area were never included in the compiled VNode tree — despite being present in the raw template string (`app._component.template`). The compiler produced a correct-looking render function string with all children, but execution yielded fewer children (6 instead of 8+). This affected `v-if`, `v-show`, and even plain `<div>` elements.
+
+**Fix**: Moved footer, onboarding overlay, and achievements overlay **outside** `#app-content` as Fragment-level siblings — same level as the existing `<help-modal>` and subject modals. Fragment-level siblings compile correctly because they're not at risk of being tail-dropped from a long children array.
 
 ### Completed
-- **README.md rewritten**: visual header with badges (shields.io), Spanish-first with collapsible feature groups (Esencial, Estudio, Productividad, Personalización, Privacidad), quick access table, practical AI prompts section, cleaner structure
-- **Mobile touch targets**: all buttons now have `min-w-[36px]`/`min-h-[36px]` (40px on mobile), card action buttons use responsive sizing (`min-w-[36px] sm:min-w-[28px]`), concept row action buttons enlarged
-- **Header responsive**: import/export/template buttons use `py-2.5 sm:py-2`, icons scale via `w-4 h-4 sm:w-3.5 sm:h-3.5`
-- **Tabs responsive**: added wrapper div, responsive padding/gap, scroll indicator
-- **Concept rows**: reduced gap/padding on mobile (`gap-2 sm:gap-3`, `p-2 sm:p-3`), text truncation
-- **Assessment sliders**: responsive width (`w-20 sm:w-28`), results tab items responsive padding
-- **CSS additions**: `touch-action: manipulation`, `-webkit-tap-highlight-color: transparent`, mobile media queries for graph height, tabs, grids, overflow prevention
-- **Card buttons moved to bottom-right**: `subject-list.js` — from `top-3 right-3` to `bottom-3 right-3`
-- **Study recommendation card**: added in Results tab with gradient header, global progress bar, roadmap groups (ahora/siguiente/pronto) as clickable tags, quick actions
-- **Graph beautification**: `graph-engine.js` — node shapes by weight, shadow effects, improved physics (damping 0.6, stabilization), smoother edges (continuous roundness), Outfit font, hover/select connected edges
-- **GC.toast → this.showToast** fix in editor.js
-- **AGENTS.md**: updated with current session
-- **"Cargar ejemplo" → "Cargar ejemplos"**: text fix in subject-list.js
+- **🐛 Overlay render fix**: moved onboarding + achievements overlays + footer from inside `#app-content` to Fragment-level siblings; confirmed working with DOM query and a11y snapshot
+- **🧹 Service worker unregistration**: discovered SW was serving cached HTML; unregistered during debug
+- **📱 Subject-list header responsive**: `flex-wrap`, `gap-1.5`, `min-w-[36px]/min-h-[36px]` touch targets, text labels hidden on `<xs>` — compact mobile layout
+- **📊 Study plan merged into recommendation card**: algorithm selector (BFS/DFS/Desbloqueador) + repasar/reforzar/avanzar detail lists now live inside the recommendation card; quick actions (Nueva evaluación, Exportar plan, Flashcards) at bottom; old separate study plan card removed
+- **Achievements overlay**: changed back from `v-show` to `v-if="showAchievementsComputed"` (Fragment sibling, correct)
 
 ### Current State
 | Feature | Status |
 |---------|--------|
-| README beautified | ✅ Done |
-| Mobile touch targets | ✅ Fixed |
-| Header responsive | ✅ Fixed |
-| Tabs scroll + responsive | ✅ Fixed |
-| Concept rows mobile | ✅ Fixed |
-| Assessment sliders mobile | ✅ Fixed |
-| Card buttons (bottom-right) | ✅ Fixed |
-| Study recommendations | ✅ Added |
-| Graph beautification | ✅ Done |
-| Delete modal (GC.toast) | ✅ Fixed |
+| Onboarding overlay renders | ✅ Fixed |
+| Footer renders | ✅ Fixed |
+| Achievements modal | ✅ Working |
+| Subject-list header mobile | ✅ Responsive |
+| Study plan merged into recommendation | ✅ Done |
+| Service worker cleanup | ✅ Verified |
 
 ## 🧩 UI/UX Patterns extraídos (reutilizables en otras apps)
 
