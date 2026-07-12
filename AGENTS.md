@@ -3,6 +3,10 @@
 ## Project
 Interactive knowledge graph for any subject. Define concepts and their relationships, assess student mastery, get AI-powered study plans (BFS/DFS offline). 100% gratis, RGPD, datos locales. Tu camino hacia el aprobado.
 
+## Rules
+- After every code change (fix, refactor, feature), run `rtk git add -A && rtk git commit -m "mensaje" && rtk git push`. No exception. No asking.
+- Only amend if accidentally included generated/ide files (.opencode/, .serena/).
+
 ## Language
 Multi-language: ES (default), EN, VA. Managed via `js/i18n.js` — use `GC.t('key')` in templates.
 
