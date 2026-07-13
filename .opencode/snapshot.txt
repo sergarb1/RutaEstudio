@@ -1,0 +1,348 @@
+uid=9_0 RootWebArea "RutaEstudio — Tu camino hacia el aprobado" url="https://sergarb1.github.io/RutaEstudio/?cb=fix"
+  uid=9_1 link "Saltar al contenido principal" url="https://sergarb1.github.io/RutaEstudio/?cb=fix#app-content"
+    uid=9_2 StaticText "Saltar al contenido principal"
+  uid=9_3 banner
+    uid=9_4 link "RutaEstudio Tu camino hacia el aprobado" url="https://sergarb1.github.io/RutaEstudio"
+      uid=9_5 image "RutaEstudio" url="https://sergarb1.github.io/RutaEstudio/logo.png"
+      uid=9_6 StaticText "Tu camino hacia el aprobado"
+    uid=9_7 button "Modo oscuro" description="Modo oscuro"
+    uid=9_8 combobox expandable haspopup="menu" value="ES"
+      uid=9_9 option "ES" selectable selected value="ES"
+      uid=9_10 option "EN" selectable value="EN"
+      uid=9_11 option "VA" selectable value="VA"
+    uid=9_12 button "Instalar"
+    uid=9_13 button "Importar"
+    uid=9_14 button "Exportar"
+    uid=9_15 button "Plantilla"
+  uid=9_16 StaticText "Novato"
+  uid=9_17 StaticText "Nv. 1"
+  uid=9_18 StaticText "75 XP"
+  uid=9_19 button
+  uid=9_20 StaticText "0/5"
+  uid=9_21 heading "Mis asignaturas" level="2"
+  uid=9_22 button "Ayuda"
+  uid=9_23 button "Primeros pasos"
+  uid=9_24 button "asignatura"
+  uid=9_25 StaticText "Define conceptos, conéctalos con relaciones, evalúa tu dominio y recibe un plan de estudio personalizado."
+  uid=9_26 StaticText "100% gratis · sin registro · sin internet"
+  uid=9_27 heading "Programación en Python" level="3"
+  uid=9_28 StaticText "Curso completo de programación con Python 3: desde cero hasta orientación a objetos y librerías estándar"
+  uid=9_29 StaticText "12 conceptos"
+  uid=9_30 StaticText "14 relaciones"
+  uid=9_31 button "Exportar Programación en Python"
+  uid=9_32 button "Importar CSV a Programación en Python"
+  uid=9_33 button "Borrar Programación en Python"
+  uid=9_34 heading "Matemáticas discretas" level="3"
+  uid=9_35 StaticText "Fundamentos matemáticos para ciencias de la computación: lógica, conjuntos, grafos, combinatoria"
+  uid=9_36 StaticText "8 conceptos"
+  uid=9_37 StaticText "8 relaciones"
+  uid=9_38 button "Exportar Matemáticas discretas"
+  uid=9_39 button "Importar CSV a Matemáticas discretas"
+  uid=9_40 button "Borrar Matemáticas discretas"
+  uid=9_41 heading "Desarrollo Web Frontend" level="3"
+  uid=9_42 StaticText "Fundamentos de desarrollo web: HTML, CSS, JavaScript, frameworks y herramientas modernas"
+  uid=9_43 StaticText "10 conceptos"
+  uid=9_44 StaticText "11 relaciones"
+  uid=9_45 button "Exportar Desarrollo Web Frontend"
+  uid=9_46 button "Importar CSV a Desarrollo Web Frontend"
+  uid=9_47 button "Borrar Desarrollo Web Frontend"
+  uid=9_48 heading "Inglés B2 (Intermedio-Alto)" level="3"
+  uid=9_49 StaticText "Gramática, vocabulario y expresión oral/escrita para nivel B2 del MCER"
+  uid=9_50 StaticText "10 conceptos"
+  uid=9_51 StaticText "10 relaciones"
+  uid=9_52 button "Exportar Inglés B2 (Intermedio-Alto)"
+  uid=9_53 button "Importar CSV a Inglés B2 (Intermedio-Alto)"
+  uid=9_54 button "Borrar Inglés B2 (Intermedio-Alto)"
+  uid=9_55 heading "Historia de España (Siglo XX)" level="3"
+  uid=9_56 StaticText "Desde la crisis de 1898 hasta la transición democrática: políticos, sociales y económicos"
+  uid=9_57 StaticText "10 conceptos"
+  uid=9_58 StaticText "11 relaciones"
+  uid=9_59 button "Exportar Historia de España (Siglo XX)"
+  uid=9_60 button "Importar CSV a Historia de España (Siglo XX)"
+  uid=9_61 button "Borrar Historia de España (Siglo XX)"
+  uid=9_62 heading "Matemáticas II (2º Bach)" level="3"
+  uid=9_63 StaticText "Análisis matemático, álgebra lineal, geometría y probabilidad para 2º de Bachillerato de Ciencias"
+  uid=9_64 StaticText "8 conceptos"
+  uid=9_65 StaticText "6 relaciones"
+  uid=9_66 button "Exportar Matemáticas II (2º Bach)"
+  uid=9_67 button "Importar CSV a Matemáticas II (2º Bach)"
+  uid=9_68 button "Borrar Matemáticas II (2º Bach)"
+  uid=9_69 heading "Lengua Castellana y Literatura II (2º Bach)" level="3"
+  uid=9_70 StaticText "Morfología, sintaxis, comentario de texto y literatura desde la Edad Media hasta la Generación del 27"
+  uid=9_71 StaticText "10 conceptos"
+  uid=9_72 StaticText "9 relaciones"
+  uid=9_73 button "Exportar Lengua Castellana y Literatura II (2º Bach)"
+  uid=9_74 button "Importar CSV a Lengua Castellana y Literatura II (2º Bach)"
+  uid=9_75 button "Borrar Lengua Castellana y Literatura II (2º Bach)"
+  uid=9_76 heading "Química (2º Bach)" level="3"
+  uid=9_77 StaticText "Estructura atómica, enlace químico, termoquímica, cinética, equilibrio, ácido-base y redox para 2º de Bachillerato"
+  uid=9_78 StaticText "8 conceptos"
+  uid=9_79 StaticText "8 relaciones"
+  uid=9_80 button "Exportar Química (2º Bach)"
+  uid=9_81 button "Importar CSV a Química (2º Bach)"
+  uid=9_82 button "Borrar Química (2º Bach)"
+  uid=9_83 heading "Historia de la Filosofía (2º Bach)" level="3"
+  uid=9_84 StaticText "Principales corrientes y autores de la filosofía occidental desde Platón hasta Nietzsche"
+  uid=9_85 StaticText "8 conceptos"
+  uid=9_86 StaticText "7 relaciones"
+  uid=9_87 button "Exportar Historia de la Filosofía (2º Bach)"
+  uid=9_88 button "Importar CSV a Historia de la Filosofía (2º Bach)"
+  uid=9_89 button "Borrar Historia de la Filosofía (2º Bach)"
+  uid=9_90 heading "Física (2º Bach)" level="3"
+  uid=9_91 StaticText "Cinemática, dinámica, campo gravitatorio, electromagnetismo, ondas y óptica para 2º de Bachillerato de Ciencias"
+  uid=9_92 StaticText "8 conceptos"
+  uid=9_93 StaticText "7 relaciones"
+  uid=9_94 button "Exportar Física (2º Bach)"
+  uid=9_95 button "Importar CSV a Física (2º Bach)"
+  uid=9_96 button "Borrar Física (2º Bach)"
+  uid=9_97 heading "Biología (2º Bach)" level="3"
+  uid=9_98 StaticText "Bioquímica, genética, evolución, microbiología e inmunología para 2º de Bachillerato de Ciencias"
+  uid=9_99 StaticText "8 conceptos"
+  uid=9_100 StaticText "7 relaciones"
+  uid=9_101 button "Exportar Biología (2º Bach)"
+  uid=9_102 button "Importar CSV a Biología (2º Bach)"
+  uid=9_103 button "Borrar Biología (2º Bach)"
+  uid=9_104 heading "Programación (1º DAM/DAW)" level="3"
+  uid=9_105 StaticText "Módulo de primer año de FP Informática: fundamentos de programación en Java, POO y estructuras de datos"
+  uid=9_106 StaticText "8 conceptos"
+  uid=9_107 StaticText "7 relaciones"
+  uid=9_108 button "Exportar Programación (1º DAM/DAW)"
+  uid=9_109 button "Importar CSV a Programación (1º DAM/DAW)"
+  uid=9_110 button "Borrar Programación (1º DAM/DAW)"
+  uid=9_111 heading "Bases de Datos (1º DAM/DAW)" level="3"
+  uid=9_112 StaticText "Módulo de primer año de FP Informática: diseño y gestión de bases de datos relacionales"
+  uid=9_113 StaticText "7 conceptos"
+  uid=9_114 StaticText "6 relaciones"
+  uid=9_115 button "Exportar Bases de Datos (1º DAM/DAW)"
+  uid=9_116 button "Importar CSV a Bases de Datos (1º DAM/DAW)"
+  uid=9_117 button "Borrar Bases de Datos (1º DAM/DAW)"
+  uid=9_118 heading "Desarrollo Web Cliente (2º DAW)" level="3"
+  uid=9_119 StaticText "Módulo de segundo curso de DAW: JavaScript, DOM, APIs del navegador y frameworks frontend"
+  uid=9_120 StaticText "6 conceptos"
+  uid=9_121 StaticText "5 relaciones"
+  uid=9_122 button "Exportar Desarrollo Web Cliente (2º DAW)"
+  uid=9_123 button "Importar CSV a Desarrollo Web Cliente (2º DAW)"
+  uid=9_124 button "Borrar Desarrollo Web Cliente (2º DAW)"
+  uid=9_125 heading "Desarrollo Web Servidor (2º DAW)" level="3"
+  uid=9_126 StaticText "Módulo de segundo curso de DAW: PHP, MVC, Laravel, servicios REST y despliegue"
+  uid=9_127 StaticText "7 conceptos"
+  uid=9_128 StaticText "6 relaciones"
+  uid=9_129 button "Exportar Desarrollo Web Servidor (2º DAW)"
+  uid=9_130 button "Importar CSV a Desarrollo Web Servidor (2º DAW)"
+  uid=9_131 button "Borrar Desarrollo Web Servidor (2º DAW)"
+  uid=9_132 heading "Redes y Servicios (ASIR)" level="3"
+  uid=9_133 StaticText "Módulo de ASIR: planificación, administración y servicios de red en entornos empresariales"
+  uid=9_134 StaticText "7 conceptos"
+  uid=9_135 StaticText "6 relaciones"
+  uid=9_136 button "Exportar Redes y Servicios (ASIR)"
+  uid=9_137 button "Importar CSV a Redes y Servicios (ASIR)"
+  uid=9_138 button "Borrar Redes y Servicios (ASIR)"
+  uid=9_139 heading "Seguridad Informática (ASIR/SMR)" level="3"
+  uid=9_140 StaticText "Módulo de FP Informática: seguridad activa/pasiva, cortafuegos, cifrado y protección de datos"
+  uid=9_141 StaticText "6 conceptos"
+  uid=9_142 StaticText "6 relaciones"
+  uid=9_143 button "Exportar Seguridad Informática (ASIR/SMR)"
+  uid=9_144 button "Importar CSV a Seguridad Informática (ASIR/SMR)"
+  uid=9_145 button "Borrar Seguridad Informática (ASIR/SMR)"
+  uid=9_146 button "Ver grafo global de todas las asignaturas Relaciones entre conceptos de diferentes materias"
+  uid=9_147 button "Plantilla"
+  uid=9_148 button "Importar todo"
+  uid=9_149 button "Importar asignatura"
+  uid=9_150 contentinfo
+    uid=9_151 StaticText "100% gratuita"
+    uid=9_152 StaticText "Datos locales"
+    uid=9_153 StaticText "Licencias libres"
+    uid=9_154 StaticText "© 2026 "
+    uid=9_155 link "sergarb1" url="https://github.com/sergarb1"
+      uid=9_156 StaticText "sergarb1"
+    uid=9_157 StaticText " · RutaEstudio"
+  uid=9_158 button
+  uid=9_159 textbox "Buscar en todas las asignaturas..."
+  uid=9_160 StaticText "Escribe para buscar conceptos por nombre, descripción o etiqueta"
+  uid=9_161 StaticText "Sin resultados para "{{ globalSearch }}""
+  uid=9_162 StaticText "↑↓"
+  uid=9_163 StaticText " navegar "
+  uid=9_164 StaticText "Esc"
+  uid=9_165 StaticText " cerrar"
+  uid=9_166 dialog modal
+    uid=9_167 heading "Atajos de teclado" level="3"
+    uid=9_168 button "×"
+    uid=9_169 StaticText "Buscar global"
+    uid=9_170 StaticText "Ctrl+K"
+    uid=9_171 StaticText "Deshacer"
+    uid=9_172 StaticText "Ctrl+Z"
+    uid=9_173 StaticText "Rehacer"
+    uid=9_174 StaticText "Ctrl+Shift+Z"
+    uid=9_175 StaticText "Modo foco (grafo)"
+    uid=9_176 StaticText "Ctrl+F"
+    uid=9_177 StaticText "Cerrar modales"
+    uid=9_178 StaticText "Esc"
+    uid=9_179 StaticText "Puntuar evaluación"
+    uid=9_180 StaticText "1-5"
+    uid=9_181 StaticText "Navegar evaluación"
+    uid=9_182 StaticText "← →"
+    uid=9_183 StaticText "Este panel"
+    uid=9_184 StaticText "?"
+  uid=9_185 dialog modal
+    uid=9_186 heading "Tipos de relación personalizados" level="2"
+    uid=9_187 button "×"
+    uid=9_188 StaticText "Nombre"
+    uid=9_189 textbox "Ej: Complementa"
+    uid=9_190 StaticText "Color"
+    uid=9_191 ColorWell value="#000000"
+    uid=9_192 StaticText "Grosor"
+    uid=9_193 combobox expandable haspopup="menu" value="Fino (1px)"
+      uid=9_194 option "Fino (1px)" selectable selected value="Fino (1px)"
+      uid=9_195 option "Normal (2px)" selectable value="Normal (2px)"
+      uid=9_196 option "Grueso (3px)" selectable value="Grueso (3px)"
+      uid=9_197 option "Muy grueso (4px)" selectable value="Muy grueso (4px)"
+    uid=9_198 StaticText "Línea discontinua"
+    uid=9_199 checkbox
+    uid=9_200 StaticText "Dirección de flecha"
+    uid=9_201 combobox expandable haspopup="menu" value="Direccional (→)"
+      uid=9_202 option "Direccional (→)" selectable selected value="Direccional (→)"
+      uid=9_203 option "Sin flecha (—)" selectable value="Sin flecha (—)"
+      uid=9_204 option "Inversa (←)" selectable value="Inversa (←)"
+      uid=9_205 option "Bidireccional (↔)" selectable value="Bidireccional (↔)"
+    uid=9_206 StaticText "Vista previa:"
+    uid=9_207 StaticText "→"
+    uid=9_208 StaticText "—"
+    uid=9_209 StaticText "←"
+    uid=9_210 StaticText "↔"
+    uid=9_211 button "Guardar cambios"
+    uid=9_212 button "Cancelar"
+    uid=9_213 button "Añadir tipo"
+    uid=9_214 StaticText "No hay tipos personalizados todavía. Crea uno nuevo arriba."
+    uid=9_215 StaticText "→"
+    uid=9_216 StaticText "—"
+    uid=9_217 StaticText "←"
+    uid=9_218 StaticText "↔"
+    uid=9_219 button "Editar"
+    uid=9_220 button "Borrar"
+  uid=9_221 dialog modal
+    uid=9_222 heading "Plantilla de asignatura" level="2"
+    uid=9_223 button "×"
+    uid=9_224 StaticText "¿Qué es esta plantilla?"
+    uid=9_225 StaticText "Un archivo "
+    uid=9_226 StaticText "JSON"
+    uid=9_227 StaticText " con la estructura básica de una asignatura: nombre, conceptos y relaciones. Descárgalo, edítalo con cualquier editor de texto e impórtalo con el botón "Importar" del menú superior."
+    uid=9_228 button "Descargar plantilla JSON"
+    uid=9_229 button "Cerrar"
+    uid=9_230 StaticText "Personalizar con IA"
+    uid=9_231 DisclosureTriangle "Prompt detallado para generar una asignatura" expandable
+    uid=9_232 DisclosureTriangle "Ampliar una plantilla existente" expandable
+    uid=9_233 DisclosureTriangle "Ejemplos completos de prompts" expandable expanded
+    uid=9_234 StaticText "Matemáticas — Álgebra lineal (2.º Bachillerato)"
+    uid=9_235 StaticText "Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "Álgebra Lineal" de 2.º de Bachillerato.
+
+Debe incluir 12-15 conceptos con pesos 1-10: matrices, determinantes,
+sistemas de ecuaciones, rango, matriz inversa, combinación lineal,
+dependencia lineal, espacio vectorial, subespacio vectorial, base y
+dimensión, coordenadas, producto escalar, ortogonalidad, aplicaciones
+lineales, núcleo e imagen, diagonalización.
+
+Usa relaciones de prerrequisito (matrices → determinantes → sistemas…),
+pertenece (subespacio → espacio vectorial), y profundiza (diagonalización
+profundiza autovalores). Etiquetas: "fundamentos", "operaciones",
+"teoría", "ejercicios", "selectividad", "avanzado".
+
+Devuelve SOLO el JSON, sin explicaciones."
+    uid=9_236 StaticText "Idiomas — Inglés B1 (nivel intermedio)"
+    uid=9_237 StaticText "Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "Inglés B1 — Intermedio".
+
+Debe incluir 10-14 conceptos: present simple vs continuous, past simple
+vs continuous, present perfect, future forms (will/going to), condicionales
+(tipos 0, 1, 2), voz pasiva, modales básicos (can, must, should, have to),
+comparativos y superlativos, preposiciones de tiempo y lugar, phrasal verbs
+básicos, vocabulario por temas (travel, work, health), writing emails.
+
+Pesos: los tiempos verbales básicos 7-8, los avanzados 5-6, vocabulario 3-4.
+Etiquetas: "grammar", "vocabulary", "writing", "speaking", "listening",
+"practice". Añade al menos 3 resources por concepto con enlaces a
+BBC Learning English, Duolingo, o ejercicios de Cambridge.
+
+Devuelve SOLO el JSON, sin explicaciones."
+    uid=9_238 StaticText "Programación — Python desde cero"
+    uid=9_239 StaticText "Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "Programación en Python desde cero".
+
+Debe incluir 15-18 conceptos: qué es Python, instalación y entorno,
+variables y tipos de datos, operadores, strings y formateo, listas,
+tuplas y diccionarios, condicionales (if/elif/else), bucles (for/while),
+funciones (def, return, args), alcance de variables (scope), módulos y
+paquetes, manejo de excepciones, lectura/escritura de archivos,
+programación orientada a objetos (clases, herencia), list comprehension,
+librería estándar útil (math, datetime, random, os), introducción a pip.
+
+Pesos: fundamentos 8-10, estructuras de datos 6-7, POO y archivos 4-5.
+Etiquetas: "principiante", "sintaxis", "ejercicios", "proyectos",
+"fundamentos", "poo". Usa recursos con enlaces a w3schools, realpython,
+docs.python.org y ejercicios de codingbat.
+
+Devuelve SOLO el JSON, sin explicaciones."
+    uid=9_240 StaticText "FP Informática — Bases de datos (MySQL)"
+    uid=9_241 StaticText "Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con el módulo "Bases de Datos" (1.º FP Informática).
+
+Debe incluir 12-15 conceptos: modelo entidad-relación, diagramas E-R,
+tablas, claves primarias y foráneas, normalización (1FN, 2FN, 3FN),
+SQL DDL (CREATE, ALTER, DROP), SQL DML (SELECT, INSERT, UPDATE, DELETE),
+consultas con JOIN, funciones agregadas (COUNT, SUM, AVG, GROUP BY),
+subconsultas, vistas, índices, usuarios y permisos, copias de seguridad.
+
+Pesos: E-R y tablas 9-10, SQL básico 8, normalización 7, JOIN 6,
+subconsultas 5, vistas/índices 4. Etiquetas: "teoría", "sql", "diseño",
+"prácticas", "examen". Añade resources con enlaces a mysql.com, w3schools
+SQL y ejercicios de mode.com/sql-tutorial.
+
+Devuelve SOLO el JSON, sin explicaciones."
+    uid=9_242 StaticText "Personalizado — tu propio prompt"
+    uid=9_243 StaticText "Copia y pega este esqueleto, rellena los corchetes y pídeselo a la IA:
+
+Eres un experto en planificación educativa. Genera un JSON válido para la
+app "RutaEstudio" con la asignatura "[NOMBRE]" de [NIVEL O CURSO].
+
+Debe incluir [NÚMERO] conceptos sobre: [lista de conceptos separada
+por comas].
+
+Pesos: [criterios de peso, ej. "fundamentos 8-10, intermedios 5-7,
+avanzados 3-4"].
+Etiquetas: [lista de etiquetas].
+Relaciones: usa los tipos "prerrequisito", "pertenece", "relacionado"
+y "profundiza" según corresponda.
+
+Devuelve SOLO el JSON, sin explicaciones."
+    uid=9_244 StaticText "Después de obtener el JSON, impórtalo con "
+    uid=9_245 StaticText "Importar > Importar datos"
+    uid=9_246 StaticText " desde el menú superior."
+  uid=9_247 dialog modal
+    uid=9_248 heading "Borrar asignatura" level="3"
+    uid=9_249 StaticText "No podr\u00e1s recuperarla."
+    uid=9_250 StaticText " Se borrar\u00e1n todos sus conceptos, relaciones y evaluaciones."
+    uid=9_251 StaticText "Antes de borrar, "
+    uid=9_252 StaticText "exporta"
+    uid=9_253 StaticText " tus datos por si quieres recuperarlos despu\u00e9s."
+    uid=9_254 button "Exportar"
+    uid=9_255 button "Borrar"
+    uid=9_256 button "Cancelar"
+  uid=9_257 button
+  uid=9_258 StaticText "Inspector de concepto"
+  uid=9_259 button "×"
+  uid=9_260 button "Walkthrough"
+  uid=9_261 button "Recursos"
+  uid=9_262 StaticText " Este concepto está aislado: no tiene relaciones con otros conceptos."
+  uid=9_263 StaticText "Recomendación"
+  uid=9_264 StaticText "Bloqueado por"
+  uid=9_265 StaticText "Necesitan refuerzo"
+  uid=9_266 StaticText "Conceptos que dependen de este"
+  uid=9_267 StaticText "No hay relaciones para este concepto."
+  uid=9_268 button "×"
+  uid=9_269 StaticText "Sin recursos añadidos."
+  uid=9_270 StaticText "Añadir recurso"
+  uid=9_271 button "Enlace"
+  uid=9_272 button "Nota"
+  uid=9_273 textbox
+  uid=9_274 textbox "Título (opcional)"
+  uid=9_275 button "Añadir"
