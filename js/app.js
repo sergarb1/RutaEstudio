@@ -236,8 +236,7 @@
 
       // ==================== TEMA OSCURO ====================
       initDark() {
-        this.dark = localStorage.getItem('grafo-dark') === 'true'
-          || (localStorage.getItem('grafo-dark') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        this.dark = localStorage.getItem('grafo-dark') === 'true';
         this.applyDark();
       },
       toggleDark() {

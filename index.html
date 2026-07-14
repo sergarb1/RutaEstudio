@@ -18,11 +18,12 @@
 
   <!-- Tailwind CSS config first, then CDN + fallback local -->
   <script>
-    window.tailwind = window.tailwind || {};
-    window.tailwind.config = { darkMode: 'class' };
     (function() {
       var s = document.createElement('script');
       s.src = 'https://cdn.tailwindcss.com';
+      s.onload = function() {
+        tailwind.config = { darkMode: 'class' };
+      };
       s.onerror = function() {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
