@@ -1,4 +1,4 @@
-const CACHE = 'ruta-estudio-v4';
+const CACHE = 'ruta-estudio-v5';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -8,7 +8,7 @@ self.addEventListener('install', e => {
       'manifest.json',
       'img/icon.svg',
       'css/app.css',
-      'fallback/tailwind.min.css',
+      'css/tailwind.css',
       'fallback/vue.global.prod.js',
       'fallback/vis-network.min.js',
       'js/app.js',
