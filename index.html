@@ -16,7 +16,9 @@
   <meta name="apple-mobile-web-app-title" content="RutaEstudio" />
   <title>RutaEstudio — Tu camino hacia el aprobado</title>
 
-  <!-- Tailwind CSS config first, then CDN + fallback local -->
+  <!-- Tailwind CSS fallback síncrono (evita página blanca mientras carga el CDN) -->
+  <link rel="stylesheet" href="fallback/tailwind.min.css">
+  <!-- CDN asíncrono: mejora progresiva con JIT + darkMode class -->
   <script>
     (function() {
       var s = document.createElement('script');
@@ -25,10 +27,7 @@
         tailwind.config = { darkMode: 'class' };
       };
       s.onerror = function() {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'fallback/tailwind.min.css';
-        document.head.appendChild(link);
+        // fallback ya cargado; no necesita hacer nada extra
       };
       document.head.appendChild(s);
     })();
