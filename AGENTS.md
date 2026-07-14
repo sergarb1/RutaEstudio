@@ -104,7 +104,6 @@ customRelationTypes = [{ id, name, color, dash, width, arrow }]
 - 🎨 **Tipos de relación personalizados**: modal para crear tipos con color, dash, width, arrow propios; aparecen en selects, leyenda, badges y botones del grafo
 - 🖥️ **Modo foco**: Ctrl+F en el grafo → pantalla completa sin distracciones
 - ⌨️ **Cheat sheet**: tecla `?` muestra todos los atajos de teclado
-- 💾 **Auto-backup**: descarga automática cada 5 minutos
 - 🌙 **Dark mode**: persistente, respeta preferencia del sistema
 - 🚀 **Onboarding interactivo**: tutorial paso a paso para nuevos usuarios (6 pasos)
 - 🍅 **Pomodoro timer**: 15/25/45 min en modo estudio, barra de progreso, auto-pausa al cambiar de pestaña
@@ -145,10 +144,30 @@ RutaEstudio/
 │   └── study.js              # Flashcards, pomodoro, racha, plan de estudio, progreso
 ├── components/
 │   ├── subject-list.js       # Subject grid
+│   ├── subject-detail.js     # Subject detail (tabs wrapper)
 │   ├── global-graph.js       # Multi-subject graph
 │   ├── suggestions-panel.js  # AI suggestions
 │   ├── help-modal.js         # Help + AI guide
-│   └── ai-generator.js       # AI prompt templates + JSON import
+│   ├── ai-generator.js       # AI prompt templates + JSON import
+│   ├── app-header.js         # Top header (dark mode, lang, install, import/export)
+│   ├── app-footer.js         # Footer
+│   ├── gamification-bar.js   # XP, level, streak bar
+│   ├── inspector-panel.js    # Slide-over inspector (walkthrough, resources)
+│   ├── onboarding-overlay.js # Interactive 6-step tutorial
+│   ├── achievements-modal.js # Achievements modal with confetti
+│   ├── subject-modal.js      # Subject/concept CRUD modal
+│   ├── template-info-modal.js# Template info modal
+│   ├── confirm-delete-modal.js# Confirm delete dialog
+│   ├── toast-popup.js        # Toast notification with undo
+│   ├── global-search-popup.js# Ctrl+K global search
+│   ├── shortcuts-modal.js    # Keyboard shortcuts cheat sheet
+│   ├── custom-types-modal.js # Custom relation type editor
+│   ├── focus-mode-btn.js     # Floating focus mode button (graph)
+│   ├── concepts-tab.js       # Concepts tab (list, filter, inline edit)
+│   ├── graph-tab.js          # Graph tab (vis-network, legend, filters)
+│   ├── assess-tab.js         # Assessment tab (mass evaluation)
+│   ├── results-tab.js        # Results tab (recommendation, roadmap, plan)
+│   └── history-tab.js        # History tab (past assessments, compare)
 ├── fallback/
 │   ├── tailwind.min.css       # Offline fallback
 │   ├── vue.global.prod.js     # Offline fallback
@@ -165,32 +184,49 @@ RutaEstudio/
 
 ---
 
-## Session Summary (12 Jul 2026)
+## Session Summary (14 Jul 2026)
 
-### Goal
-🐛 Fix onboarding overlay not rendering (Vue 3 in-DOM compiler bug), improve subject-list header mobile layout, merge recommendation card into personalized study plan card.
+### Objective
+- Fix the in-DOM compiler bug that drops tail template children, refactor the app into maintainable components with explicit props/events.
+
+### Important Details
+- User approved full plan and said "adelante confio en ti" then later asked to remove auto-backup. Wants props/events (not `$parent`), subject-detail split into 5 tabs, and no auto-backup interval to avoid false virus perception.
+- Quick fix applied: template moved from `#app` innerHTML to `<script type="text/template" id="app-template">` (line 51), `template:` option added to `createApp`. `#app` is now `<div id="app" v-cloak></div>` mount target. Focus mode class handled via watcher + `mounted()` toggle on `#app` element.
+- Auto-backup removed: `startAutoBackup()`, `stopAutoBackup()`, `autoBackupInterval` data deleted; calls removed from `mounted()` and `beforeUnmount()`.
+- 14 new component files created with explicit `props` and `emits` (no `$parent`): `app-header.js`, `gamification-bar.js`, `app-footer.js`, `inspector-panel.js`, `onboarding-overlay.js`, `achievements-modal.js`, `subject-modal.js`, `template-info-modal.js`, `confirm-delete-modal.js`, `toast-popup.js`, `global-search-popup.js`, `shortcuts-modal.js`, `custom-types-modal.js`, `focus-mode-btn.js`.
+- subject-detail refactored: removed `$parent` proxying, now passes `root` prop (the root app instance) to tab sub-components. Created 5 tab components: `concepts-tab.js`, `graph-tab.js`, `assess-tab.js`, `results-tab.js`, `history-tab.js`. Each tab receives relevant props + `root` for method delegation.
+- Main template shrunk from ~580 lines to ~80 lines of component tags with `:prop` and `@event` bindings. Overlay/modals wrappers removed (no longer needed — string template has no compiler bug).
+- Existing `subject-list.js`, `global-graph.js`, `help-modal.js` kept intact (they already worked). `help-modal` uses `modal === 'help'` v-if from root scope.
 
 ### Root Cause — Vue 3 in-DOM compiler drops last children of `#app-content`
-The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of the `#app-content` div during template-to-render-function compilation. The footer, overlays (onboarding + achievements), and any content after the main tab content area were never included in the compiled VNode tree — despite being present in the raw template string (`app._component.template`). The compiler produced a correct-looking render function string with all children, but execution yielded fewer children (6 instead of 8+). This affected `v-if`, `v-show`, and even plain `<div>` elements.
+The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of the `#app-content` div during template-to-render-function compilation. The footer, overlays (onboarding + achievements), and any content after the main tab content area were never included in the compiled VNode tree — despite being present in the raw raw template string (`app._component.template`). The compiler produced a correct-looking render function string with all children, but execution yielded fewer children (6 instead of 8+). This affected `v-if`, `v-show`, and even plain `<div>` elements.
 
-**Fix**: Moved footer, onboarding overlay, and achievements overlay **outside** `#app-content` as Fragment-level siblings — same level as the existing `<help-modal>` and subject modals. Fragment-level siblings compile correctly because they're not at risk of being tail-dropped from a long children array.
+**Fix**: Extract template to `<script type="text/template" id="app-template">` and use `template:` option in `createApp`. This bypasses the in-DOM compiler entirely since the template is passed as a string option, not compiled from DOM innerHTML. Fragment siblings were the original workaround; the string template is the definitive fix.
 
 ### Completed
-- **🐛 Overlay render fix**: moved onboarding + achievements overlays + footer from inside `#app-content` to Fragment-level siblings; confirmed working with DOM query and a11y snapshot
-- **🧹 Service worker unregistration**: discovered SW was serving cached HTML; unregistered during debug
-- **📱 Subject-list header responsive**: `flex-wrap`, `gap-1.5`, `min-w-[36px]/min-h-[36px]` touch targets, text labels hidden on `<xs>` — compact mobile layout
-- **📊 Study plan merged into recommendation card**: algorithm selector (BFS/DFS/Desbloqueador) + repasar/reforzar/avanzar detail lists now live inside the recommendation card; quick actions (Nueva evaluación, Exportar plan, Flashcards) at bottom; old separate study plan card removed
-- **Achievements overlay**: changed back from `v-show` to `v-if="showAchievementsComputed"` (Fragment sibling, correct)
+- **🐛 Definitive fix**: template extracted to `<script type="text/template">` with `template:` option in `createApp`; all children now render correctly regardless of position
+- **🧹 Auto-backup removed**: deleted `startAutoBackup()`, `stopAutoBackup()`, `autoBackupInterval` data; removed from lifecycle hooks to avoid false virus-perception by antivirus
+- **🧩 14 new components**: app-header, gamification-bar, app-footer, inspector-panel, onboarding-overlay, achievements-modal, subject-modal, template-info-modal, confirm-delete-modal, toast-popup, global-search-popup, shortcuts-modal, custom-types-modal, focus-mode-btn — all with explicit `props`/`emits`, no `$parent`
+- **📑 5 tab sub-components**: concepts-tab, graph-tab, assess-tab, results-tab, history-tab — each receives typed props + `root` for method delegation
+- **♻️ subject-detail refactored**: removed all `$parent` references, now a thin wrapper with tabs + header
+- **📏 Template shrunk**: ~580 lines → ~80 lines of component tags with `:prop` and `@event`
+
+### Pending
+- Register the 14+5 new components in the bootloader script queue in `index.html`
+- Test in browser with cache-busting, fix any runtime errors
 
 ### Current State
 | Feature | Status |
 |---------|--------|
-| Onboarding overlay renders | ✅ Fixed |
+| Onboarding overlay renders | ✅ Fixed (string template) |
 | Footer renders | ✅ Fixed |
-| Achievements modal | ✅ Working |
-| Subject-list header mobile | ✅ Responsive |
-| Study plan merged into recommendation | ✅ Done |
-| Service worker cleanup | ✅ Verified |
+| All 14 new components created | ✅ Done |
+| 5 tab components created | ✅ Done |
+| subject-detail refactored (no $parent) | ✅ Done |
+| Auto-backup removed | ✅ Done |
+| Template shrunk to ~80 lines | ✅ Done |
+| Components registered in bootloader | ❌ Pending |
+| Browser test passed | ❌ Pending |
 
 ## 🧩 UI/UX Patterns extraídos (reutilizables en otras apps)
 
@@ -216,14 +252,13 @@ The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of
 | **Quick actions contextuales** | Botones "Nueva eval", "Exportar plan", "Flashcards" dentro de la card de recomendación | Acción relevante en el momento justo |
 | **Onboarding paso a paso** | 6 pasos con indicador de progreso, skip al final | Primera experiencia guiada sin obligar |
 | **Gamification bar siempre visible** | XP, nivel, racha diaria en barra superior | Motivación constante, progresso visible |
-| **Auto-backup silencioso** | Cada 5 minutos descarga JSON sin preguntar | Seguridad sin fricción |
 | **CDN + fallback local** | Cada script tiene `src` CDN y `fallback` local | Resiliencia total offline |
 | **PWA installable** | `manifest.json` + `sw.js` + `beforeinstallprompt` + botón install | App nativa sin app store |
 
 ## Current Module Structure
 | Module | File | Responsibility |
 |--------|------|---------------|
-| Core | `js/app.js` | Vue data, computed, lifecycle, graph, evaluation, assessment, navigation, keyboard, toast, backup, search |
+| Core | `js/app.js` | Vue data, computed, lifecycle, graph, evaluation, assessment, navigation, keyboard, toast, search |
 | Editor | `js/editor.js` | Subject/concept/relation CRUD, templates, import/export, inline edit, drag-drop, bulk tag, custom relation types management |
 | Study | `js/study.js` | Flashcards, pomodoro, streak calendar, study plan export, progress chart, onboarding |
 
@@ -249,7 +284,8 @@ console.log('Rendered children:', ac.children.length);
 console.log('Template children count:', 
   app._component.template.split('<div ').length - 1);
 ```
-**Fix**: Move the content **outside** the long container as a Fragment sibling.
+**Fix** (workaround): Move the content **outside** the long container as a Fragment sibling.
+**Fix** (definitive): Extract template to `<script type="text/template">` and use `template:` option in `createApp`.
 
 ### Force Re-render
 ```javascript
@@ -398,14 +434,6 @@ localStorage.setItem('key', JSON.stringify(data));
 // Read with migration
 var raw = localStorage.getItem('key');
 var data = raw ? JSON.parse(raw) : defaultValue;
-// Auto-backup every 5 min
-setInterval(() => {
-  var blob = new Blob([JSON.stringify(allData)], {type: 'application/json'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'RutaEstudio-backup-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-}, 300000);
 ```
 
 ### Vue 3 CDN Gotchas

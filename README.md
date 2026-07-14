@@ -98,7 +98,6 @@ Sin registro, sin instalaci&oacute;n, sin internet.
 |---|---|
 | 🔒 | **100% local** &mdash; datos en localStorage, nunca salen del navegador |
 | 📱 | **PWA instalable** &mdash; funciona sin internet |
-| 💾 | **Auto-backup** cada 5 minutos (descarga autom&aacute;tica) |
 | 📦 | **Export/Import** JSON completo de todos los datos |
 | 🌐 | **CDN + fallback local** &mdash; funciona incluso sin conexi&oacute;n |
 
@@ -123,11 +122,14 @@ Sin registro, sin instalaci&oacute;n, sin internet.
 
 ```
 RutaEstudio/
-├── index.html              ← App completa (HTML + Vue template)
-├── css/app.css             ← Estilos personalizados + dark mode
+├── index.html              ← Entry point (template en <script>, mount en #app)
+├── README.md               ← Docs + AI guide
+├── manual.html             ← Manual completo de usuario
+├── FORMAT.md               ← JSON format (legacy)
+├── css/app.css             ← Custom styles + dark mode
 ├── js/
-│   ├── app.js              ← Núcleo Vue (datos, ciclo de vida, teclado)
-│   ├── store.js            ← Estado reactivo + undo/redo
+│   ├── app.js              ← Vue app core (data, computed, lifecycle, keyboard)
+│   ├── store.js            ← State + persistence + undo/redo
 │   ├── editor.js           ← CRUD asignaturas, conceptos, relaciones
 │   ├── helpers.js          ← heatColor, md renderer, roadmap
 │   ├── graph-engine.js     ← vis-network wrapper (render, heat, global)
@@ -136,8 +138,16 @@ RutaEstudio/
 │   ├── templates.js        ← 40 plantillas educativas
 │   ├── gamification.js     ← XP, niveles, logros, confeti
 │   └── i18n.js             ← ES/EN/VA
-├── components/             ← Componentes Vue reutilizables
-├── fallback/               ← Librerías offline (Vue, Tailwind, vis-network)
+├── components/             ← 25 componentes Vue con props/events
+│   ├── subject-list.js     ├── subject-detail.js     ├── global-graph.js
+│   ├── help-modal.js       ├── app-header.js         ├── app-footer.js
+│   ├── gamification-bar.js ├── inspector-panel.js    ├── onboarding-overlay.js
+│   ├── achievements-modal.js├── subject-modal.js     ├── template-info-modal.js
+│   ├── confirm-delete-modal.js├── toast-popup.js    ├── global-search-popup.js
+│   ├── shortcuts-modal.js  ├── custom-types-modal.js ├── focus-mode-btn.js
+│   ├── concepts-tab.js     ├── graph-tab.js          ├── assess-tab.js
+│   ├── results-tab.js      └── history-tab.js
+├── fallback/               ← Offline fallbacks (Vue, Tailwind, vis-network)
 └── .opencode/skills/       ← Skills para asistentes IA
 ```
 
