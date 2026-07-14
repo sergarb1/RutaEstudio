@@ -43,7 +43,7 @@
                 </p>
                 <div v-for="subj in group.subjects" :key="subj.key" @click="$emit('select-template', group.key, subj.key)" class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 transition">
                   <div class="flex-1 min-w-0"><p class="text-sm font-medium" v-text="subj.name"></p><p class="text-xs text-slate-400 dark:text-slate-500 truncate" v-text="subj.description"></p></div>
-                  <div class="flex gap-1 flex-shrink-0"><span class="text-xs px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium" v-text="subj.concepts + ' conceptos'"></span><span class="text-xs px-2 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-medium" v-text="subj.relations + ' relac.'"></span></div>
+                  <div class="flex gap-1 flex-shrink-0"><span class="text-xs px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium" v-text="subj.concepts.length + ' conceptos'"></span><span class="text-xs px-2 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-medium" v-text="subj.relations.length + ' relac.'"></span></div>
                 </div>
               </div>
               <p v-if="!filteredTemplates.length" class="text-sm text-slate-400 py-4 text-center">No se encontraron plantillas.</p>
