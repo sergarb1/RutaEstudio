@@ -1,0 +1,3 @@
+uid=4_0 RootWebArea "RutaEstudio — Tu camino hacia el aprobado" url="http://localhost:8080/"
+  uid=4_1 link "Saltar al contenido principal" url="http://localhost:8080/#app-content"
+    uid=4_2 StaticText "Saltar al contenido principal"

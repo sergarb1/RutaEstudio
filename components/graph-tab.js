@@ -19,7 +19,7 @@
               <span class="inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span>
               Renderizando...
             </div>
-            <button @click="root.showLegend = !root.showLegend" class="flex items-center gap-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium">
+            <button @click="root.showLegend = !root.showLegend" class="flex items-center gap-1.5 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 py-1 min-h-[44px] sm:min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition font-medium">
               <svg v-if="showLegend" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12"/></svg>
               <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
               {{ GC.t('graph.legend') }}
@@ -28,7 +28,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-2 mb-3 text-xs">
           <span class="text-slate-400 dark:text-slate-500 font-medium">Filtrar:</span>
-          <select :value="graphRelFilter" @change="root.graphRelFilter = $event.target.value" class="border dark:border-slate-600 rounded-lg px-2 py-1 bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <select :value="graphRelFilter" @change="root.graphRelFilter = $event.target.value" class="border dark:border-slate-600 rounded-lg px-2 py-1 min-h-[44px] bg-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400">
             <option value="">{{ GC.t('graph.allRelations') }}</option>
             <option v-for="t in allRelationTypes" :key="t.id" :value="t.id" v-text="t.name"></option>
           </select>
@@ -51,13 +51,13 @@
         </div>
         <div class="flex flex-wrap gap-1 text-xs">
           <button @click="root.graphRelFilter=''"
-                  :class="!graphRelFilter ? 'text-white bg-slate-500' : 'bg-slate-100 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'"
-                  class="px-2 py-1 rounded font-medium transition">Todas</button>
+                   :class="!graphRelFilter ? 'text-white bg-slate-500' : 'bg-slate-100 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'"
+                   class="px-2 py-1 min-h-[44px] rounded font-medium transition">Todas</button>
           <button v-for="t in allRelationTypes" :key="t.id"
-                  @click="root.currentRelationType=t.id; root.graphRelFilter=t.id"
-                  :class="graphRelFilter===t.id?'text-white':'bg-slate-100 dark:bg-slate-700 dark:text-slate-300'"
-                  :style="graphRelFilter===t.id ? { backgroundColor: t.color } : {}"
-                  class="px-2 py-1 rounded font-medium transition" v-text="t.name"></button>
+                   @click="root.currentRelationType=t.id; root.graphRelFilter=t.id"
+                   :class="graphRelFilter===t.id?'text-white':'bg-slate-100 dark:bg-slate-700 dark:text-slate-300'"
+                   :style="graphRelFilter===t.id ? { backgroundColor: t.color } : {}"
+                   class="px-2 py-1 min-h-[44px] rounded font-medium transition" v-text="t.name"></button>
         </div>
         <p class="text-xs text-slate-400 dark:text-slate-500 mb-2 mt-2">Haz clic en un concepto origen, luego en un concepto destino para crear una relaci\u00f3n</p>
         <div id="graph-container" class="dark:border dark:border-slate-700"></div>

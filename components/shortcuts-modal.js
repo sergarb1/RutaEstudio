@@ -12,7 +12,7 @@
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl border border-slate-200 dark:border-slate-700">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-bold text-lg">Atajos de teclado</h3>
-              <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl">&times;</button>
+              <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl min-w-[44px] min-h-[44px] flex items-center justify-center">&times;</button>
             </div>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between"><span>Buscar global</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+K</kbd></div>

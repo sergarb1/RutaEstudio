@@ -24,7 +24,7 @@
                 <p class="font-bold text-base" v-text="concept.name"></p>
                 <p v-if="concept.description" class="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-relaxed" v-html="GC.md(concept.description)"></p>
               </div>
-              <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg p-1">&times;</button>
+              <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center">&times;</button>
             </div>
             <div class="flex gap-0.5 px-4 pt-3 border-b border-slate-200 dark:border-slate-700 text-xs font-medium">
               <button @click="$emit('update:activeTab', 'walkthrough')"
@@ -87,7 +87,7 @@
                   <div class="flex-1 min-w-0">
                     <a :href="r.url" target="_blank" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline truncate block" v-text="r.title"></a>
                   </div>
-                  <button @click="$emit('remove-resource', r.id)" class="text-red-400 hover:text-red-600 text-xs p-1">&times;</button>
+                  <button @click="$emit('remove-resource', r.id)" class="text-red-400 hover:text-red-600 text-xs min-w-[36px] min-h-[36px] flex items-center justify-center">&times;</button>
                 </div>
                 <div v-if="!(concept?.resources?.length)" class="text-sm text-slate-400 py-2 text-center">
                   Sin recursos a\u00f1adidos.
