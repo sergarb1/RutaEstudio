@@ -187,7 +187,7 @@ RutaEstudio/
 ## Session Summary (14 Jul 2026)
 
 ### Objective
-- Fix the in-DOM compiler bug that drops tail template children, refactor the app into maintainable components with explicit props/events.
+- Fix the in-DOM compiler bug that drops tail template children, refactor the app into maintainable components with explicit props/events, register all components and fix runtime errors.
 
 ### Important Details
 - User approved full plan and said "adelante confio en ti" then later asked to remove auto-backup. Wants props/events (not `$parent`), subject-detail split into 5 tabs, and no auto-backup interval to avoid false virus perception.
@@ -197,6 +197,7 @@ RutaEstudio/
 - subject-detail refactored: removed `$parent` proxying, now passes `root` prop (the root app instance) to tab sub-components. Created 5 tab components: `concepts-tab.js`, `graph-tab.js`, `assess-tab.js`, `results-tab.js`, `history-tab.js`. Each tab receives relevant props + `root` for method delegation.
 - Main template shrunk from ~580 lines to ~80 lines of component tags with `:prop` and `@event` bindings. Overlay/modals wrappers removed (no longer needed — string template has no compiler bug).
 - Existing `subject-list.js`, `global-graph.js`, `help-modal.js` kept intact (they already worked). `help-modal` uses `modal === 'help'` v-if from root scope.
+- After initial bootloader test: header rendered as `<!---->` due to `GC.t` being inaccessible in component templates (Vue 3 components don't auto-resolve globals). Fix: added `app.config.globalProperties.GC`. Also fixed "undefined XP" via `(nextLevelXP || 0)` fallback, and changed subject card import from CSV to JSON.
 
 ### Root Cause — Vue 3 in-DOM compiler drops last children of `#app-content`
 The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of the `#app-content` div during template-to-render-function compilation. The footer, overlays (onboarding + achievements), and any content after the main tab content area were never included in the compiled VNode tree — despite being present in the raw raw template string (`app._component.template`). The compiler produced a correct-looking render function string with all children, but execution yielded fewer children (6 instead of 8+). This affected `v-if`, `v-show`, and even plain `<div>` elements.
@@ -210,23 +211,30 @@ The Vue 3.5.39 in-DOM compiler was **silently dropping the last 3+ children** of
 - **📑 5 tab sub-components**: concepts-tab, graph-tab, assess-tab, results-tab, history-tab — each receives typed props + `root` for method delegation
 - **♻️ subject-detail refactored**: removed all `$parent` references, now a thin wrapper with tabs + header
 - **📏 Template shrunk**: ~580 lines → ~80 lines of component tags with `:prop` and `@event`
+- **📦 Components registered**: all 23 component files added to bootloader queue (19 new + 4 existing) in `index.html`
+- **🐛 GC.t fix**: added `app.config.globalProperties.GC` in `app.js` so all component templates can access `GC.t()`, `GC.SVG`, etc.
+- **📊 XP fallback**: `(nextLevelXP || 0) + ' XP'` in gamification-bar to avoid "undefined XP" on first render
+- **➕ Nueva asignatura button**: icono SVG + texto completo "Nueva asignatura" en botón principal, usando `hidden sm:inline` (Tailwind no tiene breakpoint `xs`)
+- **📥 Import JSON**: botón de importar en cada tarjeta cambiado de CSV a JSON para consistencia con export
 
 ### Pending
-- Register the 14+5 new components in the bootloader script queue in `index.html`
-- Test in browser with cache-busting, fix any runtime errors
+- (none)
 
 ### Current State
 | Feature | Status |
 |---------|--------|
 | Onboarding overlay renders | ✅ Fixed (string template) |
 | Footer renders | ✅ Fixed |
-| All 14 new components created | ✅ Done |
-| 5 tab components created | ✅ Done |
+| All 23 components created & registered | ✅ Done |
 | subject-detail refactored (no $parent) | ✅ Done |
 | Auto-backup removed | ✅ Done |
 | Template shrunk to ~80 lines | ✅ Done |
-| Components registered in bootloader | ❌ Pending |
-| Browser test passed | ❌ Pending |
+| GC.t accessible in all components | ✅ Fixed (globalProperties) |
+| XP displays correctly | ✅ Fixed (fallback) |
+| Nueva asignatura button with icon | ✅ Fixed |
+| Import JSON per subject card | ✅ Fixed |
+| Browser test passed (no errors) | ✅ Verified |
+| AGENTS.md + README.md updated | ✅ Done |
 
 ## 🧩 UI/UX Patterns extraídos (reutilizables en otras apps)
 
