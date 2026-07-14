@@ -12,6 +12,8 @@
     // ----------------------------------------------------------
     // ESTADO REACTIVO (data)
     // ----------------------------------------------------------
+    template: document.getElementById('app-template').innerHTML,
+
     data() {
       return {
         view: 'subjects',
@@ -57,8 +59,6 @@
         globalSearchOpen: false,
 
         dark: false,
-        autoBackupInterval: null,
-
         inlineEditId: null,
         inlineEditName: '',
         inlineEditDesc: '',
@@ -390,23 +390,7 @@
         });
       },
 
-      // ==================== AUTO-BACKUP ====================
-      startAutoBackup() {
-        this.stopAutoBackup();
-        this.autoBackupInterval = setInterval(() => {
-          if (this.subjects.length > 0) {
-            const json = this.store.exportData();
-            const blob = new Blob([json], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'backup-grafo-' + new Date().toISOString().slice(0, 10) + '.json';
-            a.click();
-          }
-        }, 300000);
-      },
-      stopAutoBackup() {
-        if (this.autoBackupInterval) { clearInterval(this.autoBackupInterval); this.autoBackupInterval = null; }
-      },
+
 
 
 
@@ -473,6 +457,9 @@
       graphWeightMin() {
         if (this.tab === 'graph') this.renderGraph();
       },
+      focusMode(val) {
+        document.getElementById('app').classList.toggle('focus-mode', val);
+      },
     },
 
     // ----------------------------------------------------------
@@ -480,9 +467,9 @@
     // ----------------------------------------------------------
     mounted() {
       this.initDark();
+      document.getElementById('app').classList.toggle('focus-mode', this.focusMode);
       this.store.init();
       document.addEventListener('keydown', this._onKeydown);
-      this.startAutoBackup();
       if (!localStorage.getItem('grafo-onboarding-v2')) {
         this.showOnboarding = true;
         this.onboardingStep = 0;
@@ -499,7 +486,6 @@
     },
     beforeUnmount() {
       document.removeEventListener('keydown', this._onKeydown);
-      this.stopAutoBackup();
     },
 
     // ----------------------------------------------------------
@@ -542,6 +528,12 @@
       }
     }
   });
+
+  // ============================================================
+  // GLOBAL PROPERTIES (accesibles en templates de todos los componentes)
+  // ============================================================
+  app.config.globalProperties.GC = window.GC;
+  app.config.globalProperties.GC = GC;
 
   // ============================================================
   // REGISTRO DE COMPONENTES

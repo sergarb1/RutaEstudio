@@ -48,873 +48,84 @@
     Saltar al contenido principal
   </a>
 
-  <div id="app" v-cloak :class="{'focus-mode': focusMode}">
+<script type="text/template" id="app-template">
     <div id="app-content" class="max-w-6xl mx-auto px-4 py-6" :class="focusMode ? 'max-w-full px-2' : ''">
+      <app-header :dark="dark" :lang="lang" :can-install="canInstall"
+        @toggle-dark="toggleDark()"
+        @set-lang="setLang($event)"
+        @install="installApp()"
+        @import-data="importData()"
+        @export-data="exportData()"
+        @open-template-info="modal='templateInfo'"
+        @open-global-search="openGlobalSearch()" />
 
-      <!-- Header -->
-      <header class="flex items-center justify-between gap-2 flex-wrap mb-8">
-        <div>
-          <a href="https://sergarb1.github.io/RutaEstudio" class="flex items-center gap-3">
-            <img src="logo.png" alt="RutaEstudio" class="h-9 md:h-12 w-auto" />
-            <span class="text-[11px] md:text-xs text-slate-400 dark:text-slate-500 font-medium leading-tight max-w-28 hidden sm:block">{{ GC.t('app.subtitle') }}</span>
-          </a>
-        </div>
-        <div class="flex items-center gap-1.5 flex-wrap justify-end">
-          <!-- Dark mode -->
-          <button @click="toggleDark()"
-                  class="min-w-[40px] min-h-[40px] sm:min-w-[36px] sm:min-h-[36px] flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                  :title="dark ? GC.t('btn.light') : GC.t('btn.dark')"
-                  :aria-label="dark ? GC.t('btn.light') : GC.t('btn.dark')">
-            <svg v-if="dark" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            <svg v-else class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-          </button>
-          <!-- Language -->
-          <select @change="setLang($event.target.value)" :value="lang"
-                  class="min-h-[40px] sm:min-h-[36px] text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-2 font-medium transition cursor-pointer focus:outline-none">
-            <option value="es">ES</option>
-            <option value="en">EN</option>
-            <option value="va">VA</option>
-          </select>
+      <gamification-bar
+        :level-icon="levelIcon"
+        :level-title="levelTitle"
+        :user-level="userLevel"
+        :next-level-xp="nextLevelXP"
+        :level-progress="levelProgress"
+        :unlocked-achievements="unlockedAchievements"
+        :daily-progress="dailyProgress"
+        :daily-goal="dailyGoal"
+        @toggle-achievements="showAchievements = !showAchievements" />
 
-          <!-- Install PWA -->
-          <button v-if="canInstall" @click="installApp()"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition"
-                  :title="GC.t('btn.install') || 'Instalar app'">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-            {{ GC.t('btn.install') || 'Instalar' }}
-          </button>
+      <subject-list v-if="view === 'subjects'"
+        :subjects="subjects"
+        @select="selectSubject"
+        @add="addSubject"
+        @help="showHelp"
+        @example="loadExample"
+        @globalGraph="goToGlobalGraph"
+        @import="importData"
+        @exportTemplate="exportTemplate"
+        @templateInfo="modal='templateInfo'"
+        @importSubject="importSubjectJSON"
+        @tutorial="showTutorial"
+        @deleteSubject="confirmDeleteSubject"
+        @exportCard="exportSubjectCard"
+        @importSubjectJSON="importSubjectJSON" />
 
-          <!-- Import -->
-          <button @click="importData()"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                  :title="GC.t('btn.import')">
-            <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
-            {{ GC.t('btn.import') }}
-          </button>
-          <!-- Export -->
-          <button @click="exportData()"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                  :title="GC.t('btn.export')">
-            <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-            {{ GC.t('btn.export') }}
-          </button>
-          <!-- Template -->
-          <button @click="modal='templateInfo'"
-                  class="flex items-center gap-1.5 text-xs font-medium bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-xl px-3 py-2.5 sm:py-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                  :title="GC.t('btn.template')">
-            <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
-            {{ GC.t('btn.template') }}
-          </button>
-        </div>
-      </header>
+      <subject-detail v-if="view === 'subject' && currentSubject"
+        :root="this"
+        :current-subject="currentSubject"
+        :filtered-concepts="filteredConcepts"
+        :all-relation-types="allRelationTypes"
+        :last-assessment="lastAssessment"
+        :overall-score="overallScore"
+        :stats="stats"
+        :roadmap-groups="roadmapGroups"
+        :plan-algorithm="planAlgorithm"
+        :subject-assessments-list="subjectAssessmentsList"
+        :graph-loading="graphLoading"
+        :graph-rel-filter="graphRelFilter"
+        :graph-weight-min="graphWeightMin"
+        :show-legend="showLegend"
+        :assess-scores="assessScores"
+        @back="view='subjects'; destroyGraph()"
+        @edit-subject="editSubject()"
+        @export-json="exportSubjectJSON()" />
 
-      <!-- Gamification Bar -->
-      <div class="flex items-center gap-2 sm:gap-3 mb-6 p-2.5 sm:p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-        <div class="flex items-center gap-2 flex-shrink-0">
-          <span v-html="levelIcon"></span>
-          <span class="font-bold text-sm" v-text="levelTitle"></span>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 mb-1">
-            <span>Nv. {{ userLevel }}</span>
-            <span v-text="nextLevelXP + ' XP'"></span>
-          </div>
-          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
-            <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out" :style="{ width: levelProgress + '%' }"></div>
-          </div>
-        </div>
-        <button @click="showAchievements = !showAchievements"
-                class="relative flex-shrink-0 flex items-center gap-1 text-xs bg-amber-100 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2 font-medium hover:bg-amber-200 dark:hover:bg-amber-800/60 transition">
-          <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0 0 16.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.023 6.023 0 0 1-2.77.896m0 0a6.022 6.022 0 0 1-2.77-.896"/></svg>
-          <span v-if="unlockedAchievements" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" v-text="unlockedAchievements"></span>
-        </button>
-        <div class="flex items-center gap-1.5 flex-shrink-0 text-xs bg-green-50 dark:bg-green-900/20 rounded-xl px-3 py-1.5 border border-green-200 dark:border-green-800/40">
-          <svg class="w-3.5 h-3.5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/></svg>
-          <div class="flex flex-col">
-            <span class="font-semibold text-green-700 dark:text-green-300" v-text="dailyProgress + '/' + dailyGoal"></span>
-            <div class="w-16 bg-green-200 dark:bg-green-800 rounded-full h-1.5 mt-0.5">
-              <div class="h-full rounded-full bg-green-500 transition-all duration-300" :style="{ width: Math.min(100, dailyProgress/dailyGoal*100) + '%' }"></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- ===== SUBJECTS VIEW ===== -->
-      <div v-if="view === 'subjects'" class="fade-enter-active">
-        <subject-list
-          :subjects="subjects"
-          @select="selectSubject"
-          @add="addSubject"
-          @help="showHelp"
-          @example="loadExample"
-          @globalGraph="goToGlobalGraph"
-          @import="importData"
-          @exportTemplate="exportTemplate"
-          @templateInfo="modal='templateInfo'"
-          @importSubject="importSubjectJSON"
-          @tutorial="showTutorial"
-          @deleteSubject="confirmDeleteSubject"
-          @exportCard="exportSubjectCard"
-          @importSubjectCSV="importSubjectCSV"
-        />
-      </div>
-
-      <!-- ===== SUBJECT DETAIL VIEW ===== -->
-      <subject-detail v-if="view === 'subject' && currentSubject" />
 
     </div>  <!-- end #app-content -->
 
-    <!-- ===== GLOBAL GRAPH VIEW ===== -->
-    <div v-if="view === 'globalGraph'" class="fade-enter-active">
-      <global-graph :subjects="subjects" :store="store" @back="view='subjects'" />
-    </div>
-
-    <!-- Footer -->
-    <footer class="text-center text-xs mt-12 pt-6 border-t border-slate-200 dark:border-slate-700">
-        <div class="flex flex-wrap items-center justify-center gap-3 text-emerald-600 dark:text-emerald-400 font-medium mb-2">
-          <span class="flex items-center gap-1">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-            100% gratuita
-          </span>
-          <span class="flex items-center gap-1">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
-            Datos locales
-          </span>
-          <span class="flex items-center gap-1">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
-            Licencias libres
-          </span>
-        </div>
-        <p class="text-slate-400 dark:text-slate-500">© {{ new Date().getFullYear() }} <a href="https://github.com/sergarb1" class="text-indigo-600 dark:text-indigo-400 hover:underline">sergarb1</a> · RutaEstudio</p>
-      </footer>
-
-  <!-- Inspector Panel (slide‑over) -->
-  <Transition name="inspector">
-    <div v-if="inspectorConcept"
-         class="fixed inset-0 z-50 flex justify-end"
-         @click.self="closeInspector()">
-      <div class="w-full max-w-lg bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-700 shadow-2xl overflow-y-auto flex flex-col"
-           @click.stop>
-      <!-- Header -->
-      <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
-        <div>
-          <p class="text-xs text-slate-400 dark:text-slate-500 font-medium">Inspector de concepto</p>
-          <p class="font-bold text-base" v-text="currentSubject?.concepts.find(c=>c.id===inspectorConcept)?.name || 'Concepto'"></p>
-          <p v-if="currentSubject?.concepts.find(c=>c.id===inspectorConcept)?.description" class="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-relaxed" v-html="GC.md(currentSubject.concepts.find(c=>c.id===inspectorConcept).description)"></p>
-        </div>
-        <button @click="closeInspector()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg p-1">&times;</button>
-      </div>
-      <!-- Tabs -->
-      <div class="flex gap-0.5 px-4 pt-3 border-b border-slate-200 dark:border-slate-700 text-xs font-medium">
-        <button @click="inspectorTab='walkthrough'"
-                :class="inspectorTab==='walkthrough'?'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600':'text-slate-400'"
-                class="pb-2 px-2 transition">Walkthrough</button>
-        <button @click="inspectorTab='resources'"
-                :class="inspectorTab==='resources'?'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600':'text-slate-400'"
-                class="pb-2 px-2 transition">Recursos</button>
-      </div>
-      <!-- Tab: Walkthrough -->
-      <div v-show="inspectorTab==='walkthrough'" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
-        <div v-if="inspector?.isIsolated" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-3 text-amber-700 dark:text-amber-300 text-xs">
-          <svg class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg> Este concepto está aislado: no tiene relaciones con otros conceptos.
-        </div>
-        <div v-if="inspector?.recommendation" class="bg-slate-50 dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-          <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Recomendación</p>
-          <p v-text="inspector.recommendation" class="leading-relaxed"></p>
-        </div>
-        <div v-if="inspector?.blockers?.length">
-          <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1">Bloqueado por</p>
-          <div class="space-y-1">
-            <div v-for="b in inspector.blockers" :key="b.id"
-                 @click="openInspector(b.id)"
-                 class="bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2 border border-red-100 dark:border-red-800/40 cursor-pointer hover:border-red-300 transition text-sm">
-              <span class="font-medium" v-text="b.name"></span>
-              <span v-if="b.score != null" class="ml-2" :style="'color:'+GC.heatColor(b.score)" v-text="Math.round(b.score)+'%'"></span>
-            </div>
-          </div>
-        </div>
-        <div v-if="inspector?.weakBlockers?.length">
-          <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">Necesitan refuerzo</p>
-          <div class="space-y-1">
-            <div v-for="b in inspector.weakBlockers" :key="b.id"
-                 @click="openInspector(b.id)"
-                 class="bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 border border-amber-100 dark:border-amber-800/40 cursor-pointer hover:border-amber-300 transition text-sm">
-              <span class="font-medium" v-text="b.name"></span>
-              <span class="ml-2" :style="'color:'+GC.heatColor(b.score)" v-text="Math.round(b.score)+'%'"></span>
-            </div>
-          </div>
-        </div>
-        <div v-if="inspector?.dependents?.length">
-          <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1">Conceptos que dependen de este</p>
-          <div class="space-y-1">
-            <div v-for="d in inspector.dependents" :key="d.id"
-                 @click="openInspector(d.id)"
-                 class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg px-3 py-2 border border-indigo-100 dark:border-indigo-800/40 cursor-pointer hover:border-indigo-300 transition text-sm">
-              <span class="font-medium" v-text="d.name"></span>
-              <span v-if="d.score != null" class="ml-2" :style="'color:'+GC.heatColor(d.score)" v-text="Math.round(d.score)+'%'"></span>
-            </div>
-          </div>
-        </div>
-        <div v-if="!inspector?.blockers?.length && !inspector?.dependents?.length && !inspector?.weakBlockers?.length" class="text-sm text-slate-400 py-4 text-center">
-          No hay relaciones para este concepto.
-        </div>
-      </div>
-      <!-- Tab: Recursos -->
-      <div v-show="inspectorTab==='resources'" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
-        <div v-if="inspectorConcept && currentSubject">
-          <div v-for="r in (currentSubject.concepts.find(c=>c.id===inspectorConcept)?.resources || [])" :key="r.id"
-               class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-lg px-3 py-2 border border-slate-200 dark:border-slate-700 mb-2">
-            <span class="w-4 h-4 shrink-0 text-slate-400"><svg v-if="r.type==='link'" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg><svg v-else class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></span>
-            <div class="flex-1 min-w-0">
-              <a :href="r.url" target="_blank" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline truncate block" v-text="r.title"></a>
-            </div>
-            <button @click="removeResource(r.id)" class="text-red-400 hover:text-red-600 text-xs p-1">&times;</button>
-          </div>
-          <div v-if="!(currentSubject.concepts.find(c=>c.id===inspectorConcept)?.resources?.length)" class="text-sm text-slate-400 py-2 text-center">
-            Sin recursos añadidos.
-          </div>
-          <!-- Add resource form -->
-          <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">Añadir recurso</p>
-            <div class="flex gap-1 mb-2">
-              <button @click="newResourceType='link'"
-                      :class="newResourceType==='link'?'bg-indigo-600 text-white':'bg-slate-100 dark:bg-slate-700'"
-                      class="px-3 py-1 rounded text-xs font-medium">Enlace</button>
-              <button @click="newResourceType='note'"
-                      :class="newResourceType==='note'?'bg-indigo-600 text-white':'bg-slate-100 dark:bg-slate-700'"
-                      class="px-3 py-1 rounded text-xs font-medium">Nota</button>
-            </div>
-            <input v-model="newResourceUrl" :placeholder="newResourceType==='link'?'URL del recurso':'Texto de la nota'" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mb-2" />
-            <input v-model="newResourceTitle" placeholder="Título (opcional)" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mb-2" />
-            <button @click="addResource()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition">Añadir</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Onboarding overlay -->
-  <div v-if="showOnboardingComputed" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm" data-overlay="onboarding">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-700 mx-4">
-        <div class="flex gap-1 mb-6">
-          <div v-for="s in onboardingSteps.length" :key="s"
-               class="h-1 flex-1 rounded-full transition"
-               :class="s - 1 === onboardingStep ? 'bg-indigo-600' : s - 1 < onboardingStep ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'"></div>
-        </div>
-        <div v-if="onboardingStep === 0" class="text-center space-y-3">
-          <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          <h3 class="text-xl font-bold">Bienvenido a RutaEstudio</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Conecta conceptos, domina tu ruta. Estudia con propósito.</p>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Organiza tus asignaturas como un grafo interactivo. Define conceptos, conéctalos con relaciones, evalúa tu dominio y obtén un plan de estudio personalizado.</p>
-          <p class="text-xs text-slate-400 dark:text-slate-500">Todo funciona 100% offline. Tus datos se guardan en el navegador.</p>
-        </div>
-        <div v-if="onboardingStep === 1" class="text-center space-y-3">
-          <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
-          <h3 class="text-xl font-bold">Crea tu primera asignatura</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Haz clic en <strong>"+ Nueva"</strong> o elige una <strong>plantilla educativa</strong> prediseñada.</p>
-          <p class="text-xs text-slate-400">Los profesores pueden preparar la asignatura en 2 clics.</p>
-        </div>
-        <div v-if="onboardingStep === 2" class="text-center space-y-3">
-          <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          <h3 class="text-xl font-bold">Añade conceptos</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Cada concepto tiene nombre, descripción, peso y etiquetas. Importa desde CSV o genera con IA.</p>
-          <p class="text-xs text-slate-400">Edita con doble clic.</p>
-        </div>
-        <div v-if="onboardingStep === 3" class="text-center space-y-3">
-          <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-2.04 1.757-1.757a4.5 4.5 0 0 1 6.364 6.364l-4.5 4.5a4.5 4.5 0 0 1-1.242-7.244"/></svg>
-          <h3 class="text-xl font-bold">Conecta conceptos</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Crea relaciones: prerrequisito, pertenece, relacionado o profundiza.</p>
-        </div>
-        <div v-if="onboardingStep === 4" class="text-center space-y-3">
-          <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
-          <h3 class="text-xl font-bold">Evalúa tu dominio</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Puntúa cada concepto del 0 al 100%. Evaluación uno a uno o masiva con sliders.</p>
-          <p class="text-xs text-slate-400">Teclas 1 a 5 para puntuar rápido.</p>
-        </div>
-        <div v-if="onboardingStep === 5" class="text-center space-y-3">
-          <svg class="w-14 h-14 text-indigo-600 dark:text-indigo-400 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-          <h3 class="text-xl font-bold">Sigue tu plan de estudio</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">En Resultados verás qué repasar, reforzar o dominas. Usa BFS, DFS o el 🔥 Desbloqueador.</p>
-        </div>
-        <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <button @click="onboardingStep > 0 ? onboardingStep-- : null"
-                  :class="onboardingStep === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-700'"
-                  class="text-sm font-medium text-slate-500 dark:text-slate-400 px-4 py-2 rounded-lg transition">← Anterior</button>
-          <div class="flex gap-1">
-            <span v-for="s in onboardingSteps.length" :key="s"
-                  class="w-2 h-2 rounded-full transition cursor-pointer"
-                  :class="s - 1 === onboardingStep ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'"
-                  @click="onboardingStep = s - 1"></span>
-          </div>
-          <button v-if="onboardingStep < onboardingSteps.length - 1"
-                  @click="onboardingStep++"
-                  class="bg-indigo-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-indigo-700 transition">Siguiente →</button>
-          <button v-if="onboardingStep === onboardingSteps.length - 1"
-                  @click="closeOnboarding()"
-                  class="flex items-center gap-1.5 bg-green-600 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-green-700 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg> ¡Empezar!</button>
-        </div>
-        <button @click="closeOnboarding()" class="text-xs text-slate-400 dark:text-slate-500 mt-3 w-full text-center hover:underline">Saltar tutorial</button>
-      </div>
-    </div>
-
-  <!-- Achievements Modal -->
-  <div v-if="showAchievementsComputed" class="fixed inset-0 z-[55] flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm" @click.self="showAchievements = false">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-700 mx-4 max-h-[80vh] flex flex-col">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-lg flex items-center gap-2">
-            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0 0 16.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.023 6.023 0 0 1-2.77.896m0 0a6.022 6.022 0 0 1-2.77-.896"/></svg>
-            Logros
-          </h3>
-          <button @click="showAchievements = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl leading-none">&times;</button>
-        </div>
-        <div class="flex items-center gap-3 mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800/40">
-          <span class="text-2xl" v-text="levelIcon"></span>
-          <div>
-            <p class="font-bold text-sm" v-text="'Nivel ' + userLevel + ': ' + levelTitle"></p>
-            <p class="text-xs text-slate-500 dark:text-slate-400" v-text="userXP + ' XP total'"></p>
-          </div>
-        </div>
-        <div class="flex-1 overflow-y-auto space-y-2">
-          <div v-for="ach in achievementsList" :key="ach.id"
-               class="flex items-center gap-3 p-3 rounded-xl border transition"
-               :class="ach.unlocked ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/40' : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 opacity-60'">
-            <span class="text-2xl" v-text="ach.icon"></span>
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-sm" v-text="ach.name"></p>
-              <p class="text-xs text-slate-400 dark:text-slate-500" v-text="ach.desc"></p>
-            </div>
-            <svg v-if="ach.unlocked" class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-            <span v-else class="text-xs text-slate-400" v-text="ach.progress || ''"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== HELP MODAL ===== -->
-    <help-modal v-if="modal === 'help'" @close="modal=''"></help-modal>
-
-    <!-- ===== SUBJECT / CONCEPT MODALS ===== -->
-    <div v-if="modal === 'subject' || modal === 'concept'"
-         class="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true"
-         @click.self="modal=''">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl">
-        <h3 class="font-bold text-lg mb-4" v-text="modalTitle"></h3>
-
-        <div v-if="modal === 'subject'" class="space-y-3">
-          <!-- Tab selector -->
-          <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5 text-xs font-medium">
-            <button @click="templateTab='manual'"
-                    :class="templateTab==='manual'?'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100':'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'"
-                    class="flex-1 px-3 py-1.5 rounded transition">Desde cero</button>
-            <button @click="templateTab='template'"
-                    :class="templateTab==='template'?'bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100':'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'"
-                    class="flex-1 px-3 py-1.5 rounded transition"><svg class="w-3.5 h-3.5 inline-block -mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg> Desde plantilla</button>
-          </div>
-
-          <!-- Manual form -->
-          <div v-if="templateTab === 'manual'" class="space-y-3">
-            <div>
-              <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Nombre</label>
-              <input v-model="editName" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
-            </div>
-            <div>
-              <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Descripción</label>
-              <textarea v-model="editDesc" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea>
-            </div>
-            <button @click="saveSubject()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition">Guardar</button>
-          </div>
-
-          <!-- Template selector -->
-          <div v-if="templateTab === 'template'" class="space-y-3 max-h-[60vh] overflow-y-auto">
-            <input v-model="templateSearch" placeholder="Buscar plantilla..." class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm" />
-            <div v-for="group in filteredTemplates" :key="group.key" class="space-y-2">
-              <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide flex items-center gap-1">
-                <svg v-if="!group.emoji" class="w-3.5 h-3.5 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                <span v-if="group.emoji" v-text="group.emoji"></span>
-                <span v-text="group.label"></span>
-                <span class="font-normal text-slate-300 dark:text-slate-600" v-text="group.subjects.length + ' módulos'"></span>
-              </p>
-              <div v-for="subj in group.subjects" :key="subj.key"
-                   @click="createFromTemplate(group.key, subj.key)"
-                   class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-500 transition">
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium" v-text="subj.name"></p>
-                  <p class="text-xs text-slate-400 dark:text-slate-500 truncate" v-text="subj.description"></p>
-                </div>
-                <div class="flex gap-1 flex-shrink-0">
-                  <span class="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded px-1.5 py-0.5 font-medium" v-text="subj.concepts.length + ' conceptos'"></span>
-                  <span class="text-[10px] bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded px-1.5 py-0.5 font-medium" v-text="subj.relations.length + ' relaciones'"></span>
-                </div>
-              </div>
-            </div>
-            <p v-if="filteredTemplates.length === 0" class="text-sm text-slate-400 dark:text-slate-500 text-center py-4">No hay plantillas que coincidan con "{{ templateSearch }}"</p>
-          </div>
-        </div>
-
-        <div v-if="modal === 'concept'" class="space-y-3">
-          <div>
-            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Nombre del concepto</label>
-            <input v-model="editConceptName" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
-          </div>
-          <div>
-            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Descripción</label>
-            <textarea v-model="editConceptDesc" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" rows="2"></textarea>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Peso/dificultad (1-10)</label>
-            <input type="number" min="1" max="10" v-model="editConceptWeight" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
-          </div>
-          <div>
-            <label class="text-xs font-medium text-slate-500 dark:text-slate-400">Etiquetas (separadas por coma)</label>
-            <input v-model="editConceptTags" placeholder="ej: fácil, examen, teoría" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm mt-1" />
-          </div>
-          <button @click="saveConcept()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition">Guardar</button>
-        </div>
-
-        <button @click="modal=''" class="text-xs text-slate-400 dark:text-slate-500 mt-3 w-full text-center hover:underline">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast notification -->
-  <Transition name="modal">
-    <div v-if="toast" @click="dismissToast()"
-         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl shadow-2xl border cursor-pointer transition text-sm font-medium flex items-center gap-2"
-         :class="toast.type === 'success' ? 'bg-green-600 text-white border-green-700' : toast.type === 'error' ? 'bg-red-600 text-white border-red-700' : toast.type === 'warning' ? 'bg-amber-500 text-white border-amber-600' : 'bg-slate-800 text-white border-slate-700'">
-      <span v-text="toast.message"></span>
-      <button v-if="toast.action" @click.stop="toast.action(); dismissToast()" class="underline font-bold ml-2 whitespace-nowrap" v-text="toast.actionLabel || 'Deshacer'"></button>
-    </div>
-  </Transition>
-
-  <!-- Global Search Modal -->
-  <Transition name="modal">
-    <div v-if="globalSearchOpen" class="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/40 dark:bg-black/60 backdrop-blur-sm"
-         @click.self="closeGlobalSearch()">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div class="p-4 border-b border-slate-200 dark:border-slate-700">
-          <input id="global-search-input" v-model="globalSearch" placeholder="Buscar en todas las asignaturas..."
-                 class="w-full bg-transparent text-base outline-none placeholder-slate-400" />
-        </div>
-        <div class="max-h-80 overflow-y-auto p-2">
-          <div v-if="!globalSearch.trim()" class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">
-            Escribe para buscar conceptos por nombre, descripción o etiqueta
-          </div>
-          <div v-if="globalSearch.trim() && globalResults.length === 0" class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">
-            Sin resultados para "{{ globalSearch }}"
-          </div>
-          <template v-for="(group, si) in groupBy(globalResults, 'subjectName')" :key="si">
-            <p class="text-xs font-bold text-slate-400 dark:text-slate-500 px-2 pt-2 pb-1 uppercase tracking-wide" v-text="group.key"></p>
-            <div v-for="item in group.items" :key="item.concept.id"
-                 @click="goToConcept(item.subjectId, item.concept.id)"
-                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition text-sm">
-              <svg class="w-5 h-5 shrink-0 text-indigo-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium truncate" v-text="item.concept.name"></p>
-                <p class="text-xs text-slate-400 truncate" v-text="item.concept.description || '—'"></p>
-              </div>
-              <span class="text-xs text-slate-400" v-text="'Peso: ' + item.concept.weight"></span>
-            </div>
-          </template>
-        </div>
-        <div class="p-2 border-t border-slate-200 dark:border-slate-700 text-[10px] text-slate-400 text-center">
-          <kbd class="bg-slate-100 dark:bg-slate-700 px-1 rounded">↑↓</kbd> navegar <kbd class="bg-slate-100 dark:bg-slate-700 px-1 rounded">Esc</kbd> cerrar
-        </div>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Shortcuts cheat sheet -->
-  <Transition name="modal">
-    <div v-if="modal === 'shortcuts'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm"
-         role="dialog" aria-modal="true" @click.self="modal=''">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl border border-slate-200 dark:border-slate-700">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-lg">Atajos de teclado</h3>
-          <button @click="modal=''" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xl">&times;</button>
-        </div>
-        <div class="space-y-2 text-sm">
-          <div class="flex justify-between"><span>Buscar global</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+K</kbd></div>
-          <div class="flex justify-between"><span>Deshacer</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+Z</kbd></div>
-          <div class="flex justify-between"><span>Rehacer</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+Shift+Z</kbd></div>
-          <div class="flex justify-between"><span>Modo foco (grafo)</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Ctrl+F</kbd></div>
-          <div class="flex justify-between"><span>Cerrar modales</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Esc</kbd></div>
-          <div class="flex justify-between"><span>Puntuar evaluación</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">1-5</kbd></div>
-          <div class="flex justify-between"><span>Navegar evaluación</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">← →</kbd></div>
-          <div class="flex justify-between"><span>Este panel</span> <kbd class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">?</kbd></div>
-        </div>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Custom Relation Types Manager -->
-  <Transition name="modal">
-    <div v-if="modal === 'customTypes'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" @click.self="modal = ''">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-slate-200 dark:border-slate-700 m-4">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-bold">Tipos de relación personalizados</h2>
-          <button @click="modal = ''" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl px-1">&times;</button>
-        </div>
-
-        <!-- Add / Edit form -->
-        <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700 mb-4 space-y-3">
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Nombre</label>
-            <input type="text" v-model="customTypeName" placeholder="Ej: Complementa" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Color</label>
-              <input type="color" v-model="customTypeColor" class="w-full h-9 border dark:border-slate-600 rounded-lg cursor-pointer" />
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Grosor</label>
-              <select v-model.number="customTypeWidth" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
-                <option :value="1">Fino (1px)</option>
-                <option :value="2">Normal (2px)</option>
-                <option :value="3">Grueso (3px)</option>
-                <option :value="4">Muy grueso (4px)</option>
-              </select>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Línea discontinua</label>
-              <label class="flex items-center gap-2 text-sm cursor-pointer pt-1">
-                <input type="checkbox" v-model="customTypeDash" class="accent-indigo-600" />
-                <span v-text="customTypeDash ? 'Sí' : 'No'"></span>
-              </label>
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Dirección de flecha</label>
-              <select v-model="customTypeArrow" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg px-3 py-2 text-sm">
-                <option value="to">Direccional (→)</option>
-                <option value="none">Sin flecha (—)</option>
-                <option value="from">Inversa (←)</option>
-                <option value="both">Bidireccional (↔)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Preview -->
-          <div class="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700 text-xs flex items-center gap-3">
-            <span class="text-slate-400">Vista previa:</span>
-            <span class="w-8 h-0.5 inline-block" :style="{ borderTop: customTypeDash ? '2px dashed ' + customTypeColor : customTypeWidth >= 3 ? customTypeWidth + 'px solid ' + customTypeColor : '2px solid ' + customTypeColor, borderColor: customTypeColor }"></span>
-            <span v-if="customTypeArrow === 'to'" class="text-xs" :style="{ color: customTypeColor }">→</span>
-            <span v-if="customTypeArrow === 'none'" class="text-xs" :style="{ color: customTypeColor }">—</span>
-            <span v-if="customTypeArrow === 'from'" class="text-xs" :style="{ color: customTypeColor }">←</span>
-            <span v-if="customTypeArrow === 'both'" class="text-xs" :style="{ color: customTypeColor }">↔</span>
-            <span class="font-medium" :style="{ color: customTypeColor }" v-text="customTypeName || 'Nombre'"></span>
-          </div>
-
-          <div class="flex gap-2">
-            <button v-if="customTypeEditId" @click="saveCustomTypeEdit()" class="flex-1 bg-indigo-600 text-white font-bold py-2 rounded-lg hover:bg-indigo-700 transition text-sm" :disabled="!customTypeName.trim()">
-              Guardar cambios
-            </button>
-            <button v-if="customTypeEditId" @click="cancelCustomTypeEdit()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold py-2 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition text-sm">
-              Cancelar
-            </button>
-            <button v-else @click="addCustomType()" class="flex-1 bg-indigo-600 text-white font-bold py-2 rounded-lg hover:bg-indigo-700 transition text-sm" :disabled="!customTypeName.trim()">
-              Añadir tipo
-            </button>
-          </div>
-        </div>
-
-        <!-- Existing types list -->
-        <div v-if="store.customRelationTypes.length === 0" class="text-center py-6 text-sm text-slate-400">
-          No hay tipos personalizados todavía. Crea uno nuevo arriba.
-        </div>
-        <div v-for="t in store.customRelationTypes" :key="t.id" class="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
-          <span class="w-4 h-0.5 inline-block flex-shrink-0" :style="{ borderTop: t.dash ? '2px dashed ' + t.color : t.width >= 3 ? t.width + 'px solid ' + t.color : '2px solid ' + t.color, borderColor: t.color }"></span>
-          <span v-if="t.arrow === 'to'" class="text-xs flex-shrink-0" :style="{ color: t.color }">→</span>
-          <span v-if="t.arrow === 'none'" class="text-xs flex-shrink-0" :style="{ color: t.color }">—</span>
-          <span v-if="t.arrow === 'from'" class="text-xs flex-shrink-0" :style="{ color: t.color }">←</span>
-          <span v-if="t.arrow === 'both'" class="text-xs flex-shrink-0" :style="{ color: t.color }">↔</span>
-          <span class="font-medium text-sm flex-1" v-text="t.name"></span>
-          <span class="text-xs text-slate-400" :style="{ color: t.color }" v-text="t.color"></span>
-          <div class="flex gap-1">
-            <button @click="editCustomType(t)" class="text-xs text-indigo-600 hover:underline">Editar</button>
-            <button @click="deleteCustomType(t.id)" class="text-xs text-red-500 hover:underline">Borrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Template Info Modal -->
-  <Transition name="modal">
-    <div v-if="modal === 'templateInfo'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" @click.self="modal=''">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto border border-slate-200 dark:border-slate-700 m-4">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-bold">Plantilla de asignatura</h2>
-          <button @click="modal=''" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl px-1">&times;</button>
-        </div>
-
-        <div class="space-y-4 text-sm">
-          <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-4 border border-indigo-200 dark:border-indigo-800/40">
-            <p class="font-medium text-indigo-700 dark:text-indigo-300 mb-1">¿Qué es esta plantilla?</p>
-            <p class="text-indigo-600/80 dark:text-indigo-400/80">Un archivo <strong>JSON</strong> con la estructura básica de una asignatura: nombre, conceptos y relaciones. Descárgalo, edítalo con cualquier editor de texto e impórtalo con el botón "Importar" del menú superior.</p>
-          </div>
-
-          <div class="flex gap-2">
-            <button @click="exportTemplate()" class="flex-1 bg-indigo-600 text-white font-bold py-2.5 rounded-xl hover:bg-indigo-700 transition text-sm flex items-center justify-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-              Descargar plantilla JSON
-            </button>
-            <button @click="modal=''" class="px-4 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium py-2.5 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition text-sm">Cerrar</button>
-          </div>
-
-          <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
-            <p class="font-bold text-indigo-600 dark:text-indigo-400 mb-2">Personalizar con IA</p>
-
-            <!-- Prompt detallado -->
-            <details class="mb-3 group">
-              <summary class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1.5">
-                <svg class="w-4 h-4 transition group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-                Prompt detallado para generar una asignatura
-              </summary>
-              <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700 mt-2">
-                <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
-app "RutaEstudio" (una herramienta de mapas de conocimiento interactivos).
-Quiero una asignatura completa sobre [TEMA].
-
-# Estructura del JSON
-{
-  "subjects": [
-    {
-      "name": "Nombre de la asignatura",
-      "description": "Descripción breve y motivadora (2-3 frases)",
-      "concepts": [
-        {
-          "name": "Nombre del concepto",
-          "description": "Explicación clara y sencilla del concepto (1-2 frases)",
-          "weight": 5,
-          "tags": ["etiqueta1", "etiqueta2"]
-        }
-      ],
-      "relations": [
-        { "from": "Nombre del concepto origen",
-          "to": "Nombre del concepto destino",
-          "type": "prerrequisito" }
-      ]
-    }
-  ]
-}
-
-# Reglas estrictas
-- Mínimo 10 conceptos, máximo 25
-- weight: número entero del 1 al 10
-  · 1-3: introductorio / de relleno
-  · 4-6: importancia media / núcleo de la asignatura
-  · 7-10: concepto fundamental / avanzado
-- tags: array de etiquetas cortas (máximo 5 por concepto)
-  · Usa etiquetas como "fundamentos", "avanzado", "práctico",
-    "teoría", "ejercicios", "ejemplos", según corresponda
-- En relations, el campo type debe ser uno de:
-  · "prerrequisito" → A debe saberse antes que B (flecha sólida)
-  · "pertenece" → A es subconcepto de B (flecha discontinua)
-  · "relacionado" → A y B están relacionados (línea punteada)
-  · "profundiza" → A profundiza / amplía B (flecha gruesa)
-- Las relaciones deben formar un grafo acíclico (sin ciclos)
-- Cada concepto debe aparecer al menos en una relación (entrante
-  o saliente)
-- Asegúrate de que todos los from/to coinciden exactamente con
-  algún name en concepts
-- No añadas campos extra ni comentarios
-- Devuelve SOLO el JSON, sin markdown ni explicaciones
-
-Puedes incluir resources opcionales en los conceptos:
-"resources": [
-  { "type": "video" | "articulo" | "libro" | "ejercicio",
-    "title": "Título del recurso",
-    "url": "https://..." }
-]</pre>
-              </div>
-            </details>
-
-            <!-- Ampliar plantilla -->
-            <details class="mb-3 group">
-              <summary class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1.5">
-                <svg class="w-4 h-4 transition group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-                Ampliar una plantilla existente
-              </summary>
-              <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700 mt-2">
-                <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Tengo esta plantilla JSON de RutaEstudio:
-```json
-[pega aquí el contenido del JSON descargado]
-```
-
-Amplíala siguiendo estas pautas:
-1. Añade 5-8 conceptos más que sean coherentes con la asignatura
-2. Conéctalos con relaciones apropiadas a los conceptos existentes
-3. Ajusta los pesos de los nuevos conceptos según su importancia
-4. Añade etiquetas (tags) significativas a todos los conceptos
-5. Mantén el formato exacto del JSON original
-6. Devuelve SOLO el JSON completo (incluyendo los conceptos originales
-   más los nuevos), sin explicaciones</pre>
-              </div>
-            </details>
-
-            <!-- Ejemplos completos -->
-            <details class="mb-3 group" open>
-              <summary class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1.5">
-                <svg class="w-4 h-4 transition group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-                Ejemplos completos de prompts
-              </summary>
-              <div class="mt-2 space-y-2">
-                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Matemáticas — Álgebra lineal (2.º Bachillerato)</p>
-                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
-app "RutaEstudio" con la asignatura "Álgebra Lineal" de 2.º de Bachillerato.
-
-Debe incluir 12-15 conceptos con pesos 1-10: matrices, determinantes,
-sistemas de ecuaciones, rango, matriz inversa, combinación lineal,
-dependencia lineal, espacio vectorial, subespacio vectorial, base y
-dimensión, coordenadas, producto escalar, ortogonalidad, aplicaciones
-lineales, núcleo e imagen, diagonalización.
-
-Usa relaciones de prerrequisito (matrices → determinantes → sistemas…),
-pertenece (subespacio → espacio vectorial), y profundiza (diagonalización
-profundiza autovalores). Etiquetas: "fundamentos", "operaciones",
-"teoría", "ejercicios", "selectividad", "avanzado".
-
-Devuelve SOLO el JSON, sin explicaciones.</pre>
-                </div>
-
-                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Idiomas — Inglés B1 (nivel intermedio)</p>
-                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
-app "RutaEstudio" con la asignatura "Inglés B1 — Intermedio".
-
-Debe incluir 10-14 conceptos: present simple vs continuous, past simple
-vs continuous, present perfect, future forms (will/going to), condicionales
-(tipos 0, 1, 2), voz pasiva, modales básicos (can, must, should, have to),
-comparativos y superlativos, preposiciones de tiempo y lugar, phrasal verbs
-básicos, vocabulario por temas (travel, work, health), writing emails.
-
-Pesos: los tiempos verbales básicos 7-8, los avanzados 5-6, vocabulario 3-4.
-Etiquetas: "grammar", "vocabulary", "writing", "speaking", "listening",
-"practice". Añade al menos 3 resources por concepto con enlaces a
-BBC Learning English, Duolingo, o ejercicios de Cambridge.
-
-Devuelve SOLO el JSON, sin explicaciones.</pre>
-                </div>
-
-                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Programación — Python desde cero</p>
-                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
-app "RutaEstudio" con la asignatura "Programación en Python desde cero".
-
-Debe incluir 15-18 conceptos: qué es Python, instalación y entorno,
-variables y tipos de datos, operadores, strings y formateo, listas,
-tuplas y diccionarios, condicionales (if/elif/else), bucles (for/while),
-funciones (def, return, args), alcance de variables (scope), módulos y
-paquetes, manejo de excepciones, lectura/escritura de archivos,
-programación orientada a objetos (clases, herencia), list comprehension,
-librería estándar útil (math, datetime, random, os), introducción a pip.
-
-Pesos: fundamentos 8-10, estructuras de datos 6-7, POO y archivos 4-5.
-Etiquetas: "principiante", "sintaxis", "ejercicios", "proyectos",
-"fundamentos", "poo". Usa recursos con enlaces a w3schools, realpython,
-docs.python.org y ejercicios de codingbat.
-
-Devuelve SOLO el JSON, sin explicaciones.</pre>
-                </div>
-
-                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">FP Informática — Bases de datos (MySQL)</p>
-                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Eres un experto en planificación educativa. Genera un JSON válido para la
-app "RutaEstudio" con el módulo "Bases de Datos" (1.º FP Informática).
-
-Debe incluir 12-15 conceptos: modelo entidad-relación, diagramas E-R,
-tablas, claves primarias y foráneas, normalización (1FN, 2FN, 3FN),
-SQL DDL (CREATE, ALTER, DROP), SQL DML (SELECT, INSERT, UPDATE, DELETE),
-consultas con JOIN, funciones agregadas (COUNT, SUM, AVG, GROUP BY),
-subconsultas, vistas, índices, usuarios y permisos, copias de seguridad.
-
-Pesos: E-R y tablas 9-10, SQL básico 8, normalización 7, JOIN 6,
-subconsultas 5, vistas/índices 4. Etiquetas: "teoría", "sql", "diseño",
-"prácticas", "examen". Añade resources con enlaces a mysql.com, w3schools
-SQL y ejercicios de mode.com/sql-tutorial.
-
-Devuelve SOLO el JSON, sin explicaciones.</pre>
-                </div>
-
-                <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
-                  <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1">Personalizado — tu propio prompt</p>
-                  <pre class="text-xs whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed select-all">Copia y pega este esqueleto, rellena los corchetes y pídeselo a la IA:
-
-Eres un experto en planificación educativa. Genera un JSON válido para la
-app "RutaEstudio" con la asignatura "[NOMBRE]" de [NIVEL O CURSO].
-
-Debe incluir [NÚMERO] conceptos sobre: [lista de conceptos separada
-por comas].
-
-Pesos: [criterios de peso, ej. "fundamentos 8-10, intermedios 5-7,
-avanzados 3-4"].
-Etiquetas: [lista de etiquetas].
-Relaciones: usa los tipos "prerrequisito", "pertenece", "relacionado"
-y "profundiza" según corresponda.
-
-Devuelve SOLO el JSON, sin explicaciones.</pre>
-                </div>
-              </div>
-            </details>
-
-            <p class="text-xs text-slate-400 mt-2">Después de obtener el JSON, impórtalo con <strong>Importar &gt; Importar datos</strong> desde el menú superior.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Delete confirmation modal -->
-  <Transition name="modal">
-    <div v-if="modal === 'confirmDelete'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" @click.self="modal=''; deleteTarget=null">
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700 m-4">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
-          </div>
-          <div>
-            <h3 class="font-bold text-lg">Borrar asignatura</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400" v-text="'Se eliminar\u00e1 &laquo;' + (deleteTarget?.name || '') + '&raquo;'"></p>
-          </div>
-        </div>
-
-        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800/40 mb-4 space-y-2">
-          <div class="flex items-start gap-2">
-            <svg class="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
-            <p class="text-sm text-amber-800 dark:text-amber-300"><strong>No podr\u00e1s recuperarla.</strong> Se borrar\u00e1n todos sus conceptos, relaciones y evaluaciones.</p>
-          </div>
-          <div class="flex items-start gap-2">
-            <svg class="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-            <p class="text-sm text-amber-800 dark:text-amber-300">Antes de borrar, <strong>exporta</strong> tus datos por si quieres recuperarlos despu\u00e9s.</p>
-          </div>
-        </div>
-
-        <div class="flex gap-2">
-          <button @click="exportData()" class="flex-1 flex items-center justify-center gap-1.5 bg-white dark:bg-slate-700 border dark:border-slate-600 text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-            Exportar
-          </button>
-          <button @click="executeDeleteSubject()" class="flex-1 bg-red-600 text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-red-700 transition flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-            Borrar
-          </button>
-        </div>
-        <button @click="modal=''; deleteTarget=null" class="w-full text-xs text-slate-400 dark:text-slate-500 mt-3 text-center hover:underline">Cancelar</button>
-      </div>
-    </div>
-  </Transition>
-
-  <!-- Focus mode toggle button -->
-  <button v-if="view === 'subject' && tab === 'graph'"
-          @click="toggleFocusMode()"
-         class="fixed bottom-4 right-4 z-30 bg-indigo-600 text-white w-10 h-10 rounded-full shadow-lg hover:bg-indigo-700 transition flex items-center justify-center"
-         :title="focusMode ? 'Salir de modo foco' : 'Modo foco'">
-    <svg v-if="!focusMode" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
-    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12"/></svg>
-  </button>
+    <global-graph v-if="view === 'globalGraph'" :subjects="subjects" :store="store" @back="view='subjects'" />
+    <app-footer />
+    <inspector-panel :concept="currentSubject?.concepts.find(c=>c.id===inspectorConcept)" :subject="currentSubject" :active-tab="inspectorTab" :inspector-data="inspector" :new-resource-url="newResourceUrl" :new-resource-title="newResourceTitle" :new-resource-type="newResourceType" @close="closeInspector()" @update:activeTab="inspectorTab = $event" @open-concept="openInspector($event)" @add-resource="addResource()" @remove-resource="removeResource($event)" @update:newResourceUrl="newResourceUrl = $event" @update:newResourceTitle="newResourceTitle = $event" @update:newResourceType="newResourceType = $event" />
+    <onboarding-overlay :show="showOnboardingComputed" :step="onboardingStep" :steps="onboardingSteps" @close="closeOnboarding()" @next="onboardingStep++" @prev="onboardingStep--" @go-to-step="onboardingStep = $event" />
+    <achievements-modal :show="showAchievementsComputed" :level-icon="levelIcon" :user-level="userLevel" :level-title="levelTitle" :user-xp="userXP" :achievements-list="achievementsList" @close="showAchievements = false" />
+    <help-modal v-if="modal === 'help'" @close="modal=''" />
+    <subject-modal :show="modal === 'subject' || modal === 'concept'" :mode="modal === 'subject' ? 'subject' : 'concept'" :title="modalTitle" :template-tab="templateTab" :edit-name="editName" :edit-desc="editDesc" :edit-concept-name="editConceptName" :edit-concept-desc="editConceptDesc" :edit-concept-weight="editConceptWeight" :edit-concept-tags="editConceptTags" :template-search="templateSearch" :filtered-templates="filteredTemplates" @close="modal=''" @save-subject="saveSubject()" @save-concept="saveConcept()" @update:editName="editName = $event" @update:editDesc="editDesc = $event" @update:editConceptName="editConceptName = $event" @update:editConceptDesc="editConceptDesc = $event" @update:editConceptWeight="editConceptWeight = $event" @update:editConceptTags="editConceptTags = $event" @update:templateTab="templateTab = $event" @update:templateSearch="templateSearch = $event" @select-template="createFromTemplate($event[0], $event[1])" />
+    <template-info-modal :show="modal === 'templateInfo'" @close="modal=''" @download-template="exportTemplate()" />
+    <confirm-delete-modal :show="modal === 'confirmDelete'" :target="deleteTarget" @close="modal=''; deleteTarget=null" @confirm="executeDeleteSubject()" @export-data="exportData()" />
+    <toast-popup :toast="toast" @dismiss="dismissToast()" />
+    <global-search-popup :show="globalSearchOpen" :query="globalSearch" :results="globalResults" @close="closeGlobalSearch()" @update:query="globalSearch = $event" @go-to-concept="goToConcept($event[0], $event[1])" />
+    <shortcuts-modal :show="modal === 'shortcuts'" @close="modal=''" />
+    <custom-types-modal :show="modal === 'customTypes'" :types="store.customRelationTypes" :edit-name="customTypeName" :edit-color="customTypeColor" :edit-dash="customTypeDash" :edit-width="customTypeWidth" :edit-arrow="customTypeArrow" :edit-id="customTypeEditId" @close="modal = ''" @add-type="addCustomType()" @edit-type="editCustomType($event)" @delete-type="deleteCustomType($event)" @save-edit="saveCustomTypeEdit()" @cancel-edit="cancelCustomTypeEdit()" @update:editName="customTypeName = $event" @update:editColor="customTypeColor = $event" @update:editDash="customTypeDash = $event" @update:editWidth="customTypeWidth = $event" @update:editArrow="customTypeArrow = $event" />
+    <focus-mode-btn :show="view === 'subject' && tab === 'graph'" :active="focusMode" @toggle="toggleFocusMode()" />
+  </script>
+  <div id="app" v-cloak></div>
 
   <!-- Install Prompt -->
   <script>
@@ -934,7 +145,7 @@ Devuelve SOLO el JSON, sin explicaciones.</pre>
   <script>
     (function() {
       var queue = [
-        { src: 'https://unpkg.com/vue@3/dist/vue.global.prod.js', fallback: 'fallback/vue.global.prod.js' },
+        { src: 'https://unpkg.com/vue@3.5.39/dist/vue.global.prod.js', fallback: 'fallback/vue.global.prod.js' },
         { src: 'https://unpkg.com/vis-network@9.1.9/dist/vis-network.min.js', fallback: 'fallback/vis-network.min.js' },
         { src: 'js/helpers.js' },
         { src: 'js/i18n.js' },
@@ -945,6 +156,25 @@ Devuelve SOLO el JSON, sin explicaciones.</pre>
         { src: 'components/global-graph.js' },
         { src: 'components/subject-detail.js' },
         { src: 'components/help-modal.js' },
+        { src: 'components/app-header.js' },
+        { src: 'components/app-footer.js' },
+        { src: 'components/gamification-bar.js' },
+        { src: 'components/inspector-panel.js' },
+        { src: 'components/onboarding-overlay.js' },
+        { src: 'components/achievements-modal.js' },
+        { src: 'components/subject-modal.js' },
+        { src: 'components/template-info-modal.js' },
+        { src: 'components/confirm-delete-modal.js' },
+        { src: 'components/toast-popup.js' },
+        { src: 'components/global-search-popup.js' },
+        { src: 'components/shortcuts-modal.js' },
+        { src: 'components/custom-types-modal.js' },
+        { src: 'components/focus-mode-btn.js' },
+        { src: 'components/concepts-tab.js' },
+        { src: 'components/graph-tab.js' },
+        { src: 'components/assess-tab.js' },
+        { src: 'components/results-tab.js' },
+        { src: 'components/history-tab.js' },
         { src: 'js/templates.js' },
         { src: 'js/editor.js' },
         { src: 'js/study.js' },
