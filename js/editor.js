@@ -79,19 +79,20 @@
       a.download = s.name.replace(/\s+/g, '_') + '.json';
       a.click();
     },
-    importSubjectCSV(s) {
+    importSubjectConceptsJSON(s) {
       this.currentSubjectId = s.id;
       this.$nextTick(() => {
         const inp = document.createElement('input');
         inp.type = 'file';
-        inp.accept = '.csv';
+        inp.accept = '.json';
         inp.onchange = (e) => {
           const file = e.target.files[0];
           if (!file) return;
           const reader = new FileReader();
           reader.onload = (ev) => {
-            this.store.importConceptsCSV(s.id, ev.target.result);
-            this.showToast('Conceptos importados desde CSV', 'success');
+            const count = this.store.importConceptsJSON(s.id, ev.target.result);
+            if (count > 0) this.showToast('Importados ' + count + ' conceptos desde JSON', 'success');
+            else this.showToast('No se encontraron conceptos v\u00e1lidos en el JSON', 'warning');
           };
           reader.readAsText(file);
         };
@@ -311,13 +312,13 @@
       a.download = 'plantilla-RutaEstudio.json';
       a.click();
     },
-    exportConceptsCSV() {
+    exportConceptsJSON() {
       if (!this.currentSubject) return;
-      const csv = this.store.exportConceptsCSV(this.currentSubject.id);
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const json = this.store.exportConceptsJSON(this.currentSubject.id);
+      const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = this.currentSubject.name.replace(/\s+/g, '_') + '_conceptos.csv';
+      a.download = this.currentSubject.name.replace(/\s+/g, '_') + '_conceptos.json';
       a.click();
     },
 
@@ -392,17 +393,17 @@
       };
       input.click();
     },
-    importConceptsCSV() {
+    importConceptsJSON() {
       if (!this.currentSubject) return;
       const input = document.createElement('input');
       input.type = 'file';
-      input.accept = '.csv';
+      input.accept = '.json';
       input.onchange = (e) => {
         const reader = new FileReader();
         reader.onload = (ev) => {
-          const count = this.store.importConceptsCSV(this.currentSubject.id, ev.target.result);
-          if (count > 0) this.showToast('Importados ' + count + ' conceptos desde CSV', 'success');
-          else this.showToast('No se encontraron conceptos v\u00e1lidos en el CSV', 'warning');
+          const count = this.store.importConceptsJSON(this.currentSubject.id, ev.target.result);
+          if (count > 0) this.showToast('Importados ' + count + ' conceptos desde JSON', 'success');
+          else this.showToast('No se encontraron conceptos v\u00e1lidos en el JSON', 'warning');
         };
         reader.readAsText(input.files[0]);
       };

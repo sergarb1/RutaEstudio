@@ -43,6 +43,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
+  if (!url.protocol.startsWith('http')) return;
 
   // CDN requests: network-first, fallback to cache
   if (url.hostname.includes('unpkg.com') || url.hostname.includes('cdn.')) {

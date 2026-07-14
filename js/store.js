@@ -803,34 +803,34 @@ GC.store = Vue.reactive({
     this.save();
   },
 
-  exportConceptsCSV(subjectId) {
+  exportConceptsJSON(subjectId) {
     const s = this.getSubject(subjectId);
-    if (!s) return '';
-    const esc = v => '"' + String(v).replace(/"/g, '""') + '"';
-    const lines = ['nombre,descripci\u00f3n,peso,etiquetas'];
-    s.concepts.forEach(c => {
-      lines.push([esc(c.name), esc(c.description || ''), c.weight || 5, esc((c.tags || []).join('; '))].join(','));
-    });
-    return lines.join('\n');
+    if (!s) return '[]';
+    const data = s.concepts.map(c => ({
+      name: c.name,
+      description: c.description || '',
+      weight: c.weight || 5,
+      tags: c.tags || []
+    }));
+    return JSON.stringify(data, null, 2);
   },
 
-  importConceptsCSV(subjectId, csvText) {
+  importConceptsJSON(subjectId, jsonText) {
     const s = this.getSubject(subjectId);
     if (!s) return 0;
-    const lines = csvText.split('\n').filter(Boolean);
-    if (lines.length < 2) return 0;
-    let count = 0;
-    for (let i = 1; i < lines.length; i++) {
-      const parts = lines[i].split(',').map(p => p.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
-      const name = parts[0];
-      if (!name) continue;
-      const desc = parts[1] || '';
-      const weight = Math.min(10, Math.max(1, parseInt(parts[2]) || 5));
-      const tags = parts[3] ? parts[3].split(';').map(t => t.trim()).filter(Boolean) : [];
-      this.addConcept(subjectId, name, desc, weight, tags);
-      count++;
+    try {
+      const data = JSON.parse(jsonText);
+      if (!Array.isArray(data)) return 0;
+      let count = 0;
+      data.forEach(c => {
+        if (!c.name) return;
+        this.addConcept(subjectId, c.name, c.description || '', Math.min(10, Math.max(1, parseInt(c.weight) || 5)), c.tags || []);
+        count++;
+      });
+      return count;
+    } catch {
+      return 0;
     }
-    return count;
   },
 
   exportTemplate() {
