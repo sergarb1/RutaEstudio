@@ -109,6 +109,9 @@
             <button @click="$emit('import')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 min-h-[44px] sm:min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
               <span v-html="icon('arrowUpTray')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Importar todo
             </button>
+            <button @click="$emit('exportAll')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 min-h-[44px] sm:min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
+              <span v-html="icon('arrowDownTray')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Exportar todo
+            </button>
             <button @click="$emit('importSubject')" class="flex items-center gap-1 text-xs bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg px-3 py-2 min-h-[44px] sm:min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 font-medium transition">
               <span v-html="icon('arrowUpTray')" class="w-3.5 h-3.5 text-slate-400 shrink-0 inline-flex items-center justify-center"></span> Importar asignatura
             </button>
@@ -119,7 +122,7 @@
     props: {
       subjects: Array
     },
-    emits: ['select', 'add', 'help', 'tutorial', 'example', 'globalGraph', 'import', 'exportTemplate', 'importSubject', 'deleteSubject', 'exportCard', 'importSubjectJSON'],
+    emits: ['select', 'add', 'help', 'tutorial', 'example', 'globalGraph', 'import', 'exportAll', 'exportTemplate', 'importSubject', 'deleteSubject', 'exportCard', 'importSubjectJSON'],
     methods: {
       icon(name) { return (GC.SVG || {})[name] || ''; }
     }
